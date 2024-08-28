@@ -314,7 +314,7 @@ class _Timeline extends State<Timeline> {
                             }),
                       ),
                       Container(
-                          constraints: new BoxConstraints(
+                          constraints: BoxConstraints(
                             minHeight: 1,
                             minWidth: double.infinity,
                             maxHeight: (rowHeight * 2) + 8,

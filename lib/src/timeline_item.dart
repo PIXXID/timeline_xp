@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TimelineItem extends StatelessWidget {
-  TimelineItem(
+  const TimelineItem(
       {super.key,
       required this.colors,
       required this.index,

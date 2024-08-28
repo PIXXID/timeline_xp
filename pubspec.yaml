@@ -2,6 +2,7 @@ name: timeline_xp
 description: "A new Flutter package project."
 version: 0.0.1
 homepage:
+repository: https://github.com/PIXXID/timeline_xp
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

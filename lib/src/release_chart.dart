@@ -20,7 +20,7 @@ class ReleaseChart extends StatefulWidget {
 class ReleaseChartState extends State<ReleaseChart> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 10,
         height: 10,
         child: PieChart(

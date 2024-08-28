@@ -3,7 +3,7 @@ library timeline_xp;
 import 'package:flutter/material.dart';
 
 class StageItem extends StatelessWidget {
-  StageItem(
+  const StageItem(
       {super.key,
       required this.colors,
       required this.dayWidth,
