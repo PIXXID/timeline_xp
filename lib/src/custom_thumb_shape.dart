@@ -1,5 +1,3 @@
-library timeline_xp;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as Material;
 // import 'package:easy_localization/easy_localization.dart' hide TextDirection;

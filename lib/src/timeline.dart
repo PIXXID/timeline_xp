@@ -1,5 +1,3 @@
-library timeline_xp;
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -8,8 +6,8 @@ import 'timeline_item_detail.dart';
 import 'stage_row.dart';
 import 'custom_thumb_shape.dart';
 
-class Timeline extends StatefulWidget {
-  const Timeline(
+class TimelineXp extends StatefulWidget {
+  const TimelineXp(
       {super.key,
       required this.width,
       required this.height,
@@ -30,10 +28,10 @@ class Timeline extends StatefulWidget {
   final Function(String?)? openAddStage;
 
   @override
-  State<Timeline> createState() => _Timeline();
+  State<TimelineXp> createState() => _TimelineXp();
 }
 
-class _Timeline extends State<Timeline> {
+class _TimelineXp extends State<TimelineXp> {
   // Liste des jours formatés
   List days = [];
 

@@ -1,5 +1,3 @@
-library timeline_xp;
-
 import 'package:flutter/material.dart';
 
 import 'stage_item.dart';
