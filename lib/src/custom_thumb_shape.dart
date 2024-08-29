@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as Material;
+
 // import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 
 // Set your widget name, define your parameter, and then add the
@@ -15,7 +15,7 @@ class CustomThumbShape extends SliderComponentShape {
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
     // Taille du cercle et du thumb
-    return Size(40, 40);
+    return const Size(40, 40);
   }
 
   @override
@@ -42,7 +42,7 @@ class CustomThumbShape extends SliderComponentShape {
         colors['primary']!,
         colors['primaryBackground']!,
       ],
-      begin: Alignment(1, -1),
+      begin: const Alignment(1, -1),
       end: Alignment.bottomLeft,
     );
 
@@ -53,7 +53,7 @@ class CustomThumbShape extends SliderComponentShape {
       ..style = PaintingStyle.fill;
 
     // Rayon du cercle
-    final double radius = 25;
+    const double radius = 25;
 
     // Appliquer le dégradé avec un shader
     final paintBackground = Paint()
@@ -61,7 +61,7 @@ class CustomThumbShape extends SliderComponentShape {
       ..style = PaintingStyle.fill;
 
     // Rayon du cercle
-    final double radiusBackground = radius * 1.5;
+    const double radiusBackground = radius * 1.5;
 
     // Dessiner le cercle avec le dégradé
     canvas.drawCircle(center, radiusBackground, paintBackground);
