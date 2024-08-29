@@ -162,8 +162,9 @@ class _TimelineXp extends State<TimelineXp> {
       List stagesByDay = [];
 
       var elementDay = elements.firstWhere(
-          (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
-          orElse: () => null);
+        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
+        orElse: () => <String, Object>{},
+      );
 
       // On regarde quels sont les étapes en cours ce jour
       stagesByDay = stages
@@ -172,17 +173,17 @@ class _TimelineXp extends State<TimelineXp> {
               date.isBefore(DateTime.parse(s['endDate'])))
           .toList();
 
-      if (elementDay != null) {
-        elementDay['date'] = DateTime.parse(elementDay['date']);
-        elementDay['stages'] = stagesByDay;
-        list.add(elementDay);
-      } else {
+      if (elementDay.isEmpty) {
         list.add({
           'date': date,
           'capacityLevelMax': 0,
           'alertLevel': 0,
           stages: stagesByDay
         });
+      } else {
+        elementDay['date'] = DateTime.parse(elementDay['date']);
+        elementDay['stages'] = stagesByDay;
+        list.add(elementDay);
       }
     }
 
@@ -295,7 +296,7 @@ class _TimelineXp extends State<TimelineXp> {
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(
-                                horizontal: (screenWidth / 2) -
+                                horizontal: (screenWidth / 2) - 10 -
                                     ((dayWidth - dayMargin) / 2)),
                             itemCount: days.length,
                             itemBuilder: (BuildContext context, int index) {

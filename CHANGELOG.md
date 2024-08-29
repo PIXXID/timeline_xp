@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Corrections décalage du centre
+
 ## 0.0.3
 
 * Corrections for score improvements

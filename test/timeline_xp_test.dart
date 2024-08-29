@@ -5,12 +5,12 @@ import 'package:timeline_xp/timeline_xp.dart';
 
 void main() {
   const project = {
-      'prj_id': '254354-245254-245245',
-      'prj_name': 'Swiip',
-      'prj_status': 'active',
-      'prj_startdate': "2024-08-01",
-      'prj_enddate': "2024-09-30",
-    };
+    'prj_id': '254354-245254-245245',
+    'prj_name': 'Swiip',
+    'prj_status': 'active',
+    'prj_startdate': "2024-08-01",
+    'prj_enddate': "2024-09-30",
+  };
 
   const List<dynamic> elements = [
     {
@@ -1076,12 +1076,12 @@ void main() {
       'name': 'Swiip : Conception',
       'startDate': "2024-08-03",
       'endDate': "2024-08-08",
-      'totalActivity' : 5,
-      'totalActivityFinished' : 5,
-      'totalDelivrable' : 5,
-      'totalDelivrableFinished' : 5,
-      'totalTask' : 5,
-      'totalTaskFinished' : 5,
+      'totalActivity': 5,
+      'totalActivityFinished': 5,
+      'totalDelivrable': 5,
+      'totalDelivrableFinished': 5,
+      'totalTask': 5,
+      'totalTaskFinished': 5,
       'progress': 100,
       'releaseLabel': '1.87',
       'releaseProgress': 24,
@@ -1092,12 +1092,12 @@ void main() {
       'name': 'Floralis : Ateliers UX',
       'startDate': "2024-08-05",
       'endDate': "2024-08-09",
-      'totalActivity' : 5,
-      'totalActivityFinished' : 5,
-      'totalDelivrable' : 5,
-      'totalDelivrableFinished' : 4,
-      'totalTask' : 5,
-      'totalTaskFinished' : 2,
+      'totalActivity': 5,
+      'totalActivityFinished': 5,
+      'totalDelivrable': 5,
+      'totalDelivrableFinished': 4,
+      'totalTask': 5,
+      'totalTaskFinished': 2,
       'progress': 80,
       'releaseLabel': '1.87',
       'releaseProgress': 24,
@@ -1108,12 +1108,12 @@ void main() {
       'name': 'Floralis : Ateliers UX 2',
       'startDate': "2024-08-10",
       'endDate': "2024-08-18",
-      'totalActivity' : 5,
-      'totalActivityFinished' : 1,
-      'totalDelivrable' : 5,
-      'totalDelivrableFinished' : 3,
-      'totalTask' : 5,
-      'totalTaskFinished' : 0,
+      'totalActivity': 5,
+      'totalActivityFinished': 1,
+      'totalDelivrable': 5,
+      'totalDelivrableFinished': 3,
+      'totalTask': 5,
+      'totalTaskFinished': 0,
       'progress': 40,
       'releaseLabel': '1.87',
       'releaseProgress': 24,
@@ -1125,7 +1125,7 @@ void main() {
       'startDate': "2024-08-21",
       'endDate': "2024-08-27",
       'totalActivity': 5,
-      'totalActivityFinished' : 0,
+      'totalActivityFinished': 0,
       'totalDelivrable': 5,
       'totalDelivrableFinished': 0,
       'totalTask': 5,
@@ -1179,18 +1179,24 @@ void main() {
     'warning': const Color(0xFFF9CF58)
   };
 
-  void openDayDetail(String date, String? prjId) {
+  void openDayDetail(String date, String? prjId) {}
 
-  }
-
-  void openAddStage(String? prsId) {
-
-  }
+  void openAddStage(String? prsId) {}
 
   const double width = 300;
   const double height = 480;
 
-  test('Vérifie si le widget se charge', () => {
-    TimelineXp(width: width, height: height, colors: colors, elements: elements, stages: stages, project: project, openDayDetail: openDayDetail, openAddStage: openAddStage)
-  });
+  test(
+      'Vérifie si le widget se charge',
+      () => {
+            TimelineXp(
+                width: width,
+                height: height,
+                colors: colors,
+                elements: elements,
+                stages: stages,
+                project: project,
+                openDayDetail: openDayDetail,
+                openAddStage: openAddStage)
+          });
 }
