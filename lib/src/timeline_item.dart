@@ -24,19 +24,27 @@ class TimelineItem extends StatelessWidget {
   final double height;
   final bool isMultiproject;
   final dynamic project;
-  final Function(String, String?)? openDayDetail;
+  final Function(String, String?, double?)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
     DateTime date = days[index]['date'];
+
+    double dayProgress = 0;
+    if (days[index] != null && days[index]['workLoadLevel'] != null && days[index]['workLoadLevel'] > 0) {
+      dayProgress = 100 * days[index]['completedLevel'] / days[index]['workLoadLevel'];
+    }
 
     return Align(
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
             // Call back lors du clic
             onTap: () => {
-                  openDayDetail?.call(DateFormat('yyyy-MM-dd').format(date),
-                      project != null ? 'OKOK' : null)
+                  openDayDetail?.call(
+                    DateFormat('yyyy-MM-dd').format(date),
+                    project != null ? project['prj_id'] : null,
+                    dayProgress
+                  )
                 },
             child: SizedBox(
                 width: dayWidth - dayMargin,
