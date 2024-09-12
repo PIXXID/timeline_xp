@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Renvoie un paramètre de plus lors du click (progression du jour)
+
 ## 0.0.4
 
 * Corrections décalage du centre
