@@ -1179,7 +1179,7 @@ void main() {
     'warning': const Color(0xFFF9CF58)
   };
 
-  void openDayDetail(String date, String? prjId) {}
+  void openDayDetail(String date, String? prjId, double? dayProgress) {}
 
   void openAddStage(String? prsId) {}
 

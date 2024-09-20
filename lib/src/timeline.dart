@@ -71,6 +71,7 @@ class _TimelineXp extends State<TimelineXp> {
   DateTime now = DateTime.now();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now().add(const Duration(days: 60));
+  int nowIndex = 0;
 
   // Controllers des scroll
   final ScrollController _controllerTimeline = ScrollController();
@@ -85,6 +86,8 @@ class _TimelineXp extends State<TimelineXp> {
   // Initialisation
   @override
   void initState() {
+    super.initState();
+
     // Est-ce qu'on est en multiprojets (journal de bord)
     isMultiproject = widget.project != null ? false : true;
 
@@ -113,6 +116,9 @@ class _TimelineXp extends State<TimelineXp> {
         stagesHeight -
         80;
 
+    // Positionne le slider sur la date du jour
+    nowIndex = now.difference(startDate).inDays;
+
     // Écoute du scroll pour :
     // - calculer quel élément est au centre
     // - mettre à jour la valeur du slide
@@ -136,7 +142,11 @@ class _TimelineXp extends State<TimelineXp> {
       }
     });
 
-    super.initState();
+    // Exécuter une seule fois après la construction du widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollToNow(nowIndex);
+    });
+
   }
 
   // Destruction du widget
@@ -251,6 +261,20 @@ class _TimelineXp extends State<TimelineXp> {
     return ((currentDate.difference(from).inDays + 1) / 7).ceil();
   }
 
+  // Scroll à aujourd'hui
+  void scrollToNow(int nowIndex) {
+    if (nowIndex >= 0) {
+      // On calcule la valeur du scroll en fonction de la date
+      double scroll = nowIndex * (dayWidth - dayMargin);
+
+      // Met à jour la valeur du scroll et scroll
+      setState(() {
+        sliderValue = scroll;
+      });
+      _controllerTimeline.animateTo(sliderValue, duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
@@ -323,7 +347,6 @@ class _TimelineXp extends State<TimelineXp> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.vertical,
                             child: Stack(
-
                                 /// Fond indiquant le jour en cours
                                 children: [
                                   Column(
@@ -406,10 +429,14 @@ class _TimelineXp extends State<TimelineXp> {
                           centerItemIndex: centerItemIndex,
                           isMultiproject: isMultiproject),
                       Padding(
-                          padding: const EdgeInsets.only(bottom: 25),
-                          child: Container(
+                        padding: const EdgeInsets.only(bottom: 25),
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
                               padding: const EdgeInsets.only(
-                                  left: 10, top: 5, right: 10, bottom: 5),
+                                  left: 10, top: 7, right: 10, bottom: 7),
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.only(
                                       bottomLeft: Radius.circular(10),
@@ -421,66 +448,90 @@ class _TimelineXp extends State<TimelineXp> {
                                     color: widget.colors['primaryText'],
                                     fontSize: 11, // Taille de l'icône
                                     fontWeight: FontWeight.w400),
-                              ))),
+                              )),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 5),
+                                padding: const EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  color: widget.colors['primaryText']),
+                                child: GestureDetector(
+                                  // Call back lors du clic
+                                  onTap: () => {
+                                    scrollToNow(nowIndex)
+                                  },
+                                  child: Text('Aujourd\'hui',
+                                    style: TextStyle(
+                                      color: widget.colors['secondaryprimaryBackground'],
+                                      fontSize: 10, // Taille de l'icône
+                                      fontWeight: FontWeight.w400)),
+                                )
+                              )
+                            )
+                        ]
+                      )),
                       Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: sliderMargin),
+                        padding: EdgeInsets.symmetric(horizontal: sliderMargin),
                           child: Stack(clipBehavior: Clip.none, children: [
-                            // Alertes positionnées
-                            SizedBox(
-                                width: screenWidth - (sliderMargin * 2),
-                                height: 50,
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: sliderMargin - (alertWidth / 2)),
-                                    child: Builder(builder: (context) {
-                                      List<Widget> alerts = [];
-                                      double screenWidthMargin =
-                                          screenWidth - ((sliderMargin) * 4);
-                                      if (days.isNotEmpty) {
-                                        // On parcourt les jours et on ajoute les alertes
-                                        for (var index = 0;
-                                            index < days.length;
-                                            index++) {
-                                          if (days[index]['alertLevel'] != 0) {
-                                            alerts.add(Positioned(
-                                                left: (index) *
-                                                    screenWidthMargin /
-                                                    days.length,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                    // Call back lors du clic
-                                                    onTap: () {
-                                                      setState(() {
-                                                        sliderValue =
-                                                            index.toDouble();
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons.circle_rounded,
-                                                      size: alertWidth,
-                                                      color: days[index][
+                          // Alertes positionnées
+                          SizedBox(
+                            width: screenWidth - (sliderMargin * 2),
+                            height: 50,
+                            child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: sliderMargin - (alertWidth / 2)),
+                                child: Builder(builder: (context) {
+                                  List<Widget> alerts = [];
+                                  double screenWidthMargin =
+                                      screenWidth - ((sliderMargin) * 4);
+                                  if (days.isNotEmpty) {
+                                    // On parcourt les jours et on ajoute les alertes
+                                    for (var index = 0;
+                                        index < days.length;
+                                        index++) {
+                                      if (days[index]['alertLevel'] != 0) {
+                                        alerts.add(Positioned(
+                                            left: (index) *
+                                                screenWidthMargin /
+                                                days.length,
+                                            top: 0,
+                                            child: GestureDetector(
+                                                // Call back lors du clic
+                                                onTap: () {
+                                                  setState(() {
+                                                    sliderValue =
+                                                        index.toDouble();
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.circle_rounded,
+                                                  size: alertWidth,
+                                                  color: days[index][
+                                                              'alertLevel'] ==
+                                                          1
+                                                      ? widget
+                                                          .colors['warning']
+                                                      : (days[index][
                                                                   'alertLevel'] ==
-                                                              1
-                                                          ? widget
-                                                              .colors['warning']
-                                                          : (days[index][
-                                                                      'alertLevel'] ==
-                                                                  2
-                                                              ? widget.colors[
-                                                                  'error']
-                                                              : Colors
-                                                                  .transparent),
-                                                    ))));
-                                          }
-                                        }
+                                                              2
+                                                          ? widget.colors[
+                                                              'error']
+                                                          : Colors
+                                                              .transparent),
+                                                ))));
                                       }
+                                    }
+                                  }
 
-                                      return Stack(
-                                          children: alerts.isNotEmpty
-                                              ? alerts
-                                              : [const SizedBox()]);
-                                    }))),
+                                  return Stack(
+                                      children: alerts.isNotEmpty
+                                          ? alerts
+                                          : [const SizedBox()]);
+                                }))),
                             // Slider
                             Positioned(
                                 bottom: 0,
