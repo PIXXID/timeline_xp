@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Affiche le jour en cours en point directement sur la timeline
+
 ## 0.0.6
 
 * Positionne automatiquement sur la date du jour et ajoute la possibilité d'y retourner rapidement

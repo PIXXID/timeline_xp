@@ -271,7 +271,7 @@ class _TimelineXp extends State<TimelineXp> {
       setState(() {
         sliderValue = scroll;
       });
-      _controllerTimeline.animateTo(sliderValue, duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+      _scroll(sliderValue);
     }
   }
 
@@ -328,6 +328,7 @@ class _TimelineXp extends State<TimelineXp> {
                                   colors: widget.colors,
                                   index: index,
                                   centerItemIndex: centerItemIndex,
+                                  nowIndex: nowIndex,
                                   days: days,
                                   dayWidth: dayWidth,
                                   dayMargin: dayMargin,
@@ -430,50 +431,25 @@ class _TimelineXp extends State<TimelineXp> {
                           isMultiproject: isMultiproject),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 25),
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                              padding: const EdgeInsets.only(
-                                  left: 10, top: 7, right: 10, bottom: 7),
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10)),
-                                  color: widget.colors['accent2']),
-                              child: Text(
-                                '${DateFormat.MMMM('fr_FR').format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'])}',
-                                style: TextStyle(
-                                    color: widget.colors['primaryText'],
-                                    fontSize: 11, // Taille de l'icône
-                                    fontWeight: FontWeight.w400),
-                              )),
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 5),
-                                padding: const EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  color: widget.colors['primaryText']),
-                                child: GestureDetector(
-                                  // Call back lors du clic
-                                  onTap: () => {
-                                    scrollToNow(nowIndex)
-                                  },
-                                  child: Text('Aujourd\'hui',
-                                    style: TextStyle(
-                                      color: widget.colors['secondaryprimaryBackground'],
-                                      fontSize: 10, // Taille de l'icône
-                                      fontWeight: FontWeight.w400)),
-                                )
-                              )
-                            )
-                        ]
-                      )),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 7, right: 10, bottom: 7),
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10)),
+                              color: widget.colors['accent2']),
+                          child: Text(
+                            '${DateFormat.MMMM('fr_FR').format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'])}',
+                            style: TextStyle(
+                                color: widget.colors['primaryText'],
+                                fontSize: 11, // Taille de l'icône
+                                fontWeight: FontWeight.w400),
+                          )),
+                        ),
+                      ),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: sliderMargin),
                           child: Stack(clipBehavior: Clip.none, children: [
@@ -488,6 +464,24 @@ class _TimelineXp extends State<TimelineXp> {
                                   List<Widget> alerts = [];
                                   double screenWidthMargin =
                                       screenWidth - ((sliderMargin) * 4);
+
+                                  // Point sur le jour en cours
+                                  alerts.add(Positioned(
+                                      left: (nowIndex) *
+                                          screenWidthMargin /
+                                          days.length,
+                                      top: 0,
+                                      child: GestureDetector(
+                                          // Call back lors du clic
+                                          onTap: () {
+                                            scrollToNow(nowIndex);
+                                          },
+                                          child: Icon(
+                                            Icons.circle_rounded,
+                                            size: alertWidth,
+                                            color: widget.colors['accent2'],
+                                          ))));
+
                                   if (days.isNotEmpty) {
                                     // On parcourt les jours et on ajoute les alertes
                                     for (var index = 0;

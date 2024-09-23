@@ -7,6 +7,7 @@ class TimelineItem extends StatelessWidget {
       required this.colors,
       required this.index,
       required this.centerItemIndex,
+      required this.nowIndex,
       required this.days,
       required this.dayWidth,
       required this.dayMargin,
@@ -18,6 +19,7 @@ class TimelineItem extends StatelessWidget {
   final Map<String, Color> colors;
   final int index;
   final int centerItemIndex;
+  final int nowIndex;
   final List days;
   final double dayWidth;
   final double dayMargin;
@@ -64,8 +66,7 @@ class TimelineItem extends StatelessWidget {
                         height: (days[index]['capacityLevelMax'] > 0
                                 ? ((height * days[index]['capacityLevel']) /
                                     days[index]['capacityLevelMax'])
-                                : height) -
-                            20,
+                                : height) - 20,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: colors['accent2'],
@@ -141,7 +142,16 @@ class TimelineItem extends StatelessWidget {
                               ? FontWeight.w700
                               : FontWeight.w400),
                     ),
-                    if (days[index]['alertLevel'] != 0)
+                    if (index == nowIndex)
+                      Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Icon(
+                            Icons.circle_rounded,
+                            size: 13,
+                            color: colors['accent2'],
+                          )
+                      )
+                    else if (days[index]['alertLevel'] != 0)
                       Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Icon(
