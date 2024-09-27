@@ -26,7 +26,7 @@ class TimelineItem extends StatelessWidget {
   final double height;
   final bool isMultiproject;
   final dynamic project;
-  final Function(String, String?, double?)? openDayDetail;
+  final Function(String, String?, int?)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class TimelineItem extends StatelessWidget {
                   openDayDetail?.call(
                     DateFormat('yyyy-MM-dd').format(date),
                     project != null ? project['prj_id'] : null,
-                    dayProgress
+                    dayProgress.toInt()
                   )
                 },
             child: SizedBox(

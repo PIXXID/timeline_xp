@@ -24,7 +24,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic project;
   final List elements;
   final List stages;
-  final Function(String, String?, double?)? openDayDetail;
+  final Function(String, String?, int?)? openDayDetail;
   final Function(String?)? openAddStage;
 
   @override

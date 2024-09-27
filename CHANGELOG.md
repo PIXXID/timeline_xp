@@ -1,5 +1,9 @@
 ## 0.0.8 - 27/08/2024
 
+* Passe le dayProgress en int au lieu de double
+
+## 0.0.8 - 27/08/2024
+
 * Correction décalage et overflow en hauteur
 
 ## 0.0.7 - 23/08/2024
