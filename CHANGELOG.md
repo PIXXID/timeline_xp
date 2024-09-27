@@ -1,4 +1,4 @@
-## 0.0.8 - 27/08/2024
+## 0.0.9 - 27/08/2024
 
 * Passe le dayProgress en int au lieu de double
 
