@@ -435,7 +435,7 @@ class _TimelineXp extends State<TimelineXp> {
                           alignment: Alignment.center,
                           child: Container(
                           padding: const EdgeInsets.only(
-                              left: 10, top: 7, right: 10, bottom: 7),
+                              left: 10, top: 5, right: 10, bottom: 5),
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(10),
