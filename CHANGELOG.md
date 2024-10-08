@@ -1,20 +1,24 @@
-## 0.0.9 - 27/08/2024
+## 0.0.10 - 08/10/2024
+
+* Passe le dayProgress en double au lieu de int
+
+## 0.0.9 - 27/09/2024
 
 * Passe le dayProgress en int au lieu de double
 
-## 0.0.8 - 27/08/2024
+## 0.0.8 - 27/09/2024
 
 * Correction décalage et overflow en hauteur
 
-## 0.0.7 - 23/08/2024
+## 0.0.7 - 23/09/2024
 
 * Affiche le jour en cours en point directement sur la timeline
 
-## 0.0.6 - 20/08/2024
+## 0.0.6 - 20/09/2024
 
 * Positionne automatiquement sur la date du jour et ajoute la possibilité d'y retourner rapidement
 
-## 0.0.5 - 09/12/2024
+## 0.0.5 - 09/09/2024
 
 * Renvoie un paramètre de plus lors du click (progression du jour)
 
