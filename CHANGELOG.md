@@ -1,3 +1,7 @@
+## 0.0.12 - 10/10/2024
+
+* Corrections adaptation retour API
+
 ## 0.0.11 - 10/10/2024
 
 * Adaptation au retours de l'API

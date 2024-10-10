@@ -96,7 +96,7 @@ class _TimelineXp extends State<TimelineXp> {
     super.initState();
 
     // Est-ce qu'on est en multiprojets (journal de bord)
-    isMultiproject = widget.projectCount > 0;
+    isMultiproject = widget.projectCount > 1;
 
     // On positionne les dates de début et de fin
     if (widget.dateInterval['prj_startdate'] != null) {
