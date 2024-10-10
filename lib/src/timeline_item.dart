@@ -13,7 +13,6 @@ class TimelineItem extends StatelessWidget {
       required this.dayMargin,
       required this.height,
       required this.isMultiproject,
-      this.project,
       required this.openDayDetail});
 
   final Map<String, Color> colors;
@@ -25,8 +24,7 @@ class TimelineItem extends StatelessWidget {
   final double dayMargin;
   final double height;
   final bool isMultiproject;
-  final dynamic project;
-  final Function(String, String?, double?)? openDayDetail;
+  final Function(String, double?)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,6 @@ class TimelineItem extends StatelessWidget {
             onTap: () => {
                   openDayDetail?.call(
                     DateFormat('yyyy-MM-dd').format(date),
-                    project != null ? project['prj_id'] : null,
                     dayProgress
                   )
                 },

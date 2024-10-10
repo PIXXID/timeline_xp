@@ -22,7 +22,7 @@ class StageItem extends StatelessWidget {
   final double height;
   final String prsId;
   final String label;
-  final int progress;
+  final double progress;
   final bool isMultiproject;
   final bool isMilestone;
   final Function(String?)? openAddStage;

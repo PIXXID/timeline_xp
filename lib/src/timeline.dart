@@ -7,24 +7,31 @@ import 'stage_row.dart';
 import 'custom_thumb_shape.dart';
 
 class TimelineXp extends StatefulWidget {
-  const TimelineXp(
-      {super.key,
-      required this.width,
-      required this.height,
-      required this.colors,
-      this.project,
-      required this.elements,
-      required this.stages,
-      required this.openDayDetail,
-      required this.openAddStage});
+  const TimelineXp({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.colors,
+    required this.projectCount,
+    required this.dateInterval,
+    required this.elements,
+    required this.capacities,
+    required this.stages,
+    required this.notifications,
+    required this.openDayDetail,
+    required this.openAddStage
+  });
 
   final double width;
   final double height;
   final Map<String, Color> colors;
-  final dynamic project;
+  final int projectCount;
+  final Map<String, String> dateInterval;
   final List elements;
+  final List capacities;
   final List stages;
-  final Function(String, String?, double?)? openDayDetail;
+  final List notifications;
+  final Function(String, double?)? openDayDetail;
   final Function(String?)? openAddStage;
 
   @override
@@ -89,33 +96,30 @@ class _TimelineXp extends State<TimelineXp> {
     super.initState();
 
     // Est-ce qu'on est en multiprojets (journal de bord)
-    isMultiproject = widget.project != null ? false : true;
+    isMultiproject = widget.projectCount > 0;
 
     // On positionne les dates de début et de fin
-    if (widget.project != null) {
-      startDate = DateTime.parse(widget.project['prj_startdate']);
-      endDate = DateTime.parse(widget.project['prj_enddate']);
-    } else {
-      startDate = DateTime(now.year, now.month, now.day)
-          .subtract(const Duration(days: 30));
-      endDate =
-          DateTime(now.year, now.month, now.day).add(const Duration(days: 60));
+    if (widget.dateInterval['prj_startdate'] != null) {
+      startDate = DateTime.parse(widget.dateInterval['prj_startdate']!);
+    }
+    if (widget.dateInterval['prj_enddate'] != null) {
+      endDate = DateTime.parse(widget.dateInterval['prj_enddate']!);
     }
 
     // Formate la liste des jours pour positionner les éléments correctement
-    days = formatElements(startDate, endDate, widget.elements, widget.stages);
+    days = formatElements(startDate, endDate, widget.elements, widget.capacities, widget.notifications, widget.stages);
 
     // Formate la liste des étapes en plusieurs lignes selon les dates
     stagesRows = formatStagesRows(days, widget.stages);
 
-    double stagesHeight = rowHeight * stagesRows.length;
+    double stagesHeight = rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
     timelineHeight = (widget.height + 10) -
         (sliderHeight + sliderMargin) -
         dateLabelHeight -
         (isMultiproject ? timelineDetailHeight : 0) -
         stagesHeight -
         80;
-
+    
     // Positionne le slider sur la date du jour
     nowIndex = now.difference(startDate).inDays;
 
@@ -158,8 +162,7 @@ class _TimelineXp extends State<TimelineXp> {
   }
 
   // Formate la liste des jours pour la timeline
-  List formatElements(
-      DateTime startDate, DateTime enDate, List elements, List stages) {
+  List formatElements(DateTime startDate, DateTime endDate, List elements, List capacities, List notifications, List stages) {
     List list = [];
 
     // On récupère le nombre de jours entre la date de début et la date de fin
@@ -172,29 +175,81 @@ class _TimelineXp extends State<TimelineXp> {
       List stagesByDay = [];
 
       var elementDay = elements.firstWhere(
-        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
+        (e) => e['pre_date'] == DateFormat('yyyy-MM-dd').format(date),
+        orElse: () => <String, Object>{},
+      );
+
+      var capacitiesDay = capacities.firstWhere(
+        (e) => e['upc_date'] == DateFormat('yyyy-MM-dd').format(date),
+        orElse: () => <String, Object>{},
+      );
+
+      var notificationDay = notifications.firstWhere(
+        (e) => e['usn_date'] == DateFormat('yyyy-MM-dd').format(date),
         orElse: () => <String, Object>{},
       );
 
       // On regarde quels sont les étapes en cours ce jour
       stagesByDay = stages
-          .where((s) =>
-              date.isAfter(DateTime.parse(s['startDate'])) &&
-              date.isBefore(DateTime.parse(s['endDate'])))
-          .toList();
+        .where((s) =>
+          date.isAfter(DateTime.parse(s['prs_startdate'])) &&
+          date.isBefore(DateTime.parse(s['prs_enddate'])))
+        .toList();
 
-      if (elementDay.isEmpty) {
-        list.add({
-          'date': date,
-          'capacityLevelMax': 0,
-          'alertLevel': 0,
-          stages: stagesByDay
-        });
-      } else {
-        elementDay['date'] = DateTime.parse(elementDay['date']);
-        elementDay['stages'] = stagesByDay;
-        list.add(elementDay);
+      var day = {
+        'date': date,
+        'capacityLevelMax': 0,
+        'alertLevel': 0,
+        stages: stagesByDay
+      };
+
+      if (elementDay != null) {
+        if (elementDay.containsKey('activity_total')) {
+          day['activityTotal'] =  elementDay['activity_total'];
+        }
+        if (elementDay.containsKey('activity_completed')) {
+          day['activityCompleted'] = elementDay['activity_completed'];
+        }
+        if (elementDay.containsKey('delivrable_total')) {
+          day['delivrableTotal'] = elementDay['delivrable_total'];
+        }
+        if (elementDay.containsKey('delivrable_completed')) {
+          day['delivrableCompleted'] = elementDay['delivrable_completed'];
+        }
+        if (elementDay.containsKey('task_total')) {
+          day['taskTotal'] = elementDay['task_total'];
+        }
+        if (elementDay.containsKey('task_completed')) {
+          day['taskCompleted'] = elementDay['task_completed'];
+        }
       }
+
+      if (capacitiesDay != null) {
+        if (capacitiesDay.containsKey('capacity_level_max')) {
+          day['capacityLevelMax'] = capacitiesDay['capacity_level_max'];
+        }
+        if (capacitiesDay.containsKey('upc_capacity_effort')) {
+          day['capacityLevel'] = capacitiesDay['upc_capacity_effort'];
+        }
+        if (capacitiesDay.containsKey('upc_busy_effort')) {
+          day['workLoadLevel'] = capacitiesDay['upc_busy_effort'];
+        }
+        if (capacitiesDay.containsKey('upc_completed_effort')) {
+          day['completedLevel'] = capacitiesDay['upc_completed_effort'];
+        }
+        if (capacitiesDay.containsKey('upc_my_busy_effort')) {
+          day['myWorkLoadLevel'] = capacitiesDay['upc_my_busy_effort'];
+        }
+        if (capacitiesDay.containsKey('upc_my_completed_effort')) {
+          day['myCompletedLevel'] = capacitiesDay['upc_my_completed_effort'];
+        }
+      }
+      
+      if (notificationDay != null) {
+        day['alertLevel'] = notificationDay.containsKey('prs_id') ? 2 : 0;
+      }
+
+      list.add(day);
     }
 
     return list.toList();
@@ -206,14 +261,14 @@ class _TimelineXp extends State<TimelineXp> {
 
     // On parcourt les étapes pour construire les lignes
     for (int i = 0; i < stages.length - 1; i++) {
-      DateTime stageStartDate = DateTime.parse(stages[i]['startDate']);
-      DateTime stageEndDate = DateTime.parse(stages[i]['endDate']);
+      DateTime stageStartDate = DateTime.parse(stages[i]['prs_startdate']);
+      DateTime stageEndDate = DateTime.parse(stages[i]['prs_enddate']);
       if (stageStartDate.compareTo(startDate) > 0 &&
           stageEndDate.compareTo(endDate) < 0) {
         // On récupère les index des dates dans la liste
-        int startDateIndex =
-            days.indexWhere((d) => d['date'] == stageStartDate);
-        int endDateIndex = days.indexWhere((d) => d['date'] == stageEndDate);
+        int startDateIndex = days.indexWhere((d) => DateFormat('yyyy-MM-dd').format(d["date"]) == DateFormat('yyyy-MM-dd').format(stageStartDate));
+        int endDateIndex = days.indexWhere((d) => DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(stageEndDate));
+
         stages[i]['startDateIndex'] = startDateIndex;
         stages[i]['endDateIndex'] = endDateIndex;
 
@@ -225,9 +280,8 @@ class _TimelineXp extends State<TimelineXp> {
           var added = false;
           for (var row in rows) {
             // On cherche si on cheveauche un existant
-            var overlapIndex = row.indexWhere((r) =>
-                r['startDateIndex'] < stages[i]['endDateIndex'] + 1 &&
-                r['endDateIndex'] > stages[i]['startDateIndex'] + 1);
+            var overlapIndex = row.indexWhere((r) => (r['startDateIndex'] < stages[i]['endDateIndex'] + 1 &&
+                r['endDateIndex'] > stages[i]['startDateIndex'] + 1));
             // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
             if (overlapIndex == -1) {
               row.add(stages[i]);
@@ -293,8 +347,8 @@ class _TimelineXp extends State<TimelineXp> {
                     top: 0,
                     child: Container(
                       height: timelineHeight +
-                          (stagesRows.length *
-                              (rowHeight > 2 ? rowHeight : 2)) +
+                          (rowHeight *
+                              (stagesRows.length > 2 ? 2 : stagesRows.length)) +
                           (isMultiproject ? 60 : (timelineDetailHeight - 10)),
                       width: dayWidth - dayMargin,
                       decoration: BoxDecoration(
@@ -333,7 +387,6 @@ class _TimelineXp extends State<TimelineXp> {
                                   dayWidth: dayWidth,
                                   dayMargin: dayMargin,
                                   height: timelineHeight,
-                                  project: widget.project,
                                   isMultiproject: isMultiproject,
                                   openDayDetail: widget.openDayDetail);
                             }),
@@ -359,8 +412,7 @@ class _TimelineXp extends State<TimelineXp> {
                                         padding: EdgeInsets.symmetric(
                                             horizontal: (screenWidth / 2) -
                                                 ((dayWidth - dayMargin) / 2)),
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
+                                        physics: const NeverScrollableScrollPhysics(),
                                         child: Container(
                                             margin: const EdgeInsets.symmetric(
                                                 vertical: 2.0),

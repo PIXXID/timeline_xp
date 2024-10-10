@@ -1,3 +1,7 @@
+## 0.0.11 - 10/10/2024
+
+* Adaptation au retours de l'API
+
 ## 0.0.10 - 08/10/2024
 
 * Passe le dayProgress en double au lieu de int

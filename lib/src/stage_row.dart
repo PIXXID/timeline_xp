@@ -34,16 +34,14 @@ class _StageRow extends State<StageRow> {
     // On boucle sur les étapes de la ligne
     for (int index = 0; index < widget.stagesList.length; index++) {
       // Nombre de jour de durée
-      int daysWidth = widget.stagesList[index]['endDateIndex'] -
-          widget.stagesList[index]['startDateIndex'] +
-          1;
-      String label = widget.stagesList[index]['name'];
+      int daysWidth = widget.stagesList[index]['endDateIndex'] - widget.stagesList[index]['startDateIndex'] + 1;
+      String label = widget.stagesList[index]['prs_name'];
       // Largeur de l'item
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
       // On récupère l'ancien étape de la liste
       var previousStage = index > 0 ? widget.stagesList[index - 1] : null;
 
-      // On crée le vide entre l'ancien étape (s'il y en a un) et le nouveau
+      // On crée le vide entre l'ancien étape (s'il y en a un) et le nouveau        
       if (previousStage != null) {
         list.add(SizedBox(
           width: (widget.stagesList[index]['startDateIndex'] -
@@ -66,8 +64,8 @@ class _StageRow extends State<StageRow> {
           height: widget.height,
           prsId: widget.stagesList[index]['prs_id'],
           label: label,
-          progress: widget.stagesList[index]['progress'],
-          isMilestone: widget.stagesList[index]['type'] == 'milestone',
+          progress: widget.stagesList[index]['prs_progress'].toDouble(),
+          isMilestone: widget.stagesList[index]['prs_type'] == 'milestone',
           isMultiproject: widget.isMultiproject,
           openAddStage: widget.openAddStage));
     }
