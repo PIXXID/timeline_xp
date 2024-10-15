@@ -204,45 +204,21 @@ class _TimelineXp extends State<TimelineXp> {
       };
 
       if (elementDay != null) {
-        if (elementDay.containsKey('activity_total')) {
-          day['activityTotal'] =  elementDay['activity_total'];
-        }
-        if (elementDay.containsKey('activity_completed')) {
-          day['activityCompleted'] = elementDay['activity_completed'];
-        }
-        if (elementDay.containsKey('delivrable_total')) {
-          day['delivrableTotal'] = elementDay['delivrable_total'];
-        }
-        if (elementDay.containsKey('delivrable_completed')) {
-          day['delivrableCompleted'] = elementDay['delivrable_completed'];
-        }
-        if (elementDay.containsKey('task_total')) {
-          day['taskTotal'] = elementDay['task_total'];
-        }
-        if (elementDay.containsKey('task_completed')) {
-          day['taskCompleted'] = elementDay['task_completed'];
-        }
+        day['activityTotal'] = elementDay.containsKey('activity_total') && elementDay['activity_total'] != null ? elementDay['activity_total'] : 0;
+        day['activityCompleted'] = elementDay.containsKey('activity_completed') && elementDay['activity_completed'] != null ? elementDay['activity_completed'] : 0;
+        day['delivrableTotal'] = elementDay.containsKey('delivrable_total') && elementDay['delivrable_total'] != null ? elementDay['delivrable_total'] : 0;
+        day['delivrableCompleted'] = elementDay.containsKey('delivrable_completed') && elementDay['delivrable_completed'] != null ? elementDay['delivrable_completed'] : 0;
+        day['taskTotal'] = elementDay.containsKey('task_total') && elementDay['task_total'] != null ? elementDay['task_total'] : 0;
+        day['taskCompleted'] = elementDay.containsKey('task_completed') && elementDay['task_completed'] != null ? elementDay['task_completed'] : 0;
       }
 
       if (capacitiesDay != null) {
-        if (capacitiesDay.containsKey('capacity_level_max')) {
-          day['capacityLevelMax'] = capacitiesDay['capacity_level_max'];
-        }
-        if (capacitiesDay.containsKey('upc_capacity_effort')) {
-          day['capacityLevel'] = capacitiesDay['upc_capacity_effort'];
-        }
-        if (capacitiesDay.containsKey('upc_busy_effort')) {
-          day['workLoadLevel'] = capacitiesDay['upc_busy_effort'];
-        }
-        if (capacitiesDay.containsKey('upc_completed_effort')) {
-          day['completedLevel'] = capacitiesDay['upc_completed_effort'];
-        }
-        if (capacitiesDay.containsKey('upc_my_busy_effort')) {
-          day['myWorkLoadLevel'] = capacitiesDay['upc_my_busy_effort'];
-        }
-        if (capacitiesDay.containsKey('upc_my_completed_effort')) {
-          day['myCompletedLevel'] = capacitiesDay['upc_my_completed_effort'];
-        }
+        day['capacityLevelMax'] = capacitiesDay.containsKey('capacity_level_max') && capacitiesDay['capacity_level_max'] != null ? capacitiesDay['capacity_level_max'] : 0;
+        day['capacityLevel'] = capacitiesDay.containsKey('upc_capacity_effort') && capacitiesDay['upc_capacity_effort'] != null ? capacitiesDay['upc_capacity_effort'] : 0;
+        day['workLoadLevel'] = capacitiesDay.containsKey('upc_busy_effort') && capacitiesDay['upc_busy_effort'] != null ? capacitiesDay['upc_busy_effort'] : 0;
+        day['completedLevel'] = capacitiesDay.containsKey('upc_completed_effort') && capacitiesDay['upc_completed_effort'] != null ? capacitiesDay['upc_completed_effort'] : 0;
+        day['myWorkLoadLevel'] = capacitiesDay.containsKey('upc_user_busy_effort') && capacitiesDay['upc_user_busy_effort'] != null ? capacitiesDay['upc_user_busy_effort'] : 0;
+        day['myCompletedLevel'] = capacitiesDay.containsKey('upc_user_completed_effort') && capacitiesDay['upc_user_completed_effort'] != null ? capacitiesDay['upc_user_completed_effort'] : 0;
       }
       
       if (notificationDay != null && notificationDay.containsKey('usn_priority')) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// import 'package:easy_localization/easy_localization.dart' hide TextDirection;
-
 // Set your widget name, define your parameter, and then add the
 // boilerplate code using the green button on the right!
 class CustomThumbShape extends SliderComponentShape {

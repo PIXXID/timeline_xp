@@ -1,16 +1,21 @@
-## 0.0.16 - 10/10/2024
+## 0.0.17 - 15/10/2024
+
+* Corrections adaptation retour API notifications alerts
+* Ajout du widget customIcon
+
+## 0.0.16 - 15/10/2024
 
 * Corrections adaptation retour API notifications alerts
 
-## 0.0.15 - 10/10/2024
+## 0.0.15 - 11/10/2024
 
 * Corrections adaptation retour API
 
-## 0.0.14 - 10/10/2024
+## 0.0.14 - 11/10/2024
 
 * Corrections adaptation retour API
 
-## 0.0.13 - 10/10/2024
+## 0.0.13 - 11/10/2024
 
 * Corrections adaptation retour API
 
