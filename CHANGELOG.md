@@ -1,3 +1,19 @@
+## 0.0.16 - 10/10/2024
+
+* Corrections adaptation retour API notifications alerts
+
+## 0.0.15 - 10/10/2024
+
+* Corrections adaptation retour API
+
+## 0.0.14 - 10/10/2024
+
+* Corrections adaptation retour API
+
+## 0.0.13 - 10/10/2024
+
+* Corrections adaptation retour API
+
 ## 0.0.12 - 10/10/2024
 
 * Corrections adaptation retour API

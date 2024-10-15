@@ -26,11 +26,11 @@ class TimelineXp extends StatefulWidget {
   final double height;
   final Map<String, Color> colors;
   final int projectCount;
-  final Map<String, String> dateInterval;
-  final List elements;
-  final List capacities;
-  final List stages;
-  final List notifications;
+  final dynamic dateInterval;
+  final dynamic elements;
+  final dynamic capacities;
+  final dynamic stages;
+  final dynamic notifications;
   final Function(String, double?)? openDayDetail;
   final Function(String?)? openAddStage;
 
@@ -116,7 +116,7 @@ class _TimelineXp extends State<TimelineXp> {
     timelineHeight = (widget.height + 10) -
         (sliderHeight + sliderMargin) -
         dateLabelHeight -
-        (isMultiproject ? timelineDetailHeight : 0) -
+        (isMultiproject ? 0 : timelineDetailHeight) -
         stagesHeight -
         80;
     
@@ -185,7 +185,7 @@ class _TimelineXp extends State<TimelineXp> {
       );
 
       var notificationDay = notifications.firstWhere(
-        (e) => e['usn_date'] == DateFormat('yyyy-MM-dd').format(date),
+        (e) => DateFormat('yyyy-MM-dd').format(DateTime.parse(e['usn_date'])) == DateFormat('yyyy-MM-dd').format(date),
         orElse: () => <String, Object>{},
       );
 
@@ -245,8 +245,8 @@ class _TimelineXp extends State<TimelineXp> {
         }
       }
       
-      if (notificationDay != null) {
-        day['alertLevel'] = notificationDay.containsKey('prs_id') ? 2 : 0;
+      if (notificationDay != null && notificationDay.containsKey('usn_priority')) {
+        day['alertLevel'] = notificationDay['usn_priority'] ? 2 : 1;
       }
 
       list.add(day);
@@ -349,20 +349,20 @@ class _TimelineXp extends State<TimelineXp> {
                       height: timelineHeight +
                           (rowHeight *
                               (stagesRows.length > 2 ? 2 : stagesRows.length)) +
-                          (isMultiproject ? 60 : (timelineDetailHeight - 10)),
+                          (isMultiproject ? 60 : (timelineDetailHeight + 20)),
                       width: dayWidth - dayMargin,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
-                              colors: [
+                          colors: [
                             const Color(0xffffffff).withAlpha(0),
                             const Color(0xffffffff).withAlpha(70),
                           ],
-                              stops: const [
+                          stops: const [
                             0,
                             0.8
                           ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter)),
                     ),
                   ),
                   Column(
