@@ -283,12 +283,19 @@ class _TimelineXp extends State<TimelineXp> {
   }
 
   // Renvoie le nombre de semaines depuis le début de l'année
+  // Retourne le numéro de la semaine
   int weeksNumber(DateTime date) {
-    final now = DateTime.now();
-    final firstJan = DateTime(now.year, 1, 1);
-    final from = DateTime.utc(firstJan.year, firstJan.month, firstJan.day);
-    final currentDate = DateTime.utc(date.year, date.month, date.day);
-    return ((currentDate.difference(from).inDays + 1) / 7).ceil();
+    // Trouver le premier jour de l'année
+    DateTime firstDayOfYear = DateTime(date.year, 1, 1);
+
+    // Calculer le jour de la semaine pour le premier jour de l'année
+    int firstDayWeekday = firstDayOfYear.weekday;
+
+    // Calculer le nombre de jours entre la date et le premier jour de l'année
+    int daysDifference = date.difference(firstDayOfYear).inDays + 1;
+
+    // Calculer le numéro de la semaine en se basant sur la différence de jours
+    return ((daysDifference + firstDayWeekday) / 7).ceil();
   }
 
   // Scroll à aujourd'hui
