@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'heatmap_month_item.dart';
 
+
 class Heatmap extends StatefulWidget {
   const Heatmap({
     super.key,
@@ -71,7 +72,7 @@ class _Heatmap extends State<Heatmap> {
       return int.parse(m['monthNum']) == currentMonth.toInt();
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controllerHeatmap.jumpTo((monthIndex + 1) * 160);
+      _controllerHeatmap.jumpTo((monthIndex + 1) * (widget.daySize * 4));
     });
   }
 
@@ -187,28 +188,111 @@ class _Heatmap extends State<Heatmap> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        child: ListView.separated(
-          controller: _controllerHeatmap,
-          scrollDirection: Axis.horizontal,
-          itemCount: months.length,
-          separatorBuilder: (BuildContext context, int index) {
-            return const SizedBox(width: 15);
-          },
-          itemBuilder: (BuildContext context, int index) {
-            return HeatmapMonthItem(
-              daySize: widget.daySize,
-              lang: widget.lang,
-              colors: widget.colors,
-              index: index,
-              months: months,
-              selectDay: _selectDay,
-              selectedDate: selectedDate
-            );
-            // return Container();
-          }
-        )
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              child: ListView.separated(
+                controller: _controllerHeatmap,
+                scrollDirection: Axis.horizontal,
+                itemCount: months.length,
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(width: 15);
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  return HeatmapMonthItem(
+                    daySize: widget.daySize,
+                    lang: widget.lang,
+                    colors: widget.colors,
+                    index: index,
+                    months: months,
+                    selectDay: _selectDay,
+                    selectedDate: selectedDate
+                  );
+                  // return Container();
+                }
+              )
+            )
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 25),
+            child: Container(
+              width: 20,
+              color: widget.colors['primaryBackground'],
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: widget.daySize + 2,
+                    child: Center(
+                      child: Text('L',
+                        style: TextStyle(
+                          color: widget.colors['accent2'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      )
+                    )
+                  ),
+                  SizedBox(
+                    width: 20,
+                    height: widget.daySize + 3,
+                    child: Center(
+                      child: Text('M',
+                        style: TextStyle(
+                          color: widget.colors['accent2'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      )
+                    )
+                  ),
+                  SizedBox(
+                    width: 20,
+                    height: widget.daySize + 3,
+                    child: Center(
+                      child: Text('M',
+                        style: TextStyle(
+                          color: widget.colors['accent2'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      )
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                    height: widget.daySize + 3,
+                    child: Center (
+                      child: Text('J',
+                        style: TextStyle(
+                          color: widget.colors['accent2'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      )
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                    height: widget.daySize + 3,
+                    child: Center(
+                      child: Text('V',
+                        style: TextStyle(
+                          color: widget.colors['accent2'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      )
+                    ),
+                  )
+                ],
+              )
+            )
+          )
+        ]
       )
     );
   }

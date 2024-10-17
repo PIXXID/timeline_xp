@@ -38,13 +38,18 @@ class HeatmapMonthItem extends StatelessWidget {
     );
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${months[index]['label'].toUpperCase()}',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            color: colors['primaryText'],
-            fontWeight: FontWeight.w600
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(
+            '${months[index]['label'].toUpperCase()}',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: colors['primaryText'],
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
           ),
         ),
         SizedBox(

@@ -12,6 +12,7 @@ class TimelineXp extends StatefulWidget {
     required this.width,
     required this.height,
     required this.colors,
+    required this.lang,
     required this.projectCount,
     required this.dateInterval,
     required this.elements,
@@ -25,6 +26,7 @@ class TimelineXp extends StatefulWidget {
   final double width;
   final double height;
   final Map<String, Color> colors;
+  final String lang;
   final int projectCount;
   final dynamic dateInterval;
   final dynamic elements;
@@ -214,11 +216,9 @@ class _TimelineXp extends State<TimelineXp> {
 
       if (capacitiesDay != null) {
         day['capacityLevelMax'] = capacitiesDay.containsKey('capacity_level_max') && capacitiesDay['capacity_level_max'] != null ? capacitiesDay['capacity_level_max'] : 0;
-        day['capacityLevel'] = capacitiesDay.containsKey('upc_capacity_effort') && capacitiesDay['upc_capacity_effort'] != null ? capacitiesDay['upc_capacity_effort'] : 0;
-        day['workLoadLevel'] = capacitiesDay.containsKey('upc_busy_effort') && capacitiesDay['upc_busy_effort'] != null ? capacitiesDay['upc_busy_effort'] : 0;
-        day['completedLevel'] = capacitiesDay.containsKey('upc_completed_effort') && capacitiesDay['upc_completed_effort'] != null ? capacitiesDay['upc_completed_effort'] : 0;
-        day['myWorkLoadLevel'] = capacitiesDay.containsKey('upc_user_busy_effort') && capacitiesDay['upc_user_busy_effort'] != null ? capacitiesDay['upc_user_busy_effort'] : 0;
-        day['myCompletedLevel'] = capacitiesDay.containsKey('upc_user_completed_effort') && capacitiesDay['upc_user_completed_effort'] != null ? capacitiesDay['upc_user_completed_effort'] : 0;
+        day['capacityEffort'] = capacitiesDay.containsKey('upc_capacity_effort') && capacitiesDay['upc_capacity_effort'] != null ? capacitiesDay['upc_capacity_effort'] : 0;
+        day['busyEffort'] = capacitiesDay.containsKey('upc_busy_effort') && capacitiesDay['upc_busy_effort'] != null ? capacitiesDay['upc_busy_effort'] : 0;
+        day['completedEffort'] = capacitiesDay.containsKey('upc_completed_effort') && capacitiesDay['upc_completed_effort'] != null ? capacitiesDay['upc_completed_effort'] : 0;
       }
       
       if (notificationDay != null && notificationDay.containsKey('usn_priority')) {
@@ -363,6 +363,7 @@ class _TimelineXp extends State<TimelineXp> {
                             itemBuilder: (BuildContext context, int index) {
                               return TimelineItem(
                                   colors: widget.colors,
+                                  lang: widget.lang,
                                   index: index,
                                   centerItemIndex: centerItemIndex,
                                   nowIndex: nowIndex,
@@ -477,7 +478,7 @@ class _TimelineXp extends State<TimelineXp> {
                                   bottomRight: Radius.circular(10)),
                               color: widget.colors['accent2']),
                           child: Text(
-                            '${DateFormat.MMMM('fr_FR').format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'])}',
+                            '${DateFormat.MMMM(widget.lang).format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'])}',
                             style: TextStyle(
                                 color: widget.colors['primaryText'],
                                 fontSize: 11, // Taille de l'icône

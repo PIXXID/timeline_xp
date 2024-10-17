@@ -1,3 +1,15 @@
+## 0.0.20 - 16/10/2024
+
+* Ajustements des widgets Heatmap et Timeline
+
+## 0.0.19 - 16/10/2024
+
+* Ajustements du widget Heatmap
+
+## 0.0.18 - 16/10/2024
+
+* Ajout du widget Heatmap
+
 ## 0.0.17 - 15/10/2024
 
 * Corrections adaptation retour API notifications alerts

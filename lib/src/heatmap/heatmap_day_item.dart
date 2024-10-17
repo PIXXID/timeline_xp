@@ -47,27 +47,27 @@ class HeatmapDayItem extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(
-              upcDate,
-              style: TextStyle(
-                  fontSize: 10,
-                  color: colors['primaryText'],
-                  fontWeight: FontWeight.w600
-                ),
-            ),
             if (day['icon'] != null)
               Padding(
-                padding: const EdgeInsets.all(3),
+                padding: EdgeInsets.only(top: isSelected ? 2 : 6),
                 child: Icon(
-                  // IconData(
-                  //   0xe818,
-                  //   fontFamily: 'Swiiipiconsfont',
-                  // ),
-                  Icons.warning_amber,
+                  const IconData(
+                    0xe818,
+                    fontFamily: 'Swiiipiconsfont',
+                  ),
                   color: colors['primaryText'],
-                  size: 18
+                  size: 16
                 )
               )
+            else
+              Text(
+                upcDate,
+                style: TextStyle(
+                    fontSize: 10,
+                    color: colors['primaryText'],
+                    fontWeight: FontWeight.w600
+                  ),
+              ),
           ]
         )
       )
