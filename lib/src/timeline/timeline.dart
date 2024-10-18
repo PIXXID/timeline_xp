@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// Widgets
 import 'timeline_item.dart';
 import 'timeline_item_detail.dart';
 import 'stage_row.dart';
 import 'custom_thumb_shape.dart';
+
+// Tools
+import 'package:timeline_xp/src/tools/tools.dart';
 
 class TimelineXp extends StatefulWidget {
   const TimelineXp({
@@ -280,22 +284,6 @@ class _TimelineXp extends State<TimelineXp> {
     }
 
     return rows;
-  }
-
-  // Renvoie le nombre de semaines depuis le début de l'année
-  // Retourne le numéro de la semaine
-  int weeksNumber(DateTime date) {
-    // Trouver le premier jour de l'année
-    DateTime firstDayOfYear = DateTime(date.year, 1, 1);
-
-    // Calculer le jour de la semaine pour le premier jour de l'année
-    int firstDayWeekday = firstDayOfYear.weekday;
-
-    // Calculer le nombre de jours entre la date et le premier jour de l'année
-    int daysDifference = date.difference(firstDayOfYear).inDays + 1;
-
-    // Calculer le numéro de la semaine en se basant sur la différence de jours
-    return ((daysDifference + firstDayWeekday) / 7).ceil();
   }
 
   // Scroll à aujourd'hui

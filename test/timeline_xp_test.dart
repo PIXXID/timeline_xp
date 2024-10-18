@@ -336,6 +336,7 @@ void main() {
                 width: width,
                 height: height,
                 colors: colors,
+                lang: 'fr_FR',
                 projectCount: projectCount,
                 dateInterval: dateInterval,
                 elements: elements,

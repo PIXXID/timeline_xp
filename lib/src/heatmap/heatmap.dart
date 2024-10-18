@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+
+// Widgets
 import 'heatmap_month_item.dart';
+
+// Tools
+import 'package:timeline_xp/src/tools/tools.dart';
 
 
 class Heatmap extends StatefulWidget {
@@ -42,6 +47,9 @@ class _Heatmap extends State<Heatmap> {
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now().add(const Duration(days: 60));
 
+  // Labels des jours de la semaine (traductibles) pour la légende de gauche
+  List<String> daysLabels = [];
+  
   // Conroller de scroll pour scroller jusqu'au mois en cours
   final ScrollController _controllerHeatmap = ScrollController();
 
@@ -61,56 +69,28 @@ class _Heatmap extends State<Heatmap> {
     // On récupère les données formatées
     months = formatData(startDate, endDate, widget.capacities, widget.lang, widget.colors);
 
+    // On prend des dates qui correspondent aux jours de la semaine qu'on veut
+    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-14'))); // Lundi
+    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-15'))); // Mardi
+    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-16'))); // Mercredi
+    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-17'))); // Jeudi
+    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-18'))); // Vendredi
+
     setState(() {
       // On met à jour la date sélectionnée avec la date par défaut = aujourd'hui
       selectedDate = DateFormat('yyyy-MM-dd').format(now);
     });
 
-    // On récupère le mois du jour par défaut pour récupérer son index dans les mois affichés
+    // Scroll sur la date du jour
+    // On récupère le mois du jour par défaut pour récupérerdexWher son index dans les mois affichés
     int currentMonth = int.parse(DateFormat.M().format(now));
     int monthIndex = months.indexWhere((m) {
       return int.parse(m['monthNum']) == currentMonth.toInt();
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controllerHeatmap.jumpTo((monthIndex + 1) * (widget.daySize * 4));
+      double scrollValue = (monthIndex + 1) * (widget.daySize * 4.33);
+      _controllerHeatmap.jumpTo(scrollValue > 0 ? scrollValue : 0);
     });
-  }
-
-  Color? formatStringToColor(String? color) {
-    if (color == null || color.isEmpty) {
-      return null; // Si la chaîne est nulle ou vide, on retourne null
-    }
-
-    // On enlève le # si présent
-    String cleanedColor = color.replaceAll('#', '');
-
-    // Si la chaîne a 6 caractères, on ajoute 'FF' pour une opacité maximale
-    if (cleanedColor.length == 6) {
-      cleanedColor = 'FF$cleanedColor';
-    }
-
-    try {
-      // Conversion de la chaîne en entier et retour de la couleur
-      return Color(int.parse(cleanedColor, radix: 16));
-    } catch (e) {
-      // En cas d'erreur de parsing, retourne null
-      return null;
-    }
-  }
-
-  // Retourne le numéro de la semaine
-  int weeksNumber(DateTime date) {
-    // Trouver le premier jour de l'année
-    DateTime firstDayOfYear = DateTime(date.year, 1, 1);
-
-    // Calculer le jour de la semaine pour le premier jour de l'année
-    int firstDayWeekday = firstDayOfYear.weekday;
-
-    // Calculer le nombre de jours entre la date et le premier jour de l'année
-    int daysDifference = date.difference(firstDayOfYear).inDays + 1;
-
-    // Calculer le numéro de la semaine en se basant sur la différence de jours
-    return ((daysDifference + firstDayWeekday) / 7).ceil();
   }
 
   // Formatte la liste des mois/semaines/jours pour l'afficher sous forme de heatmap
@@ -191,7 +171,7 @@ class _Heatmap extends State<Heatmap> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 30),
+            padding: const EdgeInsets.only(left: 35),
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 5),
               child: ListView.separated(
@@ -219,15 +199,16 @@ class _Heatmap extends State<Heatmap> {
           Padding(
             padding: const EdgeInsets.only(top: 25),
             child: Container(
-              width: 20,
+              width: 25,
               color: widget.colors['primaryBackground'],
-              child: Column(
-                children: [
-                  SizedBox(
+              child: ListView.builder(
+                itemCount: daysLabels.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SizedBox(
                     width: 20,
-                    height: widget.daySize + 2,
+                    height: widget.daySize + 3,
                     child: Center(
-                      child: Text('L',
+                      child: Text(daysLabels[index].split('')[0].toUpperCase(),
                         style: TextStyle(
                           color: widget.colors['accent2'],
                           fontWeight: FontWeight.w600,
@@ -235,60 +216,8 @@ class _Heatmap extends State<Heatmap> {
                         ),
                       )
                     )
-                  ),
-                  SizedBox(
-                    width: 20,
-                    height: widget.daySize + 3,
-                    child: Center(
-                      child: Text('M',
-                        style: TextStyle(
-                          color: widget.colors['accent2'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
-                      )
-                    )
-                  ),
-                  SizedBox(
-                    width: 20,
-                    height: widget.daySize + 3,
-                    child: Center(
-                      child: Text('M',
-                        style: TextStyle(
-                          color: widget.colors['accent2'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
-                      )
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                    height: widget.daySize + 3,
-                    child: Center (
-                      child: Text('J',
-                        style: TextStyle(
-                          color: widget.colors['accent2'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
-                      )
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                    height: widget.daySize + 3,
-                    child: Center(
-                      child: Text('V',
-                        style: TextStyle(
-                          color: widget.colors['accent2'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
-                      )
-                    ),
-                  )
-                ],
+                  );
+                }
               )
             )
           )

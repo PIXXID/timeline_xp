@@ -1,3 +1,11 @@
+## 0.0.22 - 18/10/2024
+
+* Correction traduction Heatmap
+
+## 0.0.21 - 17/10/2024
+
+* Création d'un fichier de partage de fonctions dans l'application
+
 ## 0.0.20 - 16/10/2024
 
 * Ajustements des widgets Heatmap et Timeline
