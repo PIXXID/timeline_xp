@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 // Widgets
 import 'heatmap_month_item.dart';
 
 // Tools
 import 'package:timeline_xp/src/tools/tools.dart';
-
 
 class Heatmap extends StatefulWidget {
   const Heatmap({
@@ -49,7 +47,7 @@ class _Heatmap extends State<Heatmap> {
 
   // Labels des jours de la semaine (traductibles) pour la légende de gauche
   List<String> daysLabels = [];
-  
+
   // Conroller de scroll pour scroller jusqu'au mois en cours
   final ScrollController _controllerHeatmap = ScrollController();
 
@@ -67,14 +65,20 @@ class _Heatmap extends State<Heatmap> {
     }
 
     // On récupère les données formatées
-    months = formatData(startDate, endDate, widget.capacities, widget.lang, widget.colors);
+    months = formatData(
+        startDate, endDate, widget.capacities, widget.lang, widget.colors);
 
     // On prend des dates qui correspondent aux jours de la semaine qu'on veut
-    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-14'))); // Lundi
-    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-15'))); // Mardi
-    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-16'))); // Mercredi
-    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-17'))); // Jeudi
-    daysLabels.add(DateFormat.E(widget.lang).format(DateTime.parse('2024-10-18'))); // Vendredi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-14'))); // Lundi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-15'))); // Mardi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-16'))); // Mercredi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-17'))); // Jeudi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-18'))); // Vendredi
 
     setState(() {
       // On met à jour la date sélectionnée avec la date par défaut = aujourd'hui
@@ -94,7 +98,8 @@ class _Heatmap extends State<Heatmap> {
   }
 
   // Formatte la liste des mois/semaines/jours pour l'afficher sous forme de heatmap
-  List formatData(DateTime startDate, DateTime endDate, List capacities, String lang, Map<String, Color> colors) {
+  List formatData(DateTime startDate, DateTime endDate, List capacities,
+      String lang, Map<String, Color> colors) {
     List months = [];
 
     // On récupère le nombre de jours entre la date de début et la date de fin
@@ -106,7 +111,7 @@ class _Heatmap extends State<Heatmap> {
     for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
       // Date de l'itération
       DateTime date = startDate.add(Duration(days: dateIndex));
-      
+
       String weekDay = DateFormat.E().format(date);
 
       // Si les jours sont différents de samedi/dimanche
@@ -122,13 +127,16 @@ class _Heatmap extends State<Heatmap> {
           months.add({
             'monthNum': DateFormat.M(lang).format(date),
             'label': DateFormat.yMMMM(lang).format(date),
-            'weeks': [{ "Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}}]
+            'weeks': [
+              {"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}}
+            ]
           });
         }
 
         // On vérifie si on a changé de semaine dans ce cas on en ajoute une nouvelle
         if (oldWeekIndex != weekIndex) {
-          months[months.length - 1]['weeks'].add({ "Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}});
+          months[months.length - 1]['weeks']
+              .add({"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}});
         }
 
         // On récupère s'il y a des données dans les capacity pour ce jour
@@ -138,10 +146,15 @@ class _Heatmap extends State<Heatmap> {
         );
 
         // On calcule les lundis, mardis...
-        months[months.length - 1]['weeks'][months[months.length - 1]['weeks'].length - 1][weekDay] = {
+        months[months.length - 1]['weeks']
+            [months[months.length - 1]['weeks'].length - 1][weekDay] = {
           'upc_date': date,
-          'color': capacitiesDay != null && capacitiesDay.containsKey('color') ? formatStringToColor(capacitiesDay['color']) : colors['primaryText'],
-          'icon': capacitiesDay != null && capacitiesDay.containsKey('icon') ? capacitiesDay['icon'] : null
+          'color': capacitiesDay != null && capacitiesDay.containsKey('color')
+              ? formatStringToColor(capacitiesDay['color'])
+              : colors['primaryText'],
+          'icon': capacitiesDay != null && capacitiesDay.containsKey('icon')
+              ? capacitiesDay['icon']
+              : null
         };
 
         // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
@@ -159,70 +172,57 @@ class _Heatmap extends State<Heatmap> {
       selectedDate = date;
     });
 
-    widget.selectDay?.call(
-      selectedDate
-    );
+    widget.selectDay?.call(selectedDate);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
+        backgroundColor: Colors.transparent,
+        body: Stack(children: [
           Padding(
-            padding: const EdgeInsets.only(left: 35),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 5),
-              child: ListView.separated(
-                controller: _controllerHeatmap,
-                scrollDirection: Axis.horizontal,
-                itemCount: months.length,
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(width: 15);
-                },
-                itemBuilder: (BuildContext context, int index) {
-                  return HeatmapMonthItem(
-                    daySize: widget.daySize,
-                    lang: widget.lang,
-                    colors: widget.colors,
-                    index: index,
-                    months: months,
-                    selectDay: _selectDay,
-                    selectedDate: selectedDate
-                  );
-                  // return Container();
-                }
-              )
-            )
-          ),
+              padding: const EdgeInsets.only(left: 35),
+              child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  child: ListView.separated(
+                      controller: _controllerHeatmap,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: months.length,
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const SizedBox(width: 15);
+                      },
+                      itemBuilder: (BuildContext context, int index) {
+                        return HeatmapMonthItem(
+                            daySize: widget.daySize,
+                            lang: widget.lang,
+                            colors: widget.colors,
+                            index: index,
+                            months: months,
+                            selectDay: _selectDay,
+                            selectedDate: selectedDate);
+                        // return Container();
+                      }))),
           Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: Container(
-              width: 25,
-              color: widget.colors['primaryBackground'],
-              child: ListView.builder(
-                itemCount: daysLabels.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 20,
-                    height: widget.daySize + 3,
-                    child: Center(
-                      child: Text(daysLabels[index].split('')[0].toUpperCase(),
-                        style: TextStyle(
-                          color: widget.colors['accent2'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
-                      )
-                    )
-                  );
-                }
-              )
-            )
-          )
-        ]
-      )
-    );
+              padding: const EdgeInsets.only(top: 25),
+              child: Container(
+                  width: 25,
+                  color: widget.colors['primaryBackground'],
+                  child: ListView.builder(
+                      itemCount: daysLabels.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                            width: 20,
+                            height: widget.daySize + 3,
+                            child: Center(
+                                child: Text(
+                              daysLabels[index].split('')[0].toUpperCase(),
+                              style: TextStyle(
+                                color: widget.colors['accent2'],
+                                fontWeight: FontWeight.w600,
+                                fontSize: 10,
+                              ),
+                            )));
+                      })))
+        ]));
   }
 }

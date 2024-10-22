@@ -34,14 +34,16 @@ class _StageRow extends State<StageRow> {
     // On boucle sur les étapes de la ligne
     for (int index = 0; index < widget.stagesList.length; index++) {
       // Nombre de jour de durée
-      int daysWidth = widget.stagesList[index]['endDateIndex'] - widget.stagesList[index]['startDateIndex'] + 1;
+      int daysWidth = widget.stagesList[index]['endDateIndex'] -
+          widget.stagesList[index]['startDateIndex'] +
+          1;
       String label = widget.stagesList[index]['prs_name'];
       // Largeur de l'item
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
       // On récupère l'ancien étape de la liste
       var previousStage = index > 0 ? widget.stagesList[index - 1] : null;
 
-      // On crée le vide entre l'ancien étape (s'il y en a un) et le nouveau        
+      // On crée le vide entre l'ancien étape (s'il y en a un) et le nouveau
       if (previousStage != null) {
         list.add(SizedBox(
           width: (widget.stagesList[index]['startDateIndex'] -

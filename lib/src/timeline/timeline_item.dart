@@ -31,8 +31,11 @@ class TimelineItem extends StatelessWidget {
     DateTime date = days[index]['date'];
 
     double dayProgress = 0;
-    if (days[index] != null && days[index]['busyEffort'] != null && days[index]['busyEffort'] > 0) {
-      dayProgress = 100 * days[index]['completedEffort'] / days[index]['busyEffort'];
+    if (days[index] != null &&
+        days[index]['busyEffort'] != null &&
+        days[index]['busyEffort'] > 0) {
+      dayProgress =
+          100 * days[index]['completedEffort'] / days[index]['busyEffort'];
     }
 
     return Align(
@@ -41,9 +44,7 @@ class TimelineItem extends StatelessWidget {
             // Call back lors du clic
             onTap: () => {
                   openDayDetail?.call(
-                    DateFormat('yyyy-MM-dd').format(date),
-                    dayProgress
-                  )
+                      DateFormat('yyyy-MM-dd').format(date), dayProgress)
                 },
             child: SizedBox(
                 width: dayWidth - dayMargin,
@@ -63,7 +64,8 @@ class TimelineItem extends StatelessWidget {
                         height: (days[index]['capacityLevelMax'] > 0
                                 ? ((height * days[index]['capacityEffort']) /
                                     days[index]['capacityLevelMax'])
-                                : height) - 20,
+                                : height) -
+                            20,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: colors['accent2'],
@@ -77,19 +79,18 @@ class TimelineItem extends StatelessWidget {
                               Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
-                                      width: dayWidth - dayMargin,
-                                      height: days[index]['busyEffort'] > 0
-                                          ? ((height *
-                                                  days[index]
-                                                      ['completedEffort']) /
-                                              days[index]['busyEffort'])
-                                          : height,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: colors['primary'],
-                                      ),
-                                  )
-                              )
+                                    width: dayWidth - dayMargin,
+                                    height: days[index]['busyEffort'] > 0
+                                        ? ((height *
+                                                days[index]
+                                                    ['completedEffort']) /
+                                            days[index]['busyEffort'])
+                                        : height,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: colors['primary'],
+                                    ),
+                                  ))
                             else
                               Center(
                                   child: Icon(Icons.sunny,
@@ -119,8 +120,7 @@ class TimelineItem extends StatelessWidget {
                             Icons.circle_rounded,
                             size: 13,
                             color: colors['accent2'],
-                          )
-                      )
+                          ))
                     else if (days[index]['alertLevel'] != 0)
                       Padding(
                           padding: const EdgeInsets.only(top: 4),
