@@ -140,7 +140,7 @@ class _Heatmap extends State<Heatmap> {
         // On calcule les lundis, mardis...
         months[months.length - 1]['weeks'][months[months.length - 1]['weeks'].length - 1][weekDay] = {
           'upc_date': date,
-          'color': capacitiesDay != null && capacitiesDay.containsKey('color') ? formatStringToColor(capacitiesDay['color']) : colors['accent1'],
+          'color': capacitiesDay != null && capacitiesDay.containsKey('color') ? formatStringToColor(capacitiesDay['color']) : colors['primaryText'],
           'icon': capacitiesDay != null && capacitiesDay.containsKey('icon') ? capacitiesDay['icon'] : null
         };
 

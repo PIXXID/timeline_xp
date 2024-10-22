@@ -359,7 +359,6 @@ class _TimelineXp extends State<TimelineXp> {
                                   dayWidth: dayWidth,
                                   dayMargin: dayMargin,
                                   height: timelineHeight,
-                                  isMultiproject: isMultiproject,
                                   openDayDetail: widget.openDayDetail);
                             }),
                       ),

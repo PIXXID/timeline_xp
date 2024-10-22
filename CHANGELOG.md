@@ -1,3 +1,11 @@
+## 0.0.24 - 21/10/2024
+
+* Correction couleurs Heatmap
+
+## 0.0.23 - 21/10/2024
+
+* Correction affichage Timeline
+
 ## 0.0.22 - 18/10/2024
 
 * Correction traduction Heatmap

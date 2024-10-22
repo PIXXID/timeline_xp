@@ -13,7 +13,6 @@ class TimelineItem extends StatelessWidget {
       required this.dayWidth,
       required this.dayMargin,
       required this.height,
-      required this.isMultiproject,
       required this.openDayDetail});
 
   final Map<String, Color> colors;
@@ -25,7 +24,6 @@ class TimelineItem extends StatelessWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final bool isMultiproject;
   final Function(String, double?)? openDayDetail;
 
   @override
@@ -88,9 +86,7 @@ class TimelineItem extends StatelessWidget {
                                           : height,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: isMultiproject
-                                            ? colors['accent1']
-                                            : colors['primary'],
+                                        color: colors['primary'],
                                       ),
                                   )
                               )

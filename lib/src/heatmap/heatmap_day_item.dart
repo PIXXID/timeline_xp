@@ -27,6 +27,9 @@ class HeatmapDayItem extends StatelessWidget {
 
     String upcDate = day['upc_date'] != null ? DateFormat.d(lang).format(day['upc_date']) : '';
 
+    // Calcule la luminance de la couleur de la case pour adapter la couleur du texte
+    bool isDarkBackground = day['color'].computeLuminance() < 0.5;
+    
     return GestureDetector(
       // Call back lors du clic
       onTap: () => {
@@ -64,7 +67,7 @@ class HeatmapDayItem extends StatelessWidget {
                 upcDate,
                 style: TextStyle(
                     fontSize: 10,
-                    color: colors['primaryText'],
+                    color: isDarkBackground ? colors['primaryText'] : colors['primaryBackground'],
                     fontWeight: FontWeight.w600
                   ),
               ),
