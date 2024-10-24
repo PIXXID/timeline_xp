@@ -1,4 +1,8 @@
-## 0.0.25 - 21/10/2024
+## 0.0.24 - 22/10/2024
+
+* Mise à jour package + formatage code
+`
+## 0.0.24 - 22/10/2024
 
 * Correction couleurs Heatmap
 
