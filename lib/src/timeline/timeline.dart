@@ -194,16 +194,17 @@ class _TimelineXp extends State<TimelineXp> {
       var notificationDay = notifications.firstWhere(
         (e) =>
             DateFormat('yyyy-MM-dd').format(DateTime.parse(e['usn_date'])) ==
-            DateFormat('yyyy-MM-dd').format(date),
+            DateFormat('yyyy-MM-dd').format(date)
+            && e['usn_timeline'],
         orElse: () => <String, Object>{},
       );
 
       // On regarde quels sont les étapes en cours ce jour
       stagesByDay = stages
-          .where((s) =>
-              date.isAfter(DateTime.parse(s['prs_startdate'])) &&
-              date.isBefore(DateTime.parse(s['prs_enddate'])))
-          .toList();
+        .where((s) =>
+            date.isAfter(DateTime.parse(s['prs_startdate'])) &&
+            date.isBefore(DateTime.parse(s['prs_enddate'])))
+        .toList();
 
       var day = {
         'date': date,
@@ -231,14 +232,6 @@ class _TimelineXp extends State<TimelineXp> {
                     elementDay['delivrable_completed'] != null
                 ? elementDay['delivrable_completed']
                 : 0;
-        day['taskTotal'] = elementDay.containsKey('task_total') &&
-                elementDay['task_total'] != null
-            ? elementDay['task_total']
-            : 0;
-        day['taskCompleted'] = elementDay.containsKey('task_completed') &&
-                elementDay['task_completed'] != null
-            ? elementDay['task_completed']
-            : 0;
       }
 
       if (capacitiesDay != null) {

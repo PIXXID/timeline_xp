@@ -222,7 +222,7 @@ class _Heatmap extends State<Heatmap> {
                                 fontSize: 10,
                               ),
                             )));
-                      })))
+                      }))),
         ]));
   }
 }
