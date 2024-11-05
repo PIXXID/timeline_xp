@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CapacityPlanFilterItem extends StatelessWidget {
   const CapacityPlanFilterItem(
@@ -7,11 +6,13 @@ class CapacityPlanFilterItem extends StatelessWidget {
       required this.colors,
       required this.lang,
       required this.project,
+      required this.selectedProject,
       required this.updateFilter});
 
   final Map<String, Color> colors;
   final String lang;
   final dynamic project;
+  final Map<String, dynamic> selectedProject;
   final Function(Map<String, dynamic>) updateFilter;
 
   @override
@@ -22,19 +23,21 @@ class CapacityPlanFilterItem extends StatelessWidget {
         updateFilter.call({ 'prj_id': project['prj_id'], 'prj_color': project['prj_color'] })
       },
       child: Container(
+        height: 42,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
           color: colors['primaryBackground'],
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(50.0),
-                child: Container(
-                  width: 25,
-                  height: 25,
+              Container(
+                width: 25,
+                height: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50.0),
+                  border: Border.all(width: 3, color: selectedProject['prj_id'] == project['prj_id'] ? colors['primaryText']! : Colors.transparent),
                   color: project['prj_color']
                 )
               ),
