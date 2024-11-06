@@ -1,7 +1,27 @@
-## 0.0.24 - 22/10/2024
+## 0.0.30 - 06/11/2024
+
+* Corrections capacity plan
+
+## 0.0.29 - 06/11/2024
+
+* Corrections capacity plan
+
+## 0.0.28 - 06/11/2024
+
+* Change dependencies pour correspondre à FlutterFlow
+
+## 0.0.27 - 06/11/2024
+
+* Corrections paramètres capacity plan
+
+## 0.0.26 - 06/11/2024
+
+* Ajout de la capacity plan
+
+## 0.0.25 - 22/10/2024
 
 * Mise à jour package + formatage code
-`
+
 ## 0.0.24 - 22/10/2024
 
 * Correction couleurs Heatmap

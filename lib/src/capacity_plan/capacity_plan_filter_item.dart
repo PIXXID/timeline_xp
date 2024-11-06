@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// Tools
+import 'package:timeline_xp/src/tools/tools.dart';
+
 class CapacityPlanFilterItem extends StatelessWidget {
   const CapacityPlanFilterItem(
       {super.key,
@@ -38,7 +41,7 @@ class CapacityPlanFilterItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50.0),
                   border: Border.all(width: 3, color: selectedProject['prj_id'] == project['prj_id'] ? colors['primaryText']! : Colors.transparent),
-                  color: project['prj_color']
+                  color: formatStringToColor(project['prj_color'].toString())
                 )
               ),
               Text(project['prj_name'],

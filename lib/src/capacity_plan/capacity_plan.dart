@@ -20,7 +20,6 @@ class CapacityPlan extends StatefulWidget {
     required this.readOnly,
     required this.startDate,
     required this.endDate,
-    required this.uspId,
     required this.projects,
     required this.planning,
     required this.capacities,
@@ -34,7 +33,6 @@ class CapacityPlan extends StatefulWidget {
   final bool readOnly;
   final String startDate;
   final String endDate;
-  final String uspId;
   final dynamic projects;
   final dynamic planning;
   final dynamic capacities;
@@ -69,7 +67,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
   void initState() {
     super.initState();
 
-    selectedProject = { 'prj_id': null, 'prj_color': widget.colors['accent2'] };
+    selectedProject = { 'prj_id': null, 'prj_color': '#5C5E71' };
 
     weeks = formatCapacities(DateTime.parse(widget.startDate), DateTime.parse(widget.endDate), widget.planning, widget.capacities);
   }
@@ -132,12 +130,15 @@ class _CapacityPlanState extends State<CapacityPlan> {
     );
     int uplEffortTotal = planning.isNotEmpty ? planningDay['upl_effort_total'] : 0;
 
+    debugPrint('---------');
+    debugPrint('${date.difference(now).inDays}');
     // On positionne les jours dans la semaine
     Map<String, dynamic> dayDate = {
       "date": date,
       "weekIndex": weekIndex,
       "dayIndex": dayIndex,
       "upl_effort_total": uplEffortTotal,
+      "readOnly": date.difference(now).inDays < 0,
       "alerts": [],
       "hours": []
     };
@@ -152,7 +153,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
       for (var project in projectDays) {
         dayDate['hours'] = [
           ...dayDate['hours'],
-          ...List<Map<String, dynamic>>.generate(project['upc_capactity_effort'], (int i) => { 'prj_id': project['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_user_busy_effort': project['upc_user_busy_effort'] })
+          ...List<Map<String, dynamic>>.generate(project['upc_capacity_effort'], (int i) => { 'prj_id': project['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_user_busy_effort': project['upc_user_busy_effort'] })
         ];
       }
     }
@@ -164,7 +165,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
     if (remainingDays > 0) {
       dayDate['hours'] = [
         ...dayDate['hours'],
-        ...List<Map<String, dynamic>>.generate(remainingDays, (int i) => { 'prj_id': null, 'prj_name': null, 'prj_color': widget.colors['accent2'], 'upc_user_busy_effort': 0 })
+        ...List<Map<String, dynamic>>.generate(remainingDays, (int i) => { 'prj_id': null, 'prj_name': null, 'prj_color': '#5C5E71', 'upc_user_busy_effort': 0 })
       ];
     } else if (remainingDays < 0) {
       // On limite le nombre d'heure à la capacité disponible (si trop de capacity hour ce jour)
@@ -197,32 +198,32 @@ class _CapacityPlanState extends State<CapacityPlan> {
       if (hour['prj_id'] != null) {
         // Si premier élément, on l'ajoute
         if (dayProjects.isEmpty) {
-          dayProjects.add({ 'usp_id': widget.uspId, 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capactity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+          dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
         } else {
           // On vérifie si le projet est déjà dans la liste
           int existingProjectIndex = dayProjects.indexWhere(
             (p) => p['prj_id'] == hour['prj_id']
           );
           if (existingProjectIndex != -1) {
-            // Si le projet est dans la liste, on incrémente upc_capactity_effort
-            dayProjects[existingProjectIndex]['upc_capactity_effort'] += 1;
+            // Si le projet est dans la liste, on incrémente upc_capacity_effort
+            dayProjects[existingProjectIndex]['upc_capacity_effort'] += 1;
           } else {
             // Si le projet n'est pas dans la liste, on l'ajoute
-            dayProjects.add({ 'usp_id': widget.uspId, 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capactity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+            dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
           }
         }
       } else {
-        dayProjects.add({ 'usp_id': widget.uspId, 'prj_id': null, 'upc_date': day['date'], 'upc_capactity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+        dayProjects.add({ 'prj_id': null, 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
       }
     }
 
     // On vérifie si on doit afficher une alerte si le nombre d'heures disponibles saisies
     // pour le projet est inférieure au nombre d'heures déjà affectées
     for (Map<String, dynamic> dayProject in dayProjects) {
-      if (dayProject['prj_id'] != null && dayProject['upc_capactity_effort'] < dayProject['upc_user_busy_effort']) {
+      if (dayProject['prj_id'] != null && dayProject['upc_capacity_effort'] < dayProject['upc_user_busy_effort']) {
         // On récupère le nom du projet
         Map<String, dynamic> project = widget.projects.firstWhere((p) => p['prj_id'] == dayProject['prj_id']);
-        day['alerts'].add({ 'prj_id': dayProject['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_capactity_effort': dayProject['upc_capactity_effort'], 'upc_user_busy_effort': dayProject['upc_user_busy_effort'] });
+        day['alerts'].add({ 'prj_id': dayProject['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_capacity_effort': dayProject['upc_capacity_effort'], 'upc_user_busy_effort': dayProject['upc_user_busy_effort'] });
         break;
       }
     }
@@ -391,7 +392,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
                     CapacityPlanFilterItem(
                         colors: widget.colors,
                         lang: widget.lang,
-                        project: { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': widget.colors['accent2'] },
+                        project: { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': '#5C5E71' },
                         selectedProject: selectedProject,
                         updateFilter: updateFilter
                       ),
