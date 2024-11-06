@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:carousel_slider/carousel_slider.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Widgets
@@ -13,14 +11,13 @@ import 'capacity_plan_filter_item.dart';
 import 'package:timeline_xp/src/tools/tools.dart';
 
 class CapacityPlan extends StatefulWidget {
-  CapacityPlan({
+  const CapacityPlan({
     super.key,
     required this.width,
     required this.height,
     required this.lang,
     required this.colors,
     required this.readOnly,
-    this.duplicateWeek,
     required this.startDate,
     required this.endDate,
     required this.uspId,
@@ -35,7 +32,6 @@ class CapacityPlan extends StatefulWidget {
   final String lang;
   final Map<String, Color> colors;
   final bool readOnly;
-  String? duplicateWeek;
   final String startDate;
   final String endDate;
   final String uspId;
@@ -50,7 +46,7 @@ class CapacityPlan extends StatefulWidget {
 
 class _CapacityPlanState extends State<CapacityPlan> {
 
-  static const double daySize = 25;
+  double daySize = 25;
 
   // Liste des semaines sur la période demandée
   Map<String, dynamic> weeks = {};
@@ -64,6 +60,10 @@ class _CapacityPlanState extends State<CapacityPlan> {
   // Liste des jours modifiés
   List<Map<String, dynamic>> modifiedDays = [];
 
+  final ScrollController _scrollController = ScrollController();
+  // double _scrollAmount = 500.0;
+  double weekWidth = 500;
+
   // Initialisation
   @override
   void initState() {
@@ -72,12 +72,11 @@ class _CapacityPlanState extends State<CapacityPlan> {
     selectedProject = { 'prj_id': null, 'prj_color': widget.colors['accent2'] };
 
     weeks = formatCapacities(DateTime.parse(widget.startDate), DateTime.parse(widget.endDate), widget.planning, widget.capacities);
-    
   }
 
   // Formate la liste des jours pour la timeline
   Map<String, dynamic> formatCapacities(DateTime startDate, DateTime endDate, List planning, List capacities) {
-    
+
     Map<String, dynamic> weeksResult = { 'maxEffortTotal': 0, 'list': [] };
 
     // On récupère le premier jour de la semaine en cours
@@ -122,7 +121,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
   }
 
   // Renvoie le jour demandé formatté
-  formatDay(DateTime date, int weekIndex, int dayIndex, List planning, List capacities) {
+  Map<String, dynamic> formatDay(DateTime date, int weekIndex, int dayIndex, List planning, List capacities) {
 
     // On récupère le nom du jour de la semaine
     int weekDay = date.weekday != 7 ? date.weekday : 0;
@@ -176,13 +175,13 @@ class _CapacityPlanState extends State<CapacityPlan> {
   }
 
   // On récuère et on met à jour la valeur saisie dans le filtre
-  updateFilter(Map<String, dynamic> project) {
+  void updateFilter(Map<String, dynamic> project) {
     selectedProject = project;
     setState(() => {});
   }
 
   // On met à jour la journée modifiée dans le tableau des modifications et on le renvoie à la page FlutterFlow
-  updateDay(Map<String, dynamic> day, int hourIndex) {
+  void updateDay(Map<String, dynamic> day, int hourIndex) {
 
     // Met à jour la couleur de l'heure dans la journée
     day['hours'][hourIndex]['prj_id'] = selectedProject['prj_id'];
@@ -256,75 +255,119 @@ class _CapacityPlanState extends State<CapacityPlan> {
   }
 
   // Annule les modifications du jour
-  resetDay(Map<String, dynamic> day) {
+  void resetDay(Map<String, dynamic> day) {
     weeks['list'][day['weekIndex']][day['dayIndex']] = formatDay(day['date'], day['weekIndex'], day['dayIndex'], widget.planning, widget.capacities);
     setState(() => {});
   }
 
+  // Fonction pour faire défiler vers la droite
+  void _scrollRight() {
+    if (_scrollController.position.pixels < _scrollController.position.maxScrollExtent) {
+      _scrollController.animateTo(
+        _scrollController.offset + weekWidth,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  // Fonction pour faire défiler vers la gauche
+  void _scrollLeft() {
+    if (_scrollController.position.pixels > _scrollController.position.minScrollExtent) {
+      _scrollController.animateTo(
+        _scrollController.offset - weekWidth,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    weekWidth = MediaQuery.of(context).size.width - 30;
+    daySize = (weekWidth) / 7;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
           // Liste des semaines et des jours
-          Expanded(child: 
-            ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: weeks['list'].length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: Container(
-                    width: 50 * 7,
-                    height: 200,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        for (dynamic day in weeks['list'][index])
-                          CapacityPlanDayItem(
-                            colors: widget.colors,
-                            lang: widget.lang,
-                            daySize: daySize,
-                            height: 200,
-                            maxEffortTotal: weeks['maxEffortTotal'],
-                            day: day,
-                            resetDay: resetDay,
-                            updateDay: updateDay,
-                          )
-                      ]
-                    )
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+                child: GestureDetector(
+                  onHorizontalDragEnd: (DragEndDetails details) {
+                    if (details.velocity.pixelsPerSecond.dx < 0) {
+                      // Glissement vers la gauche (défile vers la droite)
+                      _scrollRight();
+                    } else if (details.velocity.pixelsPerSecond.dx > 0) {
+                      // Glissement vers la droite (défile vers la gauche)
+                      _scrollLeft();
+                    }
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: weeks['list'].length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return SizedBox(
+                        width: weekWidth,
+                        height: 200,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            for (dynamic day in weeks['list'][index])
+                              CapacityPlanDayItem(
+                                colors: widget.colors,
+                                lang: widget.lang,
+                                daySize: daySize,
+                                height: 200,
+                                maxEffortTotal: weeks['maxEffortTotal'],
+                                day: day,
+                                resetDay: resetDay,
+                                updateDay: updateDay,
+                              )
+                          ]
+                        )
+                      );
+                    }
                   )
-                );
-              }
-            )
+                )
+              )
           ),
           // Liste des projets
           if (widget.readOnly == true)
-            Row(children: [
-              for (dynamic project in widget.projects)
-                Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: Row(children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50.0),
-                      child: Container(
-                        width: 15,
-                        height: 15,
-                        color: project['prj_color']
-                      )
-                    )
-                  ),
-                  Text(project['prj_name'],
-                    style: TextStyle(
-                      color: widget.colors['primaryText'],
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    )),
-                ]))
-            ])
+            SizedBox(
+              height: 60,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(children: [
+                  for (dynamic project in widget.projects)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50.0),
+                          child: Container(
+                            width: 15,
+                            height: 15,
+                            color: project['prj_color']
+                          )
+                        )
+                      ),
+                      Text(project['prj_name'],
+                        style: TextStyle(
+                          color: widget.colors['primaryText'],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        )),
+                    ]))
+                ])
+              )
+            )
           else
           // Filtres des projets
             Container(
@@ -333,34 +376,35 @@ class _CapacityPlanState extends State<CapacityPlan> {
                 borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                 color: widget.colors['primaryBackground'],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FaIcon(
-                      FontAwesomeIcons.brush,
-                      size: 36,
-                      color: widget.colors['accent2']
-                    )
-                  ),
-                  CapacityPlanFilterItem(
-                      colors: widget.colors,
-                      lang: widget.lang,
-                      project: { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': widget.colors['accent2'] },
-                      selectedProject: selectedProject,
-                      updateFilter: updateFilter
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.brush,
+                        size: 36,
+                        color: widget.colors['accent2']
+                      )
                     ),
-                  for (dynamic project in widget.projects)
                     CapacityPlanFilterItem(
-                      colors: widget.colors,
-                      lang: widget.lang,
-                      project: project,
-                      selectedProject: selectedProject,
-                      updateFilter: updateFilter
-                    )
-                ]
+                        colors: widget.colors,
+                        lang: widget.lang,
+                        project: { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': widget.colors['accent2'] },
+                        selectedProject: selectedProject,
+                        updateFilter: updateFilter
+                      ),
+                    for (dynamic project in widget.projects)
+                      CapacityPlanFilterItem(
+                        colors: widget.colors,
+                        lang: widget.lang,
+                        project: project,
+                        selectedProject: selectedProject,
+                        updateFilter: updateFilter
+                      )
+                  ]
+                )
               )
             )
         ]
