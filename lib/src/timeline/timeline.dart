@@ -410,8 +410,6 @@ class _TimelineXp extends State<TimelineXp> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.vertical,
                             child: Stack(
-
-                                /// Fond indiquant le jour en cours
                                 children: [
                                   Column(
                                       children: List.generate(stagesRows.length,
@@ -505,7 +503,7 @@ class _TimelineXp extends State<TimelineXp> {
                                       bottomRight: Radius.circular(10)),
                                   color: widget.colors['accent2']),
                               child: Text(
-                                '${DateFormat.MMMM(widget.lang).format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'])}',
+                                '${DateFormat.MMMM(widget.lang).format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'], 0)}',
                                 style: TextStyle(
                                     color: widget.colors['primaryText'],
                                     fontSize: 11, // Taille de l'icône

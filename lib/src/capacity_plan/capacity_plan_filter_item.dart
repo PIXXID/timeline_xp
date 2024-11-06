@@ -35,15 +35,31 @@ class CapacityPlanFilterItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
-              Container(
-                width: 25,
-                height: 25,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50.0),
-                  border: Border.all(width: 3, color: selectedProject['prj_id'] == project['prj_id'] ? colors['primaryText']! : Colors.transparent),
-                  color: formatStringToColor(project['prj_color'].toString())
-                )
-              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),  
+                    curve: Curves.easeInOut,
+                    width: 25,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(width: 3, color: selectedProject['prj_id'] == project['prj_id'] ? colors['primaryText']! : Colors.transparent),
+                      color: formatStringToColor(project['prj_color'].toString())
+                    )
+                  ),
+                  if (project['prj_id'] == null)
+                  Transform.rotate(
+                    angle: -45,
+                    child: Container(
+                      width: 25,
+                      height: 2,
+                      color: Colors.red
+                    )
+                  )
+                ],
+              ),  
               Text(project['prj_name'],
                 style: TextStyle(
                   color: colors['primaryText'],

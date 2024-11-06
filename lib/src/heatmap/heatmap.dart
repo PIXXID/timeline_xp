@@ -107,7 +107,7 @@ class _Heatmap extends State<Heatmap> {
 
     // On parcours chaque date pour créer la liste de mois/jours
     int oldMonthIndex = int.parse(DateFormat.M().format(startDate));
-    int oldWeekIndex = weeksNumber(startDate);
+    int oldWeekIndex = weeksNumber(startDate, 1);
     for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
       // Date de l'itération
       DateTime date = startDate.add(Duration(days: dateIndex));
@@ -119,7 +119,7 @@ class _Heatmap extends State<Heatmap> {
         // Numéro du mois en cours
         int monthIndex = int.parse(DateFormat.M().format(date));
         // Numéro de la semaine du mois en cours
-        int weekIndex = weeksNumber(date);
+        int weekIndex = weeksNumber(date, 1);
 
         // On vérifie si aucun mois ou si on a changé de mois dans ce cas on en ajoute un nouveau
         if (months.isEmpty || oldMonthIndex != monthIndex) {

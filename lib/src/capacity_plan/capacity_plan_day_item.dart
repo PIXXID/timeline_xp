@@ -134,7 +134,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
     double dayHeight = (widget.height - 20) / widget.maxEffortTotal;
 
     return Opacity(
-      opacity: widget.day['readOnly'] ? 0.6 : 1,
+      opacity: widget.day['readOnly'] ? 0.5 : 1,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         width: widget.daySize - 20,
@@ -148,12 +148,14 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                 fontWeight: FontWeight.w600,
                 fontSize: 10,
               )),
-            Text('${DateFormat.E(widget.lang).format(widget.day['date'])[0].toUpperCase()} ${DateFormat.d(widget.lang).format(widget.day['date'])}',
-              style: TextStyle(
-                color: widget.colors['primaryText'],
-                fontWeight: FontWeight.w600,
-                fontSize: 10,
-              )),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text('${DateFormat.E(widget.lang).format(widget.day['date'])[0].toUpperCase()} ${DateFormat.d(widget.lang).format(widget.day['date'])}',
+                style: TextStyle(
+                  color: widget.colors['primaryText'],
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                ))),
             for (int index = 0; index < widget.day['hours'].length; index++)
               GestureDetector(
                 // Call back lors du clic

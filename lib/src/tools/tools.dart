@@ -2,17 +2,18 @@
 import 'package:flutter/material.dart';
 
 // Retourne le numéro de la semaine
-int weeksNumber(DateTime date) {
+int weeksNumber(DateTime date, int add) {
+
   // Trouver le premier jour de l'année
   DateTime firstDayOfYear = DateTime(date.year, 1, 1);
 
-  // Calculer le jour de la semaine pour le premier jour de l'année
+  // Calcule le jour de la semaine pour le premier jour de l'année
   int firstDayWeekday = firstDayOfYear.weekday;
 
-  // Calculer le nombre de jours entre la date et le premier jour de l'année
-  int daysDifference = date.difference(firstDayOfYear).inDays + 1;
+  // Calcule le nombre de jours entre la date et le premier jour de l'année
+  int daysDifference = date.difference(firstDayOfYear).inDays + add;
 
-  // Calculer le numéro de la semaine en se basant sur la différence de jours
+  // Calcule le numéro de la semaine en se basant sur la différence de jours
   return ((daysDifference + firstDayWeekday) / 7).ceil();
 }
 

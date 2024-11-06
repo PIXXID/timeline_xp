@@ -1,3 +1,7 @@
+## 0.0.31 - 06/11/2024
+
+* Corrections capacity plan
+
 ## 0.0.30 - 06/11/2024
 
 * Corrections capacity plan

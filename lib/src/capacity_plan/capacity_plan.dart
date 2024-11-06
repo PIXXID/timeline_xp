@@ -86,21 +86,23 @@ class _CapacityPlanState extends State<CapacityPlan> {
 
     int oldWeekNumber = 0;
     int weekIndex = -1;
+    int dateIndex = 0;
     int maxEffortTotal = 0;
     // On parcourt les dates pour y associer les jours et les étapes en cours
-    for (var dateIndex = 0; dateIndex < duration; dateIndex++) {
+    for (var i = 0; i < duration; i++) {
       // Date
-      DateTime date = weekFirstDate.add(Duration(days: dateIndex));
+      DateTime date = weekFirstDate.add(Duration(days: i));
 
       // Numéro de la semaine du mois en cours
-      int weekNumber = weeksNumber(date);
+      int weekNumber = weeksNumber(date, 0);
 
       // On vérifie si on a changé de semaine dans ce cas on en ajoute une nouvelle
       if (oldWeekNumber != weekNumber) {
         weeksResult['maxEffortTotal'] = maxEffortTotal;
         weeksResult['list'].add([]);
-        weekIndex ++;
+        weekIndex++;
         maxEffortTotal = 0;
+        dateIndex = 0;
       }
       
       // Ajoute le jour de la boucle formatté à la semaine en cours
@@ -110,7 +112,8 @@ class _CapacityPlanState extends State<CapacityPlan> {
       if (maxEffortTotal < formatedDay['upl_effort_total']) {
         maxEffortTotal = formatedDay['upl_effort_total'];
       }
-
+      
+      dateIndex++;
       // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
       oldWeekNumber = weekNumber;
     }
@@ -130,14 +133,13 @@ class _CapacityPlanState extends State<CapacityPlan> {
     );
     int uplEffortTotal = planning.isNotEmpty ? planningDay['upl_effort_total'] : 0;
 
-    debugPrint('---------');
-    debugPrint('${date.difference(now).inDays}');
     // On positionne les jours dans la semaine
     Map<String, dynamic> dayDate = {
       "date": date,
       "weekIndex": weekIndex,
       "dayIndex": dayIndex,
       "upl_effort_total": uplEffortTotal,
+      "busy_effort": [],
       "readOnly": date.difference(now).inDays < 0,
       "alerts": [],
       "hours": []
@@ -151,10 +153,17 @@ class _CapacityPlanState extends State<CapacityPlan> {
     // On positionne les heures occupées pour chaque projet
     if (projectDays.isNotEmpty) {
       for (var project in projectDays) {
+        // On remplit les valeurs des heures
         dayDate['hours'] = [
           ...dayDate['hours'],
-          ...List<Map<String, dynamic>>.generate(project['upc_capacity_effort'], (int i) => { 'prj_id': project['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_user_busy_effort': project['upc_user_busy_effort'] })
+          ...List<Map<String, dynamic>>.generate(project['upc_capacity_effort'], (int i) => { 'prj_id': project['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'] })
         ];
+        // On remplit le nombre d'heures déjà affectés par projet
+        if (dayDate['busy_effort'].indexWhere((d) => project['prj_id'] == d['prj_id']) != -1) {
+          dayDate['busy_effort'] = { "prj_id": project['prj_id'], "upc_user_busy_effort": project['upc_user_busy_effort'] };
+        } else {
+          dayDate['busy_effort'].add({ "prj_id": project['prj_id'], "upc_user_busy_effort": project['upc_user_busy_effort'] });
+        }
       }
     }
 
@@ -165,7 +174,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
     if (remainingDays > 0) {
       dayDate['hours'] = [
         ...dayDate['hours'],
-        ...List<Map<String, dynamic>>.generate(remainingDays, (int i) => { 'prj_id': null, 'prj_name': null, 'prj_color': '#5C5E71', 'upc_user_busy_effort': 0 })
+        ...List<Map<String, dynamic>>.generate(remainingDays, (int i) => { 'prj_id': null, 'prj_name': null, 'prj_color': '#5C5E71' })
       ];
     } else if (remainingDays < 0) {
       // On limite le nombre d'heure à la capacité disponible (si trop de capacity hour ce jour)
@@ -198,7 +207,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
       if (hour['prj_id'] != null) {
         // Si premier élément, on l'ajoute
         if (dayProjects.isEmpty) {
-          dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+          dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1 });
         } else {
           // On vérifie si le projet est déjà dans la liste
           int existingProjectIndex = dayProjects.indexWhere(
@@ -209,22 +218,23 @@ class _CapacityPlanState extends State<CapacityPlan> {
             dayProjects[existingProjectIndex]['upc_capacity_effort'] += 1;
           } else {
             // Si le projet n'est pas dans la liste, on l'ajoute
-            dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+            dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1 });
           }
         }
       } else {
-        dayProjects.add({ 'prj_id': null, 'upc_date': day['date'], 'upc_capacity_effort': 1, 'upc_user_busy_effort': hour['upc_user_busy_effort'] ?? 0 });
+        dayProjects.add({ 'prj_id': null, 'upc_date': day['date'], 'upc_capacity_effort': 1 });
       }
     }
 
     // On vérifie si on doit afficher une alerte si le nombre d'heures disponibles saisies
     // pour le projet est inférieure au nombre d'heures déjà affectées
-    for (Map<String, dynamic> dayProject in dayProjects) {
-      if (dayProject['prj_id'] != null && dayProject['upc_capacity_effort'] < dayProject['upc_user_busy_effort']) {
-        // On récupère le nom du projet
-        Map<String, dynamic> project = widget.projects.firstWhere((p) => p['prj_id'] == dayProject['prj_id']);
-        day['alerts'].add({ 'prj_id': dayProject['prj_id'], 'prj_name': project['prj_name'], 'prj_color': project['prj_color'], 'upc_capacity_effort': dayProject['upc_capacity_effort'], 'upc_user_busy_effort': dayProject['upc_user_busy_effort'] });
-        break;
+    for (Map<String, dynamic> projectEffort in day['busy_effort']) {
+      var matchingProject = dayProjects.firstWhere(
+        (p) => p['prj_id'] == projectEffort['prj_id'],
+        orElse: () => null);
+      var projectData = widget.projects.firstWhere((p) => p['prj_id'] == projectEffort['prj_id']);
+      if (matchingProject == null || matchingProject['upc_capacity_effort'] < projectEffort['upc_user_busy_effort']) {
+        day['alerts'].add({ 'prj_id': projectData['prj_id'], 'prj_name': projectData['prj_name'], 'prj_color': projectData['prj_color'], 'upc_capacity_effort': matchingProject['upc_capacity_effort'], 'upc_user_busy_effort': projectEffort['upc_user_busy_effort'] });
       }
     }
 
@@ -309,13 +319,14 @@ class _CapacityPlanState extends State<CapacityPlan> {
                   child: ListView.builder(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: weeks['list'].length,
                     itemBuilder: (BuildContext context, int index) {
                       return SizedBox(
                         width: weekWidth,
                         height: 200,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             for (dynamic day in weeks['list'][index])
@@ -392,7 +403,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
                     CapacityPlanFilterItem(
                         colors: widget.colors,
                         lang: widget.lang,
-                        project: { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': '#5C5E71' },
+                        project: const { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': '#5C5E71' },
                         selectedProject: selectedProject,
                         updateFilter: updateFilter
                       ),
