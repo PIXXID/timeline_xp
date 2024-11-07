@@ -234,7 +234,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
         orElse: () => null);
       var projectData = widget.projects.firstWhere((p) => p['prj_id'] == projectEffort['prj_id']);
       if (matchingProject == null || matchingProject['upc_capacity_effort'] < projectEffort['upc_user_busy_effort']) {
-        day['alerts'].add({ 'prj_id': projectData['prj_id'], 'prj_name': projectData['prj_name'], 'prj_color': projectData['prj_color'], 'upc_capacity_effort': matchingProject['upc_capacity_effort'], 'upc_user_busy_effort': projectEffort['upc_user_busy_effort'] });
+        day['alerts'].add({ 'prj_id': projectData['prj_id'], 'prj_name': projectData['prj_name'], 'prj_color': projectData['prj_color'], 'upc_capacity_effort': (matchingProject == null ? 0 : matchingProject['upc_capacity_effort']), 'upc_user_busy_effort': projectEffort['upc_user_busy_effort'] });
       }
     }
 

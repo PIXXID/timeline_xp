@@ -1,6 +1,10 @@
+## 0.0.32 - 07/11/2024
+
+* Corrections alertes capacity plan
+
 ## 0.0.31 - 06/11/2024
 
-* Corrections capacity plan
+* Corrections alertes capacity plan
 
 ## 0.0.30 - 06/11/2024
 

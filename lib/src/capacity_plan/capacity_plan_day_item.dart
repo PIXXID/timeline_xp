@@ -38,10 +38,14 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
   void _showOverlay(BuildContext context, List alert) {
     final overlay = Overlay.of(context);
 
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: 100.0,
-        left: 50.0,
+        top: position.dy + size.height / 2 - 75,
+        left: position.dx + size.width / 2,
         child: Container(
             padding: const EdgeInsets.all(10.0),
             width: 300,
@@ -57,7 +61,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                     Text(
                       'La capacité insufisante :',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: widget.colors['primaryText']
                       ),
                     ),
@@ -98,7 +102,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                     Text(
                       '${alert['prj_name']}',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: widget.colors['primaryText']
                       ),
                     ),
