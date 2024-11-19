@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'dart:convert';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Widgets
@@ -36,7 +38,7 @@ class CapacityPlan extends StatefulWidget {
   final dynamic projects;
   final dynamic planning;
   final dynamic capacities;
-  final Function(List)? updateCapacity;
+  final Function(String)? updateCapacity;
 
   @override
   State<CapacityPlan> createState() => _CapacityPlanState();
@@ -203,11 +205,17 @@ class _CapacityPlanState extends State<CapacityPlan> {
     // On remet à 0 l'alerte
     day['alerts'] = [];
 
+    // On positionne les projets déjà présents sur le jour (pour les conserver en cas de suppression totale du projet)
+    for (Map<String, dynamic> projectEffort in day['busy_effort']) {
+      dayProjects.add({ 'prj_id': projectEffort['prj_id'], 'upc_date': DateFormat('yyyy-MM-dd').format(day['date']), 'upc_capacity_effort': 0 });
+    }
+
+    // On parcours les projets 
     for (Map<String, dynamic> hour in day['hours']) {
       if (hour['prj_id'] != null) {
         // Si premier élément, on l'ajoute
         if (dayProjects.isEmpty) {
-          dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1 });
+          dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': DateFormat('yyyy-MM-dd').format(day['date']), 'upc_capacity_effort': 1 });
         } else {
           // On vérifie si le projet est déjà dans la liste
           int existingProjectIndex = dayProjects.indexWhere(
@@ -218,11 +226,9 @@ class _CapacityPlanState extends State<CapacityPlan> {
             dayProjects[existingProjectIndex]['upc_capacity_effort'] += 1;
           } else {
             // Si le projet n'est pas dans la liste, on l'ajoute
-            dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': day['date'], 'upc_capacity_effort': 1 });
+            dayProjects.add({ 'prj_id': hour['prj_id'], 'upc_date': DateFormat('yyyy-MM-dd').format(day['date']), 'upc_capacity_effort': 1 });
           }
         }
-      } else {
-        dayProjects.add({ 'prj_id': null, 'upc_date': day['date'], 'upc_capacity_effort': 1 });
       }
     }
 
@@ -239,9 +245,9 @@ class _CapacityPlanState extends State<CapacityPlan> {
     }
 
     // On applique le jour sélectionné à la liste de jours modifiés
-    // On remet à 0 les capacity pour le jour modifié (pourgérer les supressions)
+    // On remet à 0 les capacity pour le jour modifié (pour gérer les supressions)
     modifiedDays.removeWhere(
-      (d) => d['upc_date'] == day['date']
+      (d) => d['upc_date'] == DateFormat('yyyy-MM-dd').format(day['date'])
     );
     // On parcourt chaque projet pour l'ajouter à la liste des capacity modifiées 
     for (Map<String, dynamic> capacity in dayProjects) {
@@ -261,7 +267,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
 
     // On envoie le callback avec la liste des modifications
     if (widget.updateCapacity != null) {
-      widget.updateCapacity!.call(modifiedDays);
+      widget.updateCapacity!.call(jsonEncode(modifiedDays));
     }
   }
 
@@ -366,7 +372,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
                           child: Container(
                             width: 15,
                             height: 15,
-                            color: project['prj_color']
+                            color: formatStringToColor(project['prj_color'].toString())
                           )
                         )
                       ),

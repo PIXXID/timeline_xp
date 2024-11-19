@@ -37,7 +37,7 @@ class _StageRow extends State<StageRow> {
       int daysWidth = widget.stagesList[index]['endDateIndex'] -
           widget.stagesList[index]['startDateIndex'] +
           1;
-      String label = widget.stagesList[index]['prs_name'];
+      String label = widget.stagesList[index]['name'];
       // Largeur de l'item
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
       // On récupère l'ancien étape de la liste
@@ -66,8 +66,8 @@ class _StageRow extends State<StageRow> {
           height: widget.height,
           prsId: widget.stagesList[index]['prs_id'],
           label: label,
-          progress: widget.stagesList[index]['prs_progress'].toDouble(),
-          isMilestone: widget.stagesList[index]['prs_type'] == 'milestone',
+          progress: widget.stagesList[index]['pro'] != null ? widget.stagesList[index]['pro'].toDouble() : 0,
+          isMilestone: widget.stagesList[index]['type'] == 'milestone',
           isMultiproject: widget.isMultiproject,
           openAddStage: widget.openAddStage));
     }

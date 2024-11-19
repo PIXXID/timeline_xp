@@ -85,6 +85,8 @@ class _TimelineXp extends State<TimelineXp> {
   DateTime endDate = DateTime.now().add(const Duration(days: 60));
   int nowIndex = 0;
 
+  double sliderMaxValue = 10;
+
   // Controllers des scroll
   final ScrollController _controllerTimeline = ScrollController();
   final ScrollController _controllerStages = ScrollController();
@@ -118,6 +120,10 @@ class _TimelineXp extends State<TimelineXp> {
     // Formate la liste des étapes en plusieurs lignes selon les dates
     stagesRows = formatStagesRows(days, widget.stages);
 
+    // Calcule la valeur maximum du slider
+    sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
+
+    // Calcule la hauteur des stages
     double stagesHeight =
         rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
     timelineHeight = (widget.height + 10) -
@@ -135,7 +141,7 @@ class _TimelineXp extends State<TimelineXp> {
     // - mettre à jour la valeur du slide
     // - reporter le scroll sur les étapes
     _controllerTimeline.addListener(() {
-      if (_controllerTimeline.offset >= 0) {
+      if (_controllerTimeline.offset >= 0 && _controllerTimeline.offset < sliderMaxValue) {
         // Met à jour les valeurs
         setState(() {
           // On calcule l'élément du center
@@ -181,84 +187,101 @@ class _TimelineXp extends State<TimelineXp> {
       // Liste des étapes du jour
       List stagesByDay = [];
 
-      var elementDay = elements.firstWhere(
-        (e) => e['pre_date'] == DateFormat('yyyy-MM-dd').format(date),
-        orElse: () => <String, Object>{},
-      );
+      var elementDay = elements.where(
+        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
+      ).toList();
 
       var capacitiesDay = capacities.firstWhere(
-        (e) => e['upc_date'] == DateFormat('yyyy-MM-dd').format(date),
+        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
         orElse: () => <String, Object>{},
       );
 
       var notificationDay = notifications.firstWhere(
         (e) =>
-            DateFormat('yyyy-MM-dd').format(DateTime.parse(e['usn_date'])) ==
+            DateFormat('yyyy-MM-dd').format(DateTime.parse(e['date'])) ==
             DateFormat('yyyy-MM-dd').format(date)
-            && e['usn_timeline'],
+            && e['time'],
         orElse: () => <String, Object>{},
       );
 
       // On regarde quels sont les étapes en cours ce jour
       stagesByDay = stages
         .where((s) =>
-            date.isAfter(DateTime.parse(s['prs_startdate'])) &&
-            date.isBefore(DateTime.parse(s['prs_enddate'])))
+            date.isAfter(DateTime.parse(s['sdate'])) &&
+            date.isBefore(DateTime.parse(s['edate'])))
         .toList();
 
-      var day = {
+      Map<String, dynamic> day = {
         'date': date,
-        'capacityLevelMax': 0,
-        'alertLevel': 0,
-        stages: stagesByDay
+        'lmax': 0,
+        'activityTotal': 0,
+        'activityCompleted': 0,
+        'delivrableTotal': 0,
+        'delivrableCompleted': 0,
+        'taskTotal': 0,
+        'taskCompleted': 0,
+        'preIds': [],
+        'stages': stagesByDay
       };
+      
+      // Si on a des éléments on les comptes
+      if (elementDay.isNotEmpty) {
+        // On boucle sur les éléments pour compter le nombre d'activité/livrables/tâches
+        for (Map<String, dynamic> element in elementDay) {
+          if (day['preIds'].indexOf(element['pre_id']) == -1) {
+            // On construit la liste des éléments (qui sera transmise lors du clic)
+            day['preIds'].add(element['pre_id']);
 
-      if (elementDay != null) {
-        day['activityTotal'] = elementDay.containsKey('activity_total') &&
-                elementDay['activity_total'] != null
-            ? elementDay['activity_total']
-            : 0;
-        day['activityCompleted'] =
-            elementDay.containsKey('activity_completed') &&
-                    elementDay['activity_completed'] != null
-                ? elementDay['activity_completed']
-                : 0;
-        day['delivrableTotal'] = elementDay.containsKey('delivrable_total') &&
-                elementDay['delivrable_total'] != null
-            ? elementDay['delivrable_total']
-            : 0;
-        day['delivrableCompleted'] =
-            elementDay.containsKey('delivrable_completed') &&
-                    elementDay['delivrable_completed'] != null
-                ? elementDay['delivrable_completed']
-                : 0;
+            // Selon le type d'éléments on construit les compteurs
+            switch (element['nat']) {
+              case 'activity':
+                if (element['status'] == 'completed') {
+                  day['activityCompleted'] += element['effcalc'];
+                }
+                day['activityTotal'] += element['effcalc'];
+              break;
+              case 'delivrable':
+                if (element['status'] == 'delivrable') {
+                  day['delivrableCompleted'] += element['effcalc'];
+                }
+                day['delivrableTotal'] += element['effcalc'];
+              break;
+              case 'task':
+                if (element['status'] == 'task') {
+                  day['taskCompleted'] += element['effcalc'];
+                }
+                day['taskTotal'] += element['effcalc'];
+              break;
+            }
+          }
+        }
       }
 
       if (capacitiesDay != null) {
-        day['capacityLevelMax'] =
-            capacitiesDay.containsKey('capacity_level_max') &&
-                    capacitiesDay['capacity_level_max'] != null
-                ? capacitiesDay['capacity_level_max']
+        day['lmax'] =
+            capacitiesDay.containsKey('lmax') &&
+                    capacitiesDay['lmax'] != null
+                ? capacitiesDay['lmax']
                 : 0;
-        day['capacityEffort'] =
-            capacitiesDay.containsKey('upc_capacity_effort') &&
-                    capacitiesDay['upc_capacity_effort'] != null
-                ? capacitiesDay['upc_capacity_effort']
+        day['capeff'] =
+            capacitiesDay.containsKey('capeff') &&
+                    capacitiesDay['capeff'] != null
+                ? capacitiesDay['capeff']
                 : 0;
-        day['busyEffort'] = capacitiesDay.containsKey('upc_busy_effort') &&
-                capacitiesDay['upc_busy_effort'] != null
-            ? capacitiesDay['upc_busy_effort']
+        day['buseff'] = capacitiesDay.containsKey('buseff') &&
+                capacitiesDay['buseff'] != null
+            ? capacitiesDay['buseff']
             : 0;
-        day['completedEffort'] =
-            capacitiesDay.containsKey('upc_completed_effort') &&
-                    capacitiesDay['upc_completed_effort'] != null
-                ? capacitiesDay['upc_completed_effort']
+        day['compeff'] =
+            capacitiesDay.containsKey('compeff') &&
+                    capacitiesDay['compeff'] != null
+                ? capacitiesDay['compeff']
                 : 0;
       }
 
       if (notificationDay != null &&
-          notificationDay.containsKey('usn_priority')) {
-        day['alertLevel'] = notificationDay['usn_priority'] ? 2 : 1;
+          notificationDay.containsKey('prio')) {
+        day['alertLevel'] = notificationDay['prio'] ? 2 : 1;
       }
 
       list.add(day);
@@ -273,8 +296,8 @@ class _TimelineXp extends State<TimelineXp> {
 
     // On parcourt les étapes pour construire les lignes
     for (int i = 0; i < stages.length - 1; i++) {
-      DateTime stageStartDate = DateTime.parse(stages[i]['prs_startdate']);
-      DateTime stageEndDate = DateTime.parse(stages[i]['prs_enddate']);
+      DateTime stageStartDate = DateTime.parse(stages[i]['sdate']);
+      DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
       if (stageStartDate.compareTo(startDate) > 0 &&
           stageEndDate.compareTo(endDate) < 0) {
         // On récupère les index des dates dans la liste
@@ -610,8 +633,7 @@ class _TimelineXp extends State<TimelineXp> {
                                       child: Slider(
                                         value: sliderValue,
                                         min: 0,
-                                        max: days.length.toDouble() *
-                                            (dayWidth - dayMargin),
+                                        max: sliderMaxValue,
                                         divisions: days.length,
                                         onChanged: (double value) {
                                           sliderValue = value;

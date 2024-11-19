@@ -1,3 +1,11 @@
+## 0.0.34 - 07/11/2024
+
+* Corrections capacity plan type retour de la call back
+
+## 0.0.33 - 07/11/2024
+
+* Corrections édition capacity plan
+
 ## 0.0.32 - 07/11/2024
 
 * Corrections alertes capacity plan

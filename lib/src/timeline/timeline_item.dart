@@ -32,11 +32,15 @@ class TimelineItem extends StatelessWidget {
 
     double dayProgress = 0;
     if (days[index] != null &&
-        days[index]['busyEffort'] != null &&
-        days[index]['busyEffort'] > 0) {
+        days[index]['buseff'] != null &&
+        days[index]['buseff'] > 0) {
       dayProgress =
-          100 * days[index]['completedEffort'] / days[index]['busyEffort'];
+          100 * days[index]['compeff'] / days[index]['buseff'];
     }
+    double h = (days[index]['capeff'] > 0
+                      ? ((height * days[index]['buseff']) /
+                          days[index]['capeff'])
+                      : height);
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -48,9 +52,9 @@ class TimelineItem extends StatelessWidget {
                 },
             child: SizedBox(
                 width: dayWidth - dayMargin,
-                height: (days[index]['capacityLevelMax'] > 0
-                        ? ((height * days[index]['capacityEffort']) /
-                            days[index]['capacityLevelMax'])
+                height: (days[index]['lmax'] != null && days[index]['lmax'] > 0
+                        ? ((height * days[index]['capeff']) /
+                            days[index]['lmax'])
                         : height) +
                     50,
                 child: Column(
@@ -61,36 +65,48 @@ class TimelineItem extends StatelessWidget {
                             right: dayMargin / 2,
                             bottom: dayMargin / 3),
                         width: dayWidth - dayMargin,
-                        height: (days[index]['capacityLevelMax'] > 0
-                                ? ((height * days[index]['capacityEffort']) /
-                                    days[index]['capacityLevelMax'])
-                                : height) -
-                            20,
+                        height: (days[index]['lmax'] > 0
+                                ? ((height * days[index]['capeff']) /
+                                    days[index]['lmax'])
+                                : height) - 20,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: colors['accent2'],
                         ),
                         child: Column(
-                          mainAxisAlignment: days[index]['capacityLevelMax'] > 0
+                          mainAxisAlignment: days[index]['lmax'] > 0
                               ? MainAxisAlignment.end
                               : MainAxisAlignment.center,
                           children: [
-                            if (days[index]['capacityLevelMax'] > 0)
+                            if (days[index]['lmax'] > 0)
                               Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
                                     width: dayWidth - dayMargin,
-                                    height: days[index]['busyEffort'] > 0
-                                        ? ((height *
-                                                days[index]
-                                                    ['completedEffort']) /
-                                            days[index]['busyEffort'])
-                                        : height,
+                                    height: (days[index]['capeff'] > 0
+                                            ? ((height * days[index]['buseff']) /
+                                                days[index]['capeff'])
+                                            : height),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: colors['primary'],
+                                      color: colors['accent1'],
                                     ),
-                                  ))
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        width: dayWidth - dayMargin,
+                                        height: days[index]['buseff'] > 0
+                                            ? ((height *
+                                                    days[index]
+                                                        ['compeff']) /
+                                                days[index]['buseff'])
+                                            : height,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: colors['primary'],
+                                        ),
+                                      )
+                                  )))
                             else
                               Center(
                                   child: Icon(Icons.sunny,
