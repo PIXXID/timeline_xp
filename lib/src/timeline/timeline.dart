@@ -36,7 +36,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic capacities;
   final dynamic stages;
   final dynamic notifications;
-  final Function(String, double?)? openDayDetail;
+  final Function(String, double?, List<String>?)? openDayDetail;
   final Function(String?)? openAddStage;
 
   @override
@@ -53,9 +53,9 @@ class _TimelineXp extends State<TimelineXp> {
 
   // Largeur d'un item jour
   double dayWidth = 80.0;
-  double dayMargin = 24;
+  double dayMargin = 20;
   // Hauteur de la timeline
-  double timelineHeight = 220.0;
+  double timelineHeight = 250.0;
   // Hauteur du détail de la timeline
   double timelineDetailHeight = 40;
   // Hauteur du slider
@@ -118,7 +118,7 @@ class _TimelineXp extends State<TimelineXp> {
         widget.capacities, widget.notifications, widget.stages);
 
     // Formate la liste des étapes en plusieurs lignes selon les dates
-    stagesRows = formatStagesRows(days, widget.stages);
+    stagesRows = formatStagesRows(startDate, endDate, days, widget.stages);
 
     // Calcule la valeur maximum du slider
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
@@ -291,7 +291,7 @@ class _TimelineXp extends State<TimelineXp> {
   }
 
   // Formate les étapes par lignes pour qu'ils ne se cheveauchent pas
-  List formatStagesRows(List days, List stages) {
+  List formatStagesRows(DateTime startDate, DateTime endDate, List days, List stages) {
     List rows = [];
 
     // On parcourt les étapes pour construire les lignes
@@ -319,9 +319,10 @@ class _TimelineXp extends State<TimelineXp> {
           var added = false;
           for (var row in rows) {
             // On cherche si on cheveauche un existant
-            var overlapIndex = row.indexWhere((r) =>
-                (r['startDateIndex'] < stages[i]['endDateIndex'] + 1 &&
-                    r['endDateIndex'] > stages[i]['startDateIndex'] + 1));
+            var overlapIndex = row.indexWhere((r) {
+                return (r['startDateIndex'] <= stages[i]['startDateIndex'] &&
+                    r['endDateIndex'] + (isMultiproject ? 1 : 2) > stages[i]['startDateIndex']);
+            });
             // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
             if (overlapIndex == -1) {
               row.add(stages[i]);
@@ -400,14 +401,12 @@ class _TimelineXp extends State<TimelineXp> {
                     children: <Widget>[
                       SizedBox(
                         width: screenWidth,
-                        height: timelineHeight + 50,
+                        height: timelineHeight - 50,
                         child: ListView.builder(
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(
-                                horizontal: (screenWidth / 2) -
-                                    10 -
-                                    ((dayWidth - dayMargin) / 2)),
+                                horizontal: (screenWidth / 2) - 10 - ((dayWidth - dayMargin) / 2)),
                             itemCount: days.length,
                             itemBuilder: (BuildContext context, int index) {
                               return TimelineItem(
@@ -460,7 +459,9 @@ class _TimelineXp extends State<TimelineXp> {
                                                 height: rowHeight,
                                                 isMultiproject: isMultiproject,
                                                 openAddStage:
-                                                    widget.openAddStage)));
+                                                    widget.openAddStage
+                                            )
+                                        ));
                                   })),
                                   if (!isMultiproject)
                                     Positioned(
