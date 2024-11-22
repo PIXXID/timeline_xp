@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class DottedSeparator extends StatelessWidget {
   const DottedSeparator({
+    super.key,
     this.height = 1,
     this.dashWidth = 10.0,
     this.color = Colors.black

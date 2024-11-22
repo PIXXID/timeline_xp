@@ -33,44 +33,41 @@ class TimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime date = days[index]['date'];
 
+    double heightDay = height - ((height - 70) / 3) - 72;
+
     // On calcule la hauteur de chaque barre
-    double heightLmax = height - ((height - 70) / 3) - 70;
     double heightCapeff = 0;
     double heightBuseff = 0;
     double heightCompeff = 0;
-    if (heightLmax > 0) {
-      heightCapeff = (height * days[index]['capeff']) / heightLmax;
-    } else if (heightLmax == 0 && days[index]['capeff'] > 0) {
-      heightCapeff = height;
-    }
-    if (heightCapeff > 0) {
-      heightBuseff = (height * days[index]['buseff']) / heightCapeff;
+    if (days[index]['lmax'] > 0) {
+      heightCapeff = (heightDay * days[index]['capeff']) / days[index]['lmax'];
+      heightBuseff = (heightDay * days[index]['buseff']) / days[index]['lmax'];
+      heightCompeff = (heightDay * days[index]['compeff']) / days[index]['lmax'];
+    } else if (days[index]['lmax'] == 0 && days[index]['capeff'] > 0) {
+      heightCapeff = heightDay;
     } else if (heightCapeff == 0 && days[index]['buseff'] > 0) {
-      heightBuseff = height;
-    }
-    if (heightBuseff > 0) {
-      heightCompeff = (height * days[index]['compeff']) / heightBuseff;
+      heightBuseff = heightDay;
     } else if (heightBuseff == 0 && days[index]['compeff'] > 0) {
-      heightCompeff = height;
+      heightCompeff = heightDay;
     }
 
     // On vérifie s'il y a un dépassement
-    Widget overflow = SizedBox(width: dayWidth, height: heightLmax / 5);
+    Widget overflow = SizedBox(width: dayWidth, height: heightDay / 5);
     double overflowPercent = 0;
-    if (heightCompeff > heightLmax) {
-      overflowPercent = (heightCompeff * 100) / heightLmax;
-    } else if (heightBuseff > heightLmax) {
-      overflowPercent = (heightBuseff * 100) / heightLmax;
-    } else if (heightCapeff > heightLmax) {
-      overflowPercent = (heightCapeff * 100) / heightLmax;
+    if (heightCompeff > heightDay) {
+      overflowPercent = (heightCompeff * 100) / heightDay;
+    } else if (heightBuseff > heightDay) {
+      overflowPercent = (heightBuseff * 100) / heightDay;
+    } else if (heightCapeff > heightDay) {
+      overflowPercent = (heightCapeff * 100) / heightDay;
     }
-    if (overflowPercent > heightLmax / 5) {
-      overflowPercent = heightLmax / 5;
+    if (overflowPercent > heightDay / 5 || ((days[index]['capeff'] > 0 || days[index]['buseff'] > 0 || days[index]['compeff'] > 0) && days[index]['lmax'] == 0)) {
+      overflowPercent = heightDay / 5;
     }
     if (overflowPercent > 0) {
       overflow = SizedBox(
         width: dayWidth,
-        height: heightLmax / 5,
+        height: heightDay / 5,
         child: Column(
           children: [
             Container(
@@ -78,11 +75,11 @@ class TimelineItem extends StatelessWidget {
               width: dayWidth - dayMargin - 15,
               height: overflowPercent - 5,
               decoration: BoxDecoration(
-                borderRadius: overflowPercent == heightLmax / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                borderRadius: overflowPercent == heightDay / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                 color: colors['error'],
               ),
               child: ClipRRect(
-                borderRadius: overflowPercent == heightLmax / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                borderRadius: overflowPercent == heightDay / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                 child: CustomPaint(
                   painter: HatchedBackgroundPainter(
                     color: colors['primaryText']!.withOpacity(0.3),
@@ -125,11 +122,56 @@ class TimelineItem extends StatelessWidget {
                 height: height,
                 child: Column(
                   children: <Widget>[
+                    // Debug
+                    Text(
+                      '${days[index]['lmax']}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: colors['primaryText'],
+                          fontSize: 10,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w700
+                              : FontWeight.w400),
+                    ),
+                    Text(
+                      '${days[index]['capeff']}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: colors['primaryText'],
+                          fontSize: 10,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w700
+                              : FontWeight.w400),
+                    ),
+                    Text(
+                      '${days[index]['buseff']}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: colors['primaryText'],
+                          fontSize: 10,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w700
+                              : FontWeight.w400),
+                    ),
+                    Text(
+                      '${days[index]['compeff']}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: colors['primaryText'],
+                          fontSize: 10,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w700
+                              : FontWeight.w400),
+                    ),
                     // Dépassement
                     overflow,
                     // Barre avec données
                     SizedBox(
-                      height: heightLmax,
+                      height: heightDay,
                       child: Stack(
                         children: [
                           // Barre vide
@@ -140,7 +182,7 @@ class TimelineItem extends StatelessWidget {
                                 right: dayMargin / 2,
                                 bottom: dayMargin / 3),
                               width: dayWidth - dayMargin - 15,
-                              height: heightLmax,
+                              height: heightDay,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: colors['accent2'],
@@ -185,7 +227,7 @@ class TimelineItem extends StatelessWidget {
                                 child: Builder(builder: (context) {
                                   if (heightBuseff > heightCapeff) {
                                     return ClipRRect(
-                                      borderRadius: overflowPercent == heightLmax / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                      borderRadius: overflowPercent == heightDay / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                                       child: CustomPaint(
                                         painter: HatchedBackgroundPainter(
                                           color: colors['primaryText']!.withOpacity(0.3),
@@ -214,20 +256,6 @@ class TimelineItem extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   color: colors['primary'],
                                 ),
-                                child: Builder(builder: (context) {
-                                  if (heightCompeff > heightBuseff) {
-                                    return ClipRRect(
-                                      borderRadius: overflowPercent == heightLmax / 5 ? BorderRadius.zero : const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                                      child: CustomPaint(
-                                        painter: HatchedBackgroundPainter(
-                                          color: colors['primaryText']!.withOpacity(0.3),
-                                        ),
-                                      )
-                                    );
-                                  } else {
-                                    return const SizedBox();
-                                  }
-                                })
                               )
                             )
                         ]

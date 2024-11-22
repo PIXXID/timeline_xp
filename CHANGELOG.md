@@ -1,3 +1,7 @@
+## 0.0.35 - 22/11/2024
+
+* Ajustements nouvelles forme de données timeline
+
 ## 0.0.34 - 07/11/2024
 
 * Corrections capacity plan type retour de la call back

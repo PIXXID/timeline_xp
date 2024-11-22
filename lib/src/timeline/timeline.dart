@@ -120,18 +120,19 @@ class _TimelineXp extends State<TimelineXp> {
     // Formate la liste des étapes en plusieurs lignes selon les dates
     stagesRows = formatStagesRows(startDate, endDate, days, widget.stages);
 
+    // On positionne le stage de la première ligne par jour
+    days = getStageByDay(days, stagesRows);
+
     // Calcule la valeur maximum du slider
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
 
     // Calcule la hauteur des stages
-    double stagesHeight =
-        rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
-    timelineHeight = (widget.height + 10) -
+    double stagesHeight = rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
+    timelineHeight = (widget.height) -
         (sliderHeight + sliderMargin) -
         dateLabelHeight -
         (isMultiproject ? 0 : timelineDetailHeight) -
-        stagesHeight -
-        80;
+        stagesHeight;
 
     // Positionne le slider sur la date du jour
     nowIndex = now.difference(startDate).inDays;
@@ -161,6 +162,7 @@ class _TimelineXp extends State<TimelineXp> {
 
     // Exécuter une seule fois après la construction du widget
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // On scroll sur la date du jour par défaut
       scrollToNow(nowIndex);
     });
   }
@@ -184,8 +186,6 @@ class _TimelineXp extends State<TimelineXp> {
     // On parcourt les dates pour y associer les jours et les étapes en cours
     for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
       DateTime date = startDate.add(Duration(days: dateIndex));
-      // Liste des étapes du jour
-      List stagesByDay = [];
 
       var elementDay = elements.where(
         (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
@@ -204,13 +204,6 @@ class _TimelineXp extends State<TimelineXp> {
         orElse: () => <String, Object>{},
       );
 
-      // On regarde quels sont les étapes en cours ce jour
-      stagesByDay = stages
-        .where((s) =>
-            date.isAfter(DateTime.parse(s['sdate'])) &&
-            date.isBefore(DateTime.parse(s['edate'])))
-        .toList();
-
       Map<String, dynamic> day = {
         'date': date,
         'lmax': 0,
@@ -221,7 +214,7 @@ class _TimelineXp extends State<TimelineXp> {
         'taskTotal': 0,
         'taskCompleted': 0,
         'preIds': [],
-        'stages': stagesByDay
+        'stage': {}
       };
       
       // Si on a des éléments on les comptes
@@ -235,22 +228,22 @@ class _TimelineXp extends State<TimelineXp> {
             // Selon le type d'éléments on construit les compteurs
             switch (element['nat']) {
               case 'activity':
-                if (element['status'] == 'completed') {
-                  day['activityCompleted'] += element['effcalc'];
+                if (element['status'] == 'status') {
+                  day['activityCompleted'] += 1;
                 }
-                day['activityTotal'] += element['effcalc'];
+                day['activityTotal']++;
               break;
               case 'delivrable':
-                if (element['status'] == 'delivrable') {
-                  day['delivrableCompleted'] += element['effcalc'];
+                if (element['status'] == 'status') {
+                  day['delivrableCompleted'] += 1;
                 }
-                day['delivrableTotal'] += element['effcalc'];
+                day['delivrableTotal']++;
               break;
               case 'task':
-                if (element['status'] == 'task') {
-                  day['taskCompleted'] += element['effcalc'];
+                if (element['status'] == 'status') {
+                  day['taskCompleted'] += 1;
                 }
-                day['taskTotal'] += element['effcalc'];
+                day['taskTotal']++;
               break;
             }
           }
@@ -347,6 +340,26 @@ class _TimelineXp extends State<TimelineXp> {
     return rows;
   }
 
+  // Positionne le stage du premier niveau pour chaque jour
+  List getStageByDay(List days, List stages) {
+    // On boucle sur les jours
+    int index = 0;
+    for (var day in days) {
+      // Pour chaque jour, on récupère le stage correspondant du premier niveau
+      int stageDate = stages[0].indexWhere((s) {
+        return (s['startDateIndex'].toInt() <= index &&
+            s['endDateIndex'].toInt() >= index);
+      });
+      if (stageDate != -1) {
+        day['currentStage'] = stages[0][stageDate];
+      }
+
+      index++;
+    }
+
+    return days;
+  }
+
   // Scroll à aujourd'hui
   void scrollToNow(int nowIndex) {
     if (nowIndex >= 0) {
@@ -381,7 +394,7 @@ class _TimelineXp extends State<TimelineXp> {
                       height: timelineHeight +
                           (rowHeight *
                               (stagesRows.length > 2 ? 2 : stagesRows.length)) +
-                          (isMultiproject ? 60 : (timelineDetailHeight + 20)),
+                          (isMultiproject ? 10 : (timelineDetailHeight + 20)),
                       width: dayWidth - dayMargin,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -401,7 +414,7 @@ class _TimelineXp extends State<TimelineXp> {
                     children: <Widget>[
                       SizedBox(
                         width: screenWidth,
-                        height: timelineHeight - 50,
+                        height: timelineHeight + 20,
                         child: ListView.builder(
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
