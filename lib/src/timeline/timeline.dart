@@ -419,7 +419,7 @@ class _TimelineXp extends State<TimelineXp> {
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(
-                                horizontal: (screenWidth / 2) - 10 - ((dayWidth - dayMargin) / 2)),
+                                horizontal: (screenWidth / 2) - ((dayWidth) / 2)),
                             itemCount: days.length,
                             itemBuilder: (BuildContext context, int index) {
                               return TimelineItem(
