@@ -11,7 +11,6 @@ class StageItem extends StatelessWidget {
       required this.label,
       required this.prsId,
       required this.progress,
-      required this.isMultiproject,
       required this.isMilestone,
       required this.openAddStage});
 
@@ -23,7 +22,6 @@ class StageItem extends StatelessWidget {
   final String prsId;
   final String label;
   final double progress;
-  final bool isMultiproject;
   final bool isMilestone;
   final Function(String?)? openAddStage;
 
@@ -34,11 +32,7 @@ class StageItem extends StatelessWidget {
           width: itemWidth,
           height: height,
           decoration: BoxDecoration(
-              borderRadius: (!isMultiproject
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(10))
-                  : const BorderRadius.all(Radius.circular(10))),
+              borderRadius: (const BorderRadius.all(Radius.circular(7))),
               color: colors['primaryBackground'],
               border: Border.all(color: colors['accent2']!)),
           child: Stack(clipBehavior: Clip.none, children: [
@@ -59,7 +53,8 @@ class StageItem extends StatelessWidget {
                         softWrap: false,
                         style: TextStyle(
                             color: colors['primaryText'],
-                            fontWeight: FontWeight.w500)))),
+                            fontWeight: FontWeight.w300,
+                            fontSize: 12)))),
             if (isMilestone)
               Align(
                   alignment: Alignment.centerRight,
@@ -72,33 +67,6 @@ class StageItem extends StatelessWidget {
                     ),
                   ))
           ])),
-      if (!isMultiproject)
-        SizedBox(
-            height: height,
-            width: dayWidth - dayMargin,
-            child: ElevatedButton(
-                onPressed: () {
-                  openAddStage?.call(prsId);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colors['primaryBackground'],
-                  padding: const EdgeInsets.all(0),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  elevation: 0,
-                  side: BorderSide(
-                    width: 1.0,
-                    color: colors['accent2']!,
-                  ),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          bottomRight: Radius.circular(10))),
-                ),
-                child: Icon(
-                  Icons.add,
-                  size: 20,
-                  color: colors['primaryText'],
-                )))
     ]);
   }
 }

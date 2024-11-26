@@ -10,7 +10,6 @@ class StageRow extends StatefulWidget {
       required this.dayWidth,
       required this.dayMargin,
       required this.height,
-      required this.isMultiproject,
       required this.openAddStage});
 
   final Map<String, Color> colors;
@@ -18,7 +17,6 @@ class StageRow extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final bool isMultiproject;
   final Function(String?)? openAddStage;
 
   @override
@@ -42,20 +40,19 @@ class _StageRow extends State<StageRow> {
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
       // On récupère l'ancien étape de la liste
       var previousStage = index > 0 ? widget.stagesList[index - 1] : null;
-
+      
       // On crée le vide entre l'ancien étape (s'il y en a un) et le nouveau
       if (previousStage != null) {
         list.add(SizedBox(
           width: (widget.stagesList[index]['startDateIndex'] -
-                  previousStage['endDateIndex'] -
-                  (widget.isMultiproject ? 1 : 2)) *
+                  previousStage['endDateIndex'] - 1) *
               (widget.dayWidth - widget.dayMargin),
         ));
       } else {
-        list.add(SizedBox(
-          width: widget.stagesList[index]['startDateIndex'] *
-              (widget.dayWidth - widget.dayMargin),
-        ));
+         list.add(SizedBox(
+           width: widget.stagesList[index]['startDateIndex'] *
+               (widget.dayWidth - widget.dayMargin),
+         ));
       }
 
       list.add(StageItem(
@@ -68,7 +65,6 @@ class _StageRow extends State<StageRow> {
           label: label,
           progress: widget.stagesList[index]['pro'] != null ? widget.stagesList[index]['pro'].toDouble() : 0,
           isMilestone: widget.stagesList[index]['type'] == 'milestone',
-          isMultiproject: widget.isMultiproject,
           openAddStage: widget.openAddStage));
     }
 
