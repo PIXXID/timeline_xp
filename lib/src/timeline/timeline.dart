@@ -3,12 +3,9 @@ import 'package:intl/intl.dart';
 
 // Widgets
 import 'timeline_item.dart';
-import 'timeline_item_detail.dart';
+import 'timeline_day_info.dart';
 import 'stage_row.dart';
 import 'custom_thumb_shape.dart';
-
-// Tools
-import 'package:timeline_xp/src/tools/tools.dart';
 
 class TimelineXp extends StatefulWidget {
   const TimelineXp(
@@ -127,7 +124,8 @@ class _TimelineXp extends State<TimelineXp> {
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
 
     // Calcule la hauteur des stages
-    double stagesHeight = rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
+    double stagesHeight =
+        rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
     timelineHeight = (widget.height) -
         (sliderHeight + sliderMargin) -
         dateLabelHeight -
@@ -142,7 +140,8 @@ class _TimelineXp extends State<TimelineXp> {
     // - mettre à jour la valeur du slide
     // - reporter le scroll sur les étapes
     _controllerTimeline.addListener(() {
-      if (_controllerTimeline.offset >= 0 && _controllerTimeline.offset < sliderMaxValue) {
+      if (_controllerTimeline.offset >= 0 &&
+          _controllerTimeline.offset < sliderMaxValue) {
         // Met à jour les valeurs
         setState(() {
           // On calcule l'élément du center
@@ -187,9 +186,11 @@ class _TimelineXp extends State<TimelineXp> {
     for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
       DateTime date = startDate.add(Duration(days: dateIndex));
 
-      var elementDay = elements.where(
-        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
-      ).toList();
+      var elementDay = elements
+          .where(
+            (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
+          )
+          .toList();
 
       var capacitiesDay = capacities.firstWhere(
         (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
@@ -199,8 +200,8 @@ class _TimelineXp extends State<TimelineXp> {
       var notificationDay = notifications.firstWhere(
         (e) =>
             DateFormat('yyyy-MM-dd').format(DateTime.parse(e['date'])) ==
-            DateFormat('yyyy-MM-dd').format(date)
-            && e['time'],
+                DateFormat('yyyy-MM-dd').format(date) &&
+            e['time'],
         orElse: () => <String, Object>{},
       );
 
@@ -216,7 +217,7 @@ class _TimelineXp extends State<TimelineXp> {
         'preIds': [],
         'stage': {}
       };
-      
+
       // Si on a des éléments on les comptes
       if (elementDay.isNotEmpty) {
         // On boucle sur les éléments pour compter le nombre d'activité/livrables/tâches
@@ -232,19 +233,19 @@ class _TimelineXp extends State<TimelineXp> {
                   day['activityCompleted'] += 1;
                 }
                 day['activityTotal']++;
-              break;
+                break;
               case 'delivrable':
                 if (element['status'] == 'status') {
                   day['delivrableCompleted'] += 1;
                 }
                 day['delivrableTotal']++;
-              break;
+                break;
               case 'task':
                 if (element['status'] == 'status') {
                   day['taskCompleted'] += 1;
                 }
                 day['taskTotal']++;
-              break;
+                break;
             }
           }
         }
@@ -252,28 +253,24 @@ class _TimelineXp extends State<TimelineXp> {
 
       if (capacitiesDay != null) {
         day['lmax'] =
-            capacitiesDay.containsKey('lmax') &&
-                    capacitiesDay['lmax'] != null
+            capacitiesDay.containsKey('lmax') && capacitiesDay['lmax'] != null
                 ? capacitiesDay['lmax']
                 : 0;
-        day['capeff'] =
-            capacitiesDay.containsKey('capeff') &&
-                    capacitiesDay['capeff'] != null
-                ? capacitiesDay['capeff']
-                : 0;
+        day['capeff'] = capacitiesDay.containsKey('capeff') &&
+                capacitiesDay['capeff'] != null
+            ? capacitiesDay['capeff']
+            : 0;
         day['buseff'] = capacitiesDay.containsKey('buseff') &&
                 capacitiesDay['buseff'] != null
             ? capacitiesDay['buseff']
             : 0;
-        day['compeff'] =
-            capacitiesDay.containsKey('compeff') &&
-                    capacitiesDay['compeff'] != null
-                ? capacitiesDay['compeff']
-                : 0;
+        day['compeff'] = capacitiesDay.containsKey('compeff') &&
+                capacitiesDay['compeff'] != null
+            ? capacitiesDay['compeff']
+            : 0;
       }
 
-      if (notificationDay != null &&
-          notificationDay.containsKey('prio')) {
+      if (notificationDay != null && notificationDay.containsKey('prio')) {
         day['alertLevel'] = notificationDay['prio'] ? 2 : 1;
       }
 
@@ -284,7 +281,8 @@ class _TimelineXp extends State<TimelineXp> {
   }
 
   // Formate les étapes par lignes pour qu'ils ne se cheveauchent pas
-  List formatStagesRows(DateTime startDate, DateTime endDate, List days, List stages) {
+  List formatStagesRows(
+      DateTime startDate, DateTime endDate, List days, List stages) {
     List rows = [];
 
     // On parcourt les étapes pour construire les lignes
@@ -313,8 +311,10 @@ class _TimelineXp extends State<TimelineXp> {
           for (var row in rows) {
             // On cherche si on cheveauche un existant
             var overlapIndex = row.indexWhere((r) {
-                return (r['startDateIndex'] <= stages[i]['startDateIndex'] &&
-                    r['endDateIndex'] + (isMultiproject ? 1 : 2) > stages[i]['startDateIndex']);
+              return (((r['endDateIndex'] + (isMultiproject ? 1 : 2)) >
+                      stages[i]['startDateIndex'])
+                  ? true
+                  : false);
             });
             // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
             if (overlapIndex == -1) {
@@ -330,11 +330,6 @@ class _TimelineXp extends State<TimelineXp> {
           }
         }
       }
-    }
-
-    // Si on est sur la page projet, on ajoute un ligne avec un bouton
-    if (!isMultiproject) {
-      rows.add([]);
     }
 
     return rows;
@@ -378,6 +373,9 @@ class _TimelineXp extends State<TimelineXp> {
   Widget build(BuildContext context) {
     // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
     double screenWidth = MediaQuery.sizeOf(context).width;
+    double totalHeight = timelineHeight + timelineDetailHeight;
+    double firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
+    double screenCenter = (screenWidth / 2);
 
     return Scaffold(
         backgroundColor: Colors.transparent,
@@ -388,38 +386,25 @@ class _TimelineXp extends State<TimelineXp> {
                 /// Fond indiquant le jour en cours
                 children: [
                   Positioned(
-                    left: (screenWidth / 2) - (dayWidth / 2),
+                    left: screenCenter,
                     top: 0,
                     child: Container(
-                      height: timelineHeight +
-                          (rowHeight *
-                              (stagesRows.length > 2 ? 2 : stagesRows.length)) +
-                          (isMultiproject ? 10 : (timelineDetailHeight + 20)),
-                      width: dayWidth - dayMargin,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                            const Color(0xffffffff).withAlpha(0),
-                            const Color(0xffffffff).withAlpha(70),
-                          ],
-                              stops: const [
-                            0,
-                            0.8
-                          ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
+                      height: totalHeight,
+                      width: 1,
+                      decoration: BoxDecoration(color: widget.colors['error']),
                     ),
                   ),
                   Column(
                     children: <Widget>[
+                      // Timeline
                       SizedBox(
                         width: screenWidth,
-                        height: timelineHeight + 20,
+                        height: timelineHeight,
                         child: ListView.builder(
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.symmetric(
-                                horizontal: (screenWidth / 2) - ((dayWidth) / 2)),
+                                horizontal: firstElementMargin),
                             itemCount: days.length,
                             itemBuilder: (BuildContext context, int index) {
                               return TimelineItem(
@@ -435,6 +420,7 @@ class _TimelineXp extends State<TimelineXp> {
                                   openDayDetail: widget.openDayDetail);
                             }),
                       ),
+                      // Stages
                       Container(
                           constraints: BoxConstraints(
                             minHeight: 1,
@@ -444,110 +430,42 @@ class _TimelineXp extends State<TimelineXp> {
                           ),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.vertical,
-                            child: Stack(
-                                children: [
-                                  Column(
-                                      children: List.generate(stagesRows.length,
-                                          (rowIndex) {
-                                    return SingleChildScrollView(
-                                        controller: _controllerStages,
-                                        scrollDirection: Axis.horizontal,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: (screenWidth / 2) -
-                                                ((dayWidth - dayMargin) / 2)),
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        child: Container(
-                                            margin: const EdgeInsets.symmetric(
-                                                vertical: 2.0),
-                                            width: days.length *
-                                                (dayWidth - dayMargin),
+                            child: Stack(children: [
+                              Column(
+                                  children: List.generate(stagesRows.length,
+                                      (rowIndex) {
+                                return SingleChildScrollView(
+                                    controller: _controllerStages,
+                                    scrollDirection: Axis.horizontal,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: firstElementMargin),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        width: days.length *
+                                            (dayWidth - dayMargin),
+                                        height: rowHeight,
+                                        child: StageRow(
+                                            colors: widget.colors,
+                                            stagesList: stagesRows[rowIndex],
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
                                             height: rowHeight,
-                                            child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList:
-                                                    stagesRows[rowIndex],
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
-                                                height: rowHeight,
-                                                isMultiproject: isMultiproject,
-                                                openAddStage:
-                                                    widget.openAddStage
-                                            )
-                                        ));
-                                  })),
-                                  if (!isMultiproject)
-                                    Positioned(
-                                        left: (screenWidth / 2) -
-                                            ((dayWidth - dayMargin) / 2),
-                                        bottom: 0,
-                                        child: SizedBox(
-                                            height: rowHeight,
-                                            width: dayWidth - dayMargin,
-                                            child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      widget.colors[
-                                                          'primaryBackground'],
-                                                  padding:
-                                                      const EdgeInsets.all(0),
-                                                  tapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                  elevation: 0,
-                                                  side: BorderSide(
-                                                    width: 1.0,
-                                                    color: widget
-                                                        .colors['accent2']!,
-                                                  ),
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
-                                                ),
-                                                onPressed: () {
-                                                  widget.openAddStage
-                                                      ?.call(null);
-                                                },
-                                                child: Icon(
-                                                  Icons.add,
-                                                  size: 20,
-                                                  color: widget
-                                                      .colors['primaryText'],
-                                                ))))
-                                ]),
+                                            openAddStage:
+                                                widget.openAddStage)));
+                              })),
+                            ]),
                           )),
-                      Container(height: 2, color: widget.colors['accent2']),
-                      TimelineItemDetail(
+                      Container(
+                          padding: EdgeInsets.only(
+                              bottom: sliderMargin - (alertWidth / 2))),
+                      Container(height: 1, color: widget.colors['accent2']),
+                      TimelineDayInfo(
+                          day: days[centerItemIndex],
                           colors: widget.colors,
-                          timelineDetailHeight: timelineDetailHeight,
-                          days: days,
-                          centerItemIndex: centerItemIndex,
-                          isMultiproject: isMultiproject),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 25),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                              padding: const EdgeInsets.only(
-                                  left: 10, top: 5, right: 10, bottom: 5),
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(10),
-                                      bottomRight: Radius.circular(10)),
-                                  color: widget.colors['accent2']),
-                              child: Text(
-                                '${DateFormat.MMMM(widget.lang).format(days[centerItemIndex]['date'])}    S${weeksNumber(days[centerItemIndex]['date'], 0)}',
-                                style: TextStyle(
-                                    color: widget.colors['primaryText'],
-                                    fontSize: 11, // Taille de l'icône
-                                    fontWeight: FontWeight.w400),
-                              )),
-                        ),
-                      ),
+                          lang: widget.lang),
                       Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: sliderMargin),
@@ -657,7 +575,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     )))
                           ])),
                     ],
-                  ),
+                  )
                 ])));
   }
 }
