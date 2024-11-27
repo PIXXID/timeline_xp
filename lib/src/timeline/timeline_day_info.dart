@@ -36,6 +36,8 @@ class TimelineDayInfo extends StatelessWidget {
     final curDelComp = (curDay['delivrableCompleted'] != null) ? curDay['delivrableCompleted'] : 0;
     final curDelTot = (curDay['delivrableTotal'] != null) ? curDay['delivrableTotal'] : 0;
     final curLongDate = (curDay['date'] != null) ? DateFormat.yMMMMd(lang).format(curDay['date']) : '';
+    // TODO - A supprimer après contrôle
+    final debugInfo = '${curDay['lmax']},${curDay['capeff']},${curDay['buseff'].floor()},${curDay['compeff']}';
 
     // Données de style
     const fontSize = 12.0;
@@ -50,7 +52,7 @@ class TimelineDayInfo extends StatelessWidget {
             LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
               return SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.4,
+                width: MediaQuery.sizeOf(context).width * 0.35,
                 child: Text(
                   '$curStageName',
                   style: TextStyle(color: colors['primaryText'],
@@ -71,9 +73,9 @@ class TimelineDayInfo extends StatelessWidget {
           ]),
           // Totaux activités / livrables
           SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.4,
+            width: MediaQuery.sizeOf(context).width * 0.45,
             child: Text(
-                  '$curActComp/$curActTot act.  $curDelComp/$curDelTot liv.',
+                  '$curActComp/$curActTot act.  $curDelComp/$curDelTot liv. ($debugInfo)',
                   textAlign: TextAlign.right,
                   style: TextStyle(color: colors['primaryText'], 
                     fontWeight: fontWeight,

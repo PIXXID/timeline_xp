@@ -52,7 +52,7 @@ class _TimelineXp extends State<TimelineXp> {
   double dayWidth = 80.0;
   double dayMargin = 20;
   // Hauteur de la timeline
-  double timelineHeight = 250.0;
+  double timelineHeight = 240.0;
   // Hauteur du détail de la timeline
   double timelineDetailHeight = 40;
   // Hauteur du slider
@@ -61,20 +61,17 @@ class _TimelineXp extends State<TimelineXp> {
   double dateLabelHeight = 30;
 
   // Diamètre des pins d'alertes
-  double alertWidth = 20;
+  double alertWidth = 10;
   // Liste des widgets des alertes
   List<Widget> alertList = [];
 
   // Liste des lignes d'étapes
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
-  double rowHeight = 30.0;
+  double rowHeight = 25.0;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
-
-  // Multiprojet ? (journal de bord)
-  bool isMultiproject = false;
 
   // Date de début et date de fin
   DateTime now = DateTime.now();
@@ -99,9 +96,6 @@ class _TimelineXp extends State<TimelineXp> {
   void initState() {
     super.initState();
 
-    // Est-ce qu'on est en multiprojets (journal de bord)
-    isMultiproject = widget.projectCount > 1;
-
     // On positionne les dates de début et de fin
     if (widget.dateInterval['prj_startdate'] != null) {
       startDate = DateTime.parse(widget.dateInterval['prj_startdate']!);
@@ -122,15 +116,6 @@ class _TimelineXp extends State<TimelineXp> {
 
     // Calcule la valeur maximum du slider
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
-
-    // Calcule la hauteur des stages
-    double stagesHeight =
-        rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length);
-    timelineHeight = (widget.height) -
-        (sliderHeight + sliderMargin) -
-        dateLabelHeight -
-        (isMultiproject ? 0 : timelineDetailHeight) -
-        stagesHeight;
 
     // Positionne le slider sur la date du jour
     nowIndex = now.difference(startDate).inDays;
@@ -311,7 +296,7 @@ class _TimelineXp extends State<TimelineXp> {
           for (var row in rows) {
             // On cherche si on cheveauche un existant
             var overlapIndex = row.indexWhere((r) {
-              return (((r['endDateIndex'] + (isMultiproject ? 1 : 2)) >
+              return (((r['endDateIndex'] + 1) >
                       stages[i]['startDateIndex'])
                   ? true
                   : false);
@@ -382,14 +367,13 @@ class _TimelineXp extends State<TimelineXp> {
         body: Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
             child: Stack(
-
-                /// Fond indiquant le jour en cours
+                // Trait rouge indiquant le jour en cours
                 children: [
                   Positioned(
                     left: screenCenter,
                     top: 0,
                     child: Container(
-                      height: totalHeight,
+                      height: totalHeight + timelineDetailHeight,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
@@ -459,16 +443,18 @@ class _TimelineXp extends State<TimelineXp> {
                             ]),
                           )),
                       Container(
-                          padding: EdgeInsets.only(
-                              bottom: sliderMargin - (alertWidth / 2))),
-                      Container(height: 1, color: widget.colors['accent2']),
+                        padding: const EdgeInsets.only(top: 10.0),
+                      ),
+                      Container(
+                        height: 1, 
+                        color: widget.colors['accent2']),
                       TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
                           lang: widget.lang),
                       Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: sliderMargin),
+                              const EdgeInsets.symmetric(horizontal: 0),
                           child: Stack(clipBehavior: Clip.none, children: [
                             // Alertes positionnées
                             SizedBox(
