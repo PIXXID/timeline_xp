@@ -1,6 +1,6 @@
-## 0.0.35 - 22/11/2024
+## 0.0.36 - 27/11/2024
 
-* Ajustements nouvelles forme de données timeline
+* Corrections et relecture de la Timeline
 
 ## 0.0.34 - 07/11/2024
 

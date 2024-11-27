@@ -4,7 +4,7 @@ import 'release_chart.dart';
 
 /*
 * Affichage des informations lors du survol d'une journée
-* Permet d'fficher la séquance, les informations de progressions
+* Permet d'afficher la séquence, les informations de progressions
 * et la date survolée
 */
 class TimelineDayInfo extends StatelessWidget {
