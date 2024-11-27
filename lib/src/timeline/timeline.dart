@@ -323,18 +323,20 @@ class _TimelineXp extends State<TimelineXp> {
   // Positionne le stage du premier niveau pour chaque jour
   List getStageByDay(List days, List stages) {
     // On boucle sur les jours
-    int index = 0;
-    for (var day in days) {
-      // Pour chaque jour, on récupère le stage correspondant du premier niveau
-      int stageDate = stages[0].indexWhere((s) {
-        return (s['startDateIndex'].toInt() <= index &&
-            s['endDateIndex'].toInt() >= index);
-      });
-      if (stageDate != -1) {
-        day['currentStage'] = stages[0][stageDate];
-      }
+    if (stages.isNotEmpty) {
+      int index = 0;
+      for (var day in days) {
+        // Pour chaque jour, on récupère le stage correspondant du premier niveau
+        int stageDate = stages[0].indexWhere((s) {
+          return (s['startDateIndex'].toInt() <= index &&
+              s['endDateIndex'].toInt() >= index);
+        });
+        if (stageDate != -1) {
+          day['currentStage'] = stages[0][stageDate];
+        }
 
-      index++;
+        index++;
+      }
     }
 
     return days;
