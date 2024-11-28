@@ -4,8 +4,6 @@ class StageItem extends StatelessWidget {
   const StageItem(
       {super.key,
       required this.colors,
-      required this.dayWidth,
-      required this.dayMargin,
       required this.itemWidth,
       required this.height,
       required this.label,
@@ -15,8 +13,6 @@ class StageItem extends StatelessWidget {
       required this.openAddStage});
 
   final Map<String, Color> colors;
-  final double dayWidth;
-  final double dayMargin;
   final double itemWidth;
   final double height;
   final String prsId;

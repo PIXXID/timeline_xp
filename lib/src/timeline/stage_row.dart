@@ -57,9 +57,7 @@ class _StageRow extends State<StageRow> {
 
       list.add(StageItem(
           colors: widget.colors,
-          dayWidth: widget.dayWidth,
           itemWidth: itemWidth,
-          dayMargin: widget.dayMargin,
           height: widget.height,
           prsId: widget.stagesList[index]['prs_id'],
           label: label,

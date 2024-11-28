@@ -168,7 +168,7 @@ class _TimelineXp extends State<TimelineXp> {
     int duration = endDate.difference(startDate).inDays;
 
     // On parcourt les dates pour y associer les jours et les étapes en cours
-    for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
+    for (var dateIndex = 0; dateIndex <= duration; dateIndex++) {
       DateTime date = startDate.add(Duration(days: dateIndex));
 
       var elementDay = elements
@@ -272,51 +272,58 @@ class _TimelineXp extends State<TimelineXp> {
 
     // On parcourt les étapes pour construire les lignes
     for (int i = 0; i < stages.length - 1; i++) {
+      // Dates des stages
       DateTime stageStartDate = DateTime.parse(stages[i]['sdate']);
       DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
-      if (stageStartDate.compareTo(startDate) > 0 &&
-          stageEndDate.compareTo(endDate) < 0) {
-        // On récupère les index des dates dans la liste
-        int startDateIndex = days.indexWhere((d) =>
-            DateFormat('yyyy-MM-dd').format(d["date"]) ==
-            DateFormat('yyyy-MM-dd').format(stageStartDate));
-        int endDateIndex = days.indexWhere((d) =>
-            DateFormat('yyyy-MM-dd').format(d['date']) ==
-            DateFormat('yyyy-MM-dd').format(stageEndDate));
 
-        stages[i]['startDateIndex'] = startDateIndex;
-        stages[i]['endDateIndex'] = endDateIndex;
+      // Prend en compte les stages commencant avant le premier élement
+      if(stageStartDate.compareTo(startDate) < 0) {
+        stageStartDate = startDate;
+      }
 
-        // Si aucun row, on crée le premier
-        if (rows.isEmpty) {
+      // On récupère les index des dates dans la liste
+      int startDateIndex = days.indexWhere((d) =>
+          DateFormat('yyyy-MM-dd').format(d["date"]) ==
+          DateFormat('yyyy-MM-dd').format(stageStartDate));
+      int endDateIndex = days.indexWhere((d) =>
+          DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(stageEndDate));
+
+      stages[i]['startDateIndex'] = startDateIndex;
+      stages[i]['endDateIndex'] = endDateIndex;
+
+      // Exclue les stages hos plages de dates
+      if(startDateIndex == -1 || endDateIndex == -1) {
+        continue;
+      }
+
+      // Si aucun row, on crée le premier
+      if (rows.isEmpty) {
+        rows.add([stages[i]]);
+      } else {
+        // Si on au moins un row, on les parcourt pour voir dans lequel on peut se placer sans cheveaucher un autre créneau
+        var added = false;
+        for (var row in rows) {
+          // On cherche si on cheveauche un existant
+          var overlapIndex = row.indexWhere((r) {
+            return (((r['endDateIndex'] + 1) >
+                    stages[i]['startDateIndex'])
+                ? true
+                : false);
+          });
+          // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
+          if (overlapIndex == -1) {
+            row.add(stages[i]);
+            added = true;
+            break;
+          }
+        }
+
+        // Si on a pas trouvé de place dans un row existant, on créer un nouveau row
+        if (!added) {
           rows.add([stages[i]]);
-        } else {
-          // Si on au moins un row, on les parcourt pour voir dans lequel on peut se placer sans cheveaucher un autre créneau
-          var added = false;
-          for (var row in rows) {
-            // On cherche si on cheveauche un existant
-            var overlapIndex = row.indexWhere((r) {
-              return (((r['endDateIndex'] + 1) >
-                      stages[i]['startDateIndex'])
-                  ? true
-                  : false);
-            });
-            // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
-            if (overlapIndex == -1) {
-              row.add(stages[i]);
-              added = true;
-              break;
-            }
-          }
-
-          // Si on a pas trouvé de place dans un row existant, on créer un nouveau row
-          if (!added) {
-            rows.add([stages[i]]);
-          }
         }
       }
     }
-
     return rows;
   }
 
