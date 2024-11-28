@@ -1,3 +1,7 @@
+## 0.0.39 - 28/11/2024
+
+* Ajoute la liste des élements dans l'appel de la fonction de Callback
+
 ## 0.0.38 - 28/11/2024
 
 * Corrections de la Timeline
