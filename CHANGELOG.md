@@ -1,3 +1,7 @@
+## 0.0.38 - 28/11/2024
+
+* Corrections de la Timeline
+
 ## 0.0.37 - 27/11/2024
 
 * Corrections de la Timeline
