@@ -10,6 +10,7 @@ class TimelineItem extends StatelessWidget {
       required this.centerItemIndex,
       required this.nowIndex,
       required this.days,
+      required this.elements,
       required this.dayWidth,
       required this.dayMargin,
       required this.height,
@@ -21,10 +22,11 @@ class TimelineItem extends StatelessWidget {
   final int centerItemIndex;
   final int nowIndex;
   final List days;
+  final List elements;
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +69,20 @@ class TimelineItem extends StatelessWidget {
                 dayProgress =
                     100 * days[index]['compeff'] / days[index]['buseff'];
               }
+
+              // Lite des élements présent sur la journée
+              var elementsDay = elements
+                  .where(
+                    (e) => e['date'] == DateFormat('yyyy-MM-dd').format(days[index]['date']),
+                  )
+                  .toList();
+
+              // Callback de la fonction d'ouverture du jour
               openDayDetail?.call(
                   DateFormat('yyyy-MM-dd').format(date),
                   dayProgress,
-                  (days[index]['preIds'] as List<dynamic>).cast<String>());
+                  (days[index]['preIds'] as List<dynamic>).cast<String>(),
+                  elementsDay);
             },
             child: SizedBox(
                 width: dayWidth - dayMargin,

@@ -33,7 +33,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic capacities;
   final dynamic stages;
   final dynamic notifications;
-  final Function(String, double?, List<String>?)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
   final Function(String?)? openAddStage;
 
   @override
@@ -407,6 +407,7 @@ class _TimelineXp extends State<TimelineXp> {
                                   centerItemIndex: centerItemIndex,
                                   nowIndex: nowIndex,
                                   days: days,
+                                  elements: widget.elements,
                                   dayWidth: dayWidth,
                                   dayMargin: dayMargin,
                                   height: timelineHeight,
