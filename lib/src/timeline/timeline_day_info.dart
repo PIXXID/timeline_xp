@@ -37,7 +37,7 @@ class TimelineDayInfo extends StatelessWidget {
     final curDelTot = (curDay['delivrableTotal'] != null) ? curDay['delivrableTotal'] : 0;
     final curLongDate = (curDay['date'] != null) ? DateFormat.yMMMMd(lang).format(curDay['date']) : '';
     // TODO - A supprimer après contrôle
-    final debugInfo = '${curDay['lmax']},${curDay['capeff']},${curDay['buseff'].floor()},${curDay['compeff']}';
+    final debugInfo = '${curDay['lmax']},${curDay['capeff']},${curDay['buseff'].toStringAsFixed(1)},${curDay['compeff']}';
 
     // Données de style
     const fontSize = 12.0;
