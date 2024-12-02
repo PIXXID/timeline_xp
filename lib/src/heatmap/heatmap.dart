@@ -20,6 +20,7 @@ class Heatmap extends StatefulWidget {
     required this.elements,
     required this.isBusy,
     required this.selectDay,
+    required this.openDayDetail
   });
 
   final double width;
@@ -32,6 +33,7 @@ class Heatmap extends StatefulWidget {
   final dynamic elements;
   final bool isBusy;
   final Function(String?)? selectDay;
+  final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
 
   @override
   State<Heatmap> createState() => _Heatmap();
@@ -59,7 +61,7 @@ class _Heatmap extends State<Heatmap> {
   @override
   void initState() {
     super.initState();
-    debugPrint('------');
+    debugPrint('------ HeatMap InitState');
 
     // On positionne les dates de début et de fin
     if (widget.dateInterval['prj_startdate'] != null) {
@@ -188,6 +190,10 @@ class _Heatmap extends State<Heatmap> {
     return months;
   }
 
+
+  /*
+  * Selection du jour
+  */
   dynamic _selectDay(String? date) {
     setState(() {
       selectedDate = date;
@@ -220,7 +226,9 @@ class _Heatmap extends State<Heatmap> {
                             index: index,
                             months: months,
                             selectDay: _selectDay,
-                            selectedDate: selectedDate);
+                            selectedDate: selectedDate,
+                            elements: widget.elements,
+                            openDayDetail: widget.openDayDetail);
                         // return Container();
                       }))),
           Padding(

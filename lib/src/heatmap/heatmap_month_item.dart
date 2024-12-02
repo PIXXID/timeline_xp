@@ -11,7 +11,9 @@ class HeatmapMonthItem extends StatelessWidget {
       required this.index,
       required this.months,
       required this.selectDay,
-      required this.selectedDate});
+      required this.selectedDate,
+      required this.elements,
+      required this.openDayDetail});
 
   final double daySize;
   final String lang;
@@ -20,6 +22,8 @@ class HeatmapMonthItem extends StatelessWidget {
   final List months;
   final Function(String?)? selectDay;
   final String? selectedDate;
+  final List elements;
+  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,9 @@ class HeatmapMonthItem extends StatelessWidget {
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Mon'],
                             selectDay: selectDay,
-                            selectedDate: selectedDate),
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
                       SizedBox(height: dayMargin),
                       // Mardi
                       if (months[index]['weeks'][weekIndex]['Tue'].isEmpty)
@@ -84,7 +90,9 @@ class HeatmapMonthItem extends StatelessWidget {
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Tue'],
                             selectDay: selectDay,
-                            selectedDate: selectedDate),
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
                       SizedBox(height: dayMargin),
                       // Mercredi
                       if (months[index]['weeks'][weekIndex]['Wed'].isEmpty)
@@ -96,7 +104,9 @@ class HeatmapMonthItem extends StatelessWidget {
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Wed'],
                             selectDay: selectDay,
-                            selectedDate: selectedDate),
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
                       SizedBox(height: dayMargin),
                       // Jeudi
                       if (months[index]['weeks'][weekIndex]['Thu'].isEmpty)
@@ -108,7 +118,9 @@ class HeatmapMonthItem extends StatelessWidget {
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Thu'],
                             selectDay: selectDay,
-                            selectedDate: selectedDate),
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
                       SizedBox(height: dayMargin),
                       // Vendredi
                       if (months[index]['weeks'][weekIndex]['Fri'].isEmpty)
@@ -120,7 +132,9 @@ class HeatmapMonthItem extends StatelessWidget {
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Fri'],
                             selectDay: selectDay,
-                            selectedDate: selectedDate),
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
                     ],
                   ),
                 );

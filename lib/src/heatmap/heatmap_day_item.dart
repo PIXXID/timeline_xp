@@ -9,7 +9,9 @@ class HeatmapDayItem extends StatelessWidget {
       required this.colors,
       required this.day,
       required this.selectDay,
-      required this.selectedDate});
+      required this.selectedDate,
+      required this.elements,
+      required this.openDayDetail});
 
   final double daySize;
   final String lang;
@@ -17,6 +19,8 @@ class HeatmapDayItem extends StatelessWidget {
   final dynamic day;
   final Function(String?)? selectDay;
   final String? selectedDate;
+  final List elements;
+  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +38,33 @@ class HeatmapDayItem extends StatelessWidget {
     bool isDarkBackground = day['color'].computeLuminance() < 0.5;
 
     return GestureDetector(
-        // Call back lors du clic
-        onTap: () =>
-            {selectDay?.call(DateFormat('yyyy-MM-dd').format(day['date']))},
+        onTap: () {
+          // On calcule la progression du jour pour le renvoyer en callback
+          var selectedDate = DateFormat('yyyy-MM-dd').format(day['date']);
+
+          // Lite des élements présent sur la journée
+          var elementsDay = elements
+              .where(
+                (e) =>
+                    e['date'] == selectedDate,
+              )
+              .toList();
+
+          // Liste des identifiants d'élements
+          List<String> preIds = elementsDay
+              .map((element) => element['pre_id'] as String)
+              .toList();
+
+          // Callback de sélection de la date
+          selectDay?.call(selectedDate);
+
+          // Callback de la fonction d'ouverture du jour
+          openDayDetail?.call(
+              selectedDate,
+              0,
+              (preIds as List<dynamic>).cast<String>(),
+              elementsDay);
+        },
         child: Container(
             width: daySize,
             height: daySize,
