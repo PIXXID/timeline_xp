@@ -21,13 +21,13 @@ class HeatmapDayItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSelected = false;
-    if (selectedDate != null && day['upc_date'] != null) {
+    if (selectedDate != null && day['date'] != null) {
       isSelected =
-          selectedDate == DateFormat('yyyy-MM-dd').format(day['upc_date']);
+          selectedDate == DateFormat('yyyy-MM-dd').format(day['date']);
     }
 
-    String upcDate = day['upc_date'] != null
-        ? DateFormat.d(lang).format(day['upc_date'])
+    String upcDate = day['date'] != null
+        ? DateFormat.d(lang).format(day['date'])
         : '';
 
     // Calcule la luminance de la couleur de la case pour adapter la couleur du texte
@@ -36,7 +36,7 @@ class HeatmapDayItem extends StatelessWidget {
     return GestureDetector(
         // Call back lors du clic
         onTap: () =>
-            {selectDay?.call(DateFormat('yyyy-MM-dd').format(day['upc_date']))},
+            {selectDay?.call(DateFormat('yyyy-MM-dd').format(day['date']))},
         child: Container(
             width: daySize,
             height: daySize,

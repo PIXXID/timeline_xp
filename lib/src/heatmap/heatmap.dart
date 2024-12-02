@@ -17,6 +17,8 @@ class Heatmap extends StatefulWidget {
     required this.daySize,
     required this.dateInterval,
     required this.capacities,
+    required this.elements,
+    required this.isBusy,
     required this.selectDay,
   });
 
@@ -27,6 +29,8 @@ class Heatmap extends StatefulWidget {
   final double daySize;
   final dynamic dateInterval;
   final dynamic capacities;
+  final dynamic elements;
+  final bool isBusy;
   final Function(String?)? selectDay;
 
   @override
@@ -55,6 +59,7 @@ class _Heatmap extends State<Heatmap> {
   @override
   void initState() {
     super.initState();
+    debugPrint('------');
 
     // On positionne les dates de début et de fin
     if (widget.dateInterval['prj_startdate'] != null) {
@@ -65,8 +70,8 @@ class _Heatmap extends State<Heatmap> {
     }
 
     // On récupère les données formatées
-    months = formatData(
-        startDate, endDate, widget.capacities, widget.lang, widget.colors);
+    months = formatData(startDate, endDate, widget.capacities, widget.isBusy,
+        widget.lang, widget.colors);
 
     // On prend des dates qui correspondent aux jours de la semaine qu'on veut
     daysLabels.add(DateFormat.E(widget.lang)
@@ -97,9 +102,11 @@ class _Heatmap extends State<Heatmap> {
     });
   }
 
-  // Formatte la liste des mois/semaines/jours pour l'afficher sous forme de heatmap
+  /*
+  * Formatte la liste des mois/semaines/jours pour l'afficher sous forme de heatmap
+  */
   List formatData(DateTime startDate, DateTime endDate, List capacities,
-      String lang, Map<String, Color> colors) {
+      bool isBusy, String lang, Map<String, Color> colors) {
     List months = [];
 
     // On récupère le nombre de jours entre la date de début et la date de fin
@@ -111,57 +118,71 @@ class _Heatmap extends State<Heatmap> {
     for (var dateIndex = 0; dateIndex < duration - 1; dateIndex++) {
       // Date de l'itération
       DateTime date = startDate.add(Duration(days: dateIndex));
-
       String weekDay = DateFormat.E().format(date);
 
-      // Si les jours sont différents de samedi/dimanche
-      if (weekDay != 'Sat' && weekDay != 'Sun') {
-        // Numéro du mois en cours
-        int monthIndex = int.parse(DateFormat.M().format(date));
-        // Numéro de la semaine du mois en cours
-        int weekIndex = weeksNumber(date, 1);
+      // Numéro du mois en cours
+      int monthIndex = int.parse(DateFormat.M().format(date));
+      // Numéro de la semaine du mois en cours
+      int weekIndex = weeksNumber(date, 1);
 
-        // On vérifie si aucun mois ou si on a changé de mois dans ce cas on en ajoute un nouveau
-        if (months.isEmpty || oldMonthIndex != monthIndex) {
-          // On ajoute un nouveau mois
-          months.add({
-            'monthNum': DateFormat.M(lang).format(date),
-            'label': DateFormat.yMMMM(lang).format(date),
-            'weeks': [
-              {"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}}
-            ]
-          });
-        }
-
-        // On vérifie si on a changé de semaine dans ce cas on en ajoute une nouvelle
-        if (oldWeekIndex != weekIndex) {
-          months[months.length - 1]['weeks']
-              .add({"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}});
-        }
-
-        // On récupère s'il y a des données dans les capacity pour ce jour
-        var capacitiesDay = capacities.firstWhere(
-          (e) => e['upc_date'] == DateFormat('yyyy-MM-dd').format(date),
-          orElse: () => <String, Object>{},
-        );
-
-        // On calcule les lundis, mardis...
-        months[months.length - 1]['weeks']
-            [months[months.length - 1]['weeks'].length - 1][weekDay] = {
-          'upc_date': date,
-          'color': capacitiesDay != null && capacitiesDay.containsKey('color')
-              ? formatStringToColor(capacitiesDay['color'])
-              : colors['primaryText'],
-          'icon': capacitiesDay != null && capacitiesDay.containsKey('icon')
-              ? capacitiesDay['icon']
-              : null
-        };
-
-        // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
-        oldWeekIndex = weekIndex;
-        // On met à jour le mois (permet de voir si ça à changé l'itération suivante)
-        oldMonthIndex = monthIndex;
+      // On vérifie si aucun mois ou si on a changé de mois dans ce cas on en ajoute un nouveau
+      if (months.isEmpty || oldMonthIndex != monthIndex) {
+        // On ajoute un nouveau mois
+        months.add({
+          'monthNum': DateFormat.M(lang).format(date),
+          'label': DateFormat.yMMMM(lang).format(date),
+          'weeks': [
+            {"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}}
+          ]
+        });
       }
+
+      // On vérifie si on a changé de semaine dans ce cas on en ajoute une nouvelle
+      if (oldWeekIndex != weekIndex) {
+        months[months.length - 1]['weeks']
+            .add({"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}});
+      }
+
+      // On récupère s'il y a des données dans les capacity pour ce jour
+      var capacitiesDay = capacities.firstWhere(
+        (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
+        orElse: () => <String, Object>{},
+      );
+
+      // Détermine la couleur en fonction du type d'affichage
+      var icon = null;
+      var color = colors['primaryText'];
+      // Disponibilité
+      if (isBusy) {
+        // Couleur
+        if (capacitiesDay != null && capacitiesDay.containsKey('bcolor')) {
+          color = formatStringToColor(capacitiesDay['bcolor']);
+        }
+        // Icon
+        if (capacitiesDay != null && capacitiesDay.containsKey('bicon') && capacitiesDay['bicon'] != null) {
+          icon = capacitiesDay['bicon'];
+        }
+        // Replanification
+      } else {
+        // Couleur
+        if (capacitiesDay != null && capacitiesDay.containsKey('rcolor')) {
+          color = formatStringToColor(capacitiesDay['rcolor']);
+        }
+        // Icon
+        if (capacitiesDay != null && capacitiesDay.containsKey('ricon') && capacitiesDay['ricon'] != null) {
+          icon = capacitiesDay['ricon'];
+        }
+      }
+
+      // On calcule les lundis, mardis...
+      months[months.length - 1]['weeks']
+              [months[months.length - 1]['weeks'].length - 1]
+          [weekDay] = {'date': date, 'color': color, 'icon': icon};
+
+      // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
+      oldWeekIndex = weekIndex;
+      // On met à jour le mois (permet de voir si ça à changé l'itération suivante)
+      oldMonthIndex = monthIndex;
     }
 
     return months;
