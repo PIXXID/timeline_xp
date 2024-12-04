@@ -19,7 +19,6 @@ class Heatmap extends StatefulWidget {
     required this.capacities,
     required this.elements,
     required this.isBusy,
-    required this.selectDay,
     required this.openDayDetail
   }) : super(key: key);
 
@@ -32,7 +31,6 @@ class Heatmap extends StatefulWidget {
   final dynamic capacities;
   final dynamic elements;
   final bool isBusy;
-  final Function(String?)? selectDay;
   final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
 
   @override
@@ -152,8 +150,8 @@ class _Heatmap extends State<Heatmap> {
       );
 
       // Détermine la couleur en fonction du type d'affichage
-      var icon = null;
-      var color = colors['primaryText'];
+      String? icon;
+      Color? color = colors['primaryText'];
       // Disponibilité
       if (isBusy) {
         // Couleur
@@ -179,7 +177,7 @@ class _Heatmap extends State<Heatmap> {
       // On calcule les lundis, mardis...
       months[months.length - 1]['weeks']
               [months[months.length - 1]['weeks'].length - 1]
-          [weekDay] = {'date': date, 'color': color, 'icon': icon};
+      [weekDay] = {'date': date, 'color': color, 'icon': icon};
 
       // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
       oldWeekIndex = weekIndex;
@@ -190,16 +188,15 @@ class _Heatmap extends State<Heatmap> {
     return months;
   }
 
-
-  /*
-  * Selection du jour
-  */
-  dynamic _selectDay(String? date) {
+  /**
+   * Sélection du jour
+   */
+  dynamic _openDayDetail(String date, double? dayProgress, List<String>? preIds, List<dynamic>? elements) {
     setState(() {
       selectedDate = date;
     });
 
-    widget.selectDay?.call(selectedDate);
+    widget.openDayDetail?.call(date, dayProgress, preIds, elements);
   }
 
   @override
@@ -225,10 +222,9 @@ class _Heatmap extends State<Heatmap> {
                             colors: widget.colors,
                             index: index,
                             months: months,
-                            selectDay: _selectDay,
                             selectedDate: selectedDate,
                             elements: widget.elements,
-                            openDayDetail: widget.openDayDetail);
+                            openDayDetail: _openDayDetail);
                         // return Container();
                       }))),
           Padding(

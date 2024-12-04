@@ -10,7 +10,6 @@ class HeatmapMonthItem extends StatelessWidget {
       required this.colors,
       required this.index,
       required this.months,
-      required this.selectDay,
       required this.selectedDate,
       required this.elements,
       required this.openDayDetail});
@@ -20,7 +19,6 @@ class HeatmapMonthItem extends StatelessWidget {
   final Map<String, Color> colors;
   final int index;
   final List months;
-  final Function(String?)? selectDay;
   final String? selectedDate;
   final List elements;
   final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
@@ -75,7 +73,6 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Mon'],
-                            selectDay: selectDay,
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),
@@ -89,7 +86,6 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Tue'],
-                            selectDay: selectDay,
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),
@@ -103,7 +99,6 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Wed'],
-                            selectDay: selectDay,
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),
@@ -117,7 +112,6 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Thu'],
-                            selectDay: selectDay,
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),
@@ -131,7 +125,6 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Fri'],
-                            selectDay: selectDay,
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),

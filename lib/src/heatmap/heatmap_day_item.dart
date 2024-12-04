@@ -8,7 +8,6 @@ class HeatmapDayItem extends StatelessWidget {
       required this.lang,
       required this.colors,
       required this.day,
-      required this.selectDay,
       required this.selectedDate,
       required this.elements,
       required this.openDayDetail});
@@ -17,7 +16,6 @@ class HeatmapDayItem extends StatelessWidget {
   final String lang;
   final Map<String, Color> colors;
   final dynamic day;
-  final Function(String?)? selectDay;
   final String? selectedDate;
   final List elements;
   final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
@@ -54,9 +52,6 @@ class HeatmapDayItem extends StatelessWidget {
           List<String> preIds = elementsDay
               .map((element) => element['pre_id'] as String)
               .toList();
-
-          // Callback de sélection de la date
-          selectDay?.call(selectedDate);
 
           // Callback de la fonction d'ouverture du jour
           openDayDetail?.call(
