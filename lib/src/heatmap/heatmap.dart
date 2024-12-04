@@ -9,26 +9,26 @@ import 'package:timeline_xp/src/tools/tools.dart';
 
 class Heatmap extends StatefulWidget {
   const Heatmap({
-    super.key,
+    Key? key,
     required this.width,
     required this.height,
     required this.lang,
     required this.colors,
     required this.daySize,
-    required this.dateInterval,
+    required this.infos,
     required this.capacities,
     required this.elements,
     required this.isBusy,
     required this.selectDay,
     required this.openDayDetail
-  });
+  }) : super(key: key);
 
   final double width;
   final double height;
   final String lang;
   final Map<String, Color> colors;
   final double daySize;
-  final dynamic dateInterval;
+  final dynamic infos;
   final dynamic capacities;
   final dynamic elements;
   final bool isBusy;
@@ -64,11 +64,11 @@ class _Heatmap extends State<Heatmap> {
     debugPrint('------ HeatMap InitState');
 
     // On positionne les dates de début et de fin
-    if (widget.dateInterval['prj_startdate'] != null) {
-      startDate = DateTime.parse(widget.dateInterval['prj_startdate']!);
+    if (widget.infos['prj_startdate'] != null) {
+      startDate = DateTime.parse(widget.infos['prj_startdate']!);
     }
-    if (widget.dateInterval['prj_enddate'] != null) {
-      endDate = DateTime.parse(widget.dateInterval['prj_enddate']!);
+    if (widget.infos['prj_enddate'] != null) {
+      endDate = DateTime.parse(widget.infos['prj_enddate']!);
     }
 
     // On récupère les données formatées

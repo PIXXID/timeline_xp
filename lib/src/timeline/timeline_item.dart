@@ -40,13 +40,13 @@ class TimelineItem extends StatelessWidget {
     double heightCapeff = 0;
     double heightBuseff = 0;
     double heightCompeff = 0;
-    if(days[index]['capeff'] > 0) {
+    if (days[index]['capeff'] > 0) {
       heightCapeff = (heightLmax * days[index]['capeff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
     }
-    if(days[index]['buseff'] > 0) {
+    if (days[index]['buseff'] > 0) {
       heightBuseff = (heightLmax * days[index]['buseff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
     }
-    if(days[index]['compeff'] > 0) {
+    if (days[index]['compeff'] > 0) {
       heightCompeff = (heightLmax * days[index]['compeff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
     }
 

@@ -345,7 +345,7 @@ void main() {
                 colors: colors,
                 lang: 'fr_FR',
                 projectCount: projectCount,
-                dateInterval: dateInterval,
+                infos: dateInterval,
                 elements: elements,
                 capacities: capacities,
                 stages: stages,

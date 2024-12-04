@@ -85,7 +85,9 @@ class HeatmapDayItem extends StatelessWidget {
                           0xe818,
                           fontFamily: 'Swiiipiconsfont',
                         ),
-                        color: colors['primaryText'],
+                        color: isDarkBackground
+                          ? colors['primaryText']
+                          : colors['primaryBackground'],
                         size: 16))
               else
                 Text(

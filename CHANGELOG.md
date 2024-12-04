@@ -1,3 +1,23 @@
+## 0.0.45 - 03/12/2024
+
+* Passe une clé à la Heatmap pour forcer le rebuild du widget + petites corrections visuelles
+
+## 0.0.44 - 03/12/2024
+
+* Passe une clé à la Timeline pour forcer le rebuild du widget
+
+## 0.0.43 - 03/12/2024
+
+* Annule la correction reconstruction du widget au changement de données (non concluant)
+
+## 0.0.42 - 03/12/2024
+
+* Correction reconstruction du widget au changement de données
+
+## 0.0.41 - 03/12/2024
+
+* Réadapte le paramètres à la nouvelle forme de données de showTimeline (MAU)
+
 ## 0.0.40 - 02/12/2024
 
 * Corrige la HeatMap

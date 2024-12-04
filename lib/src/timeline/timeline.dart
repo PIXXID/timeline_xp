@@ -9,26 +9,26 @@ import 'custom_thumb_shape.dart';
 
 class TimelineXp extends StatefulWidget {
   const TimelineXp(
-      {super.key,
+      {Key? key,
       required this.width,
       required this.height,
       required this.colors,
       required this.lang,
       required this.projectCount,
-      required this.dateInterval,
+      required this.infos,
       required this.elements,
       required this.capacities,
       required this.stages,
       required this.notifications,
       required this.openDayDetail,
-      required this.openAddStage});
+      required this.openAddStage}) : super(key: key);
 
   final double width;
   final double height;
   final Map<String, Color> colors;
   final String lang;
   final int projectCount;
-  final dynamic dateInterval;
+  final dynamic infos;
   final dynamic elements;
   final dynamic capacities;
   final dynamic stages;
@@ -95,13 +95,14 @@ class _TimelineXp extends State<TimelineXp> {
   @override
   void initState() {
     super.initState();
-
+    debugPrint('------ Timeline InitState');
+    
     // On positionne les dates de début et de fin
-    if (widget.dateInterval['prj_startdate'] != null) {
-      startDate = DateTime.parse(widget.dateInterval['prj_startdate']!);
+    if (widget.infos['prj_startdate'] != null) {
+      startDate = DateTime.parse(widget.infos['prj_startdate']!);
     }
-    if (widget.dateInterval['prj_enddate'] != null) {
-      endDate = DateTime.parse(widget.dateInterval['prj_enddate']!);
+    if (widget.infos['prj_enddate'] != null) {
+      endDate = DateTime.parse(widget.infos['prj_enddate']!);
     }
 
     // Formate la liste des jours pour positionner les éléments correctement
@@ -277,7 +278,7 @@ class _TimelineXp extends State<TimelineXp> {
       DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
 
       // Prend en compte les stages commencant avant le premier élement
-      if(stageStartDate.compareTo(startDate) < 0) {
+      if (stageStartDate.compareTo(startDate) < 0) {
         stageStartDate = startDate;
       }
 
@@ -292,7 +293,7 @@ class _TimelineXp extends State<TimelineXp> {
       stages[i]['endDateIndex'] = endDateIndex;
 
       // Exclue les stages hos plages de dates
-      if(startDateIndex == -1 || endDateIndex == -1) {
+      if (startDateIndex == -1 || endDateIndex == -1) {
         continue;
       }
 
@@ -382,7 +383,7 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 0,
                     child: Container(
-                      height: totalHeight + timelineDetailHeight,
+                      height: timelineHeight + (rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length)) + 18, // 18 = margin stages : 8 + Container vide paddingTop : 10
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
