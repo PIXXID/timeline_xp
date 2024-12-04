@@ -368,7 +368,6 @@ class _TimelineXp extends State<TimelineXp> {
   Widget build(BuildContext context) {
     // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
     double screenWidth = MediaQuery.sizeOf(context).width;
-    double totalHeight = timelineHeight + timelineDetailHeight;
     double firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
     double screenCenter = (screenWidth / 2);
 
