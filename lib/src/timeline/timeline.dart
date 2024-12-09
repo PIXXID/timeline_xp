@@ -21,7 +21,7 @@ class TimelineXp extends StatefulWidget {
       required this.stages,
       required this.notifications,
       required this.openDayDetail,
-      required this.openAddStage}) : super(key: key);
+      required this.openEditStage}) : super(key: key);
 
   final double width;
   final double height;
@@ -34,7 +34,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic stages;
   final dynamic notifications;
   final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
-  final Function(String?)? openAddStage;
+  final Function(String?)? openEditStage;
 
   @override
   State<TimelineXp> createState() => _TimelineXp();
@@ -447,8 +447,8 @@ class _TimelineXp extends State<TimelineXp> {
                                             dayWidth: dayWidth,
                                             dayMargin: dayMargin,
                                             height: rowHeight,
-                                            openAddStage:
-                                                widget.openAddStage)));
+                                            openEditStage:
+                                                widget.openEditStage)));
                               })),
                             ]),
                           )),

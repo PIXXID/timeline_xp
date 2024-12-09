@@ -331,7 +331,7 @@ void main() {
 
   void openDayDetail(String date, double? dayProgress, List<String>? openDayDetail, List<dynamic>? elements) {}
 
-  void openAddStage(String? prsId) {}
+  void openEditStage(String? prsId) {}
 
   const double width = 300;
   const double height = 480;
@@ -351,6 +351,6 @@ void main() {
                 stages: stages,
                 notifications: notifications,
                 openDayDetail: openDayDetail,
-                openAddStage: openAddStage)
+                openEditStage: openEditStage)
           });
 }

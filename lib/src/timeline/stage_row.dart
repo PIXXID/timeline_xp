@@ -10,14 +10,14 @@ class StageRow extends StatefulWidget {
       required this.dayWidth,
       required this.dayMargin,
       required this.height,
-      required this.openAddStage});
+      required this.openEditStage});
 
   final Map<String, Color> colors;
   final List stagesList;
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String?)? openAddStage;
+  final Function(String?)? openEditStage;
 
   @override
   State<StageRow> createState() => _StageRow();
@@ -63,7 +63,7 @@ class _StageRow extends State<StageRow> {
           label: label,
           progress: widget.stagesList[index]['pro'] != null ? widget.stagesList[index]['pro'].toDouble() : 0,
           isMilestone: widget.stagesList[index]['type'] == 'milestone',
-          openAddStage: widget.openAddStage));
+          openEditStage: widget.openEditStage));
     }
 
     super.initState();

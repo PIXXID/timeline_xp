@@ -10,7 +10,7 @@ class StageItem extends StatelessWidget {
       required this.prsId,
       required this.progress,
       required this.isMilestone,
-      required this.openAddStage});
+      required this.openEditStage});
 
   final Map<String, Color> colors;
   final double itemWidth;
@@ -19,7 +19,7 @@ class StageItem extends StatelessWidget {
   final String label;
   final double progress;
   final bool isMilestone;
-  final Function(String?)? openAddStage;
+  final Function(String?)? openEditStage;
 
   @override
   Widget build(BuildContext context) {
