@@ -188,9 +188,7 @@ class _Heatmap extends State<Heatmap> {
     return months;
   }
 
-  /**
-   * Sélection du jour
-   */
+  // Sélection du jour
   dynamic _openDayDetail(String date, double? dayProgress, List<String>? preIds, List<dynamic>? elements) {
     setState(() {
       selectedDate = date;

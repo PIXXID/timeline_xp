@@ -1,4 +1,12 @@
-## 0.0.45 - 03/12/2024
+## 0.0.47 - 09/12/2024
+
+* Timeline : Ajoute openEditStage lors du clic sur un stage
+
+## 0.0.46 - 04/12/2024
+
+* Heatmap : supprime la callback selectDay au profit de openDayDetail
+
+## 0.0.45 - 04/12/2024
 
 * Passe une clé à la Heatmap pour forcer le rebuild du widget + petites corrections visuelles
 

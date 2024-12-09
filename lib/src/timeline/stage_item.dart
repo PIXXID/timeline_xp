@@ -24,7 +24,12 @@ class StageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Container(
+      GestureDetector(
+        // Call back lors du clic
+        onTap: () {
+          openEditStage?.call(prsId);
+        },   
+        child: Container(
           width: itemWidth,
           height: height,
           decoration: BoxDecoration(
@@ -63,6 +68,7 @@ class StageItem extends StatelessWidget {
                     ),
                   ))
           ])),
+      )
     ]);
   }
 }
