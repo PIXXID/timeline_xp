@@ -62,11 +62,11 @@ class _Heatmap extends State<Heatmap> {
     debugPrint('------ HeatMap InitState');
 
     // On positionne les dates de début et de fin
-    if (widget.infos['prj_startdate'] != null) {
-      startDate = DateTime.parse(widget.infos['prj_startdate']!);
+    if (widget.infos['startDate'] != null) {
+      startDate = DateTime.parse(widget.infos['startDate']!);
     }
-    if (widget.infos['prj_enddate'] != null) {
-      endDate = DateTime.parse(widget.infos['prj_enddate']!);
+    if (widget.infos['endDate'] != null) {
+      endDate = DateTime.parse(widget.infos['endDate']!);
     }
 
     // On récupère les données formatées

@@ -98,11 +98,11 @@ class _TimelineXp extends State<TimelineXp> {
     debugPrint('------ Timeline InitState');
     
     // On positionne les dates de début et de fin
-    if (widget.infos['prj_startdate'] != null) {
-      startDate = DateTime.parse(widget.infos['prj_startdate']!);
+    if (widget.infos['startDate'] != null) {
+      startDate = DateTime.parse(widget.infos['startDate']!);
     }
-    if (widget.infos['prj_enddate'] != null) {
-      endDate = DateTime.parse(widget.infos['prj_enddate']!);
+    if (widget.infos['endDate'] != null) {
+      endDate = DateTime.parse(widget.infos['endDate']!);
     }
 
     // Formate la liste des jours pour positionner les éléments correctement
@@ -426,8 +426,8 @@ class _TimelineXp extends State<TimelineXp> {
                             scrollDirection: Axis.vertical,
                             child: Stack(children: [
                               Column(
-                                  children: List.generate(stagesRows.length,
-                                      (rowIndex) {
+                                children: List.generate(stagesRows.length,
+                                    (rowIndex) {
                                 return SingleChildScrollView(
                                     controller: _controllerStages,
                                     scrollDirection: Axis.horizontal,

@@ -1,3 +1,7 @@
+## 0.0.48 - 13/12/2024
+
+* Ajustement suite aux modifications de l'appel
+
 ## 0.0.47 - 09/12/2024
 
 * Timeline : Ajoute openEditStage lors du clic sur un stage
