@@ -23,6 +23,8 @@ class StageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const borderRaduis = BorderRadius.all(Radius.circular(5));
+
     return Row(children: [
       GestureDetector(
         // Call back lors du clic
@@ -33,29 +35,46 @@ class StageItem extends StatelessWidget {
           width: itemWidth,
           height: height,
           decoration: BoxDecoration(
-              borderRadius: (const BorderRadius.all(Radius.circular(7))),
-              color: colors['primaryBackground'],
+              borderRadius: borderRaduis,
+              color: const Color(0x00000000),
               border: Border.all(color: colors['accent2']!)),
           child: Stack(clipBehavior: Clip.none, children: [
             Container(
-                margin: const EdgeInsets.all(3.0),
                 width: itemWidth * progress / 100,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: colors['primary'],
+                  borderRadius: borderRaduis,
+                  color: colors['accent2'],
                 )),
             Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 20.0),
-                    child: Text(label,
+                  padding: const EdgeInsets.only(left: 10.0, right: 20.0),
+                  child: Row(
+                    mainAxisSize:
+                        MainAxisSize.min, // Ajuste la largeur à son contenu
+                    children: [
+                      Icon(
+                        Icons.circle_rounded, // Remplacez par l'icône souhaitée
+                        size: 14, // Taille de l'icône
+                        color:
+                            colors['pcolor'], // Même couleur que le texte
+                      ),
+                      const SizedBox(width: 5), // Espacement entre l'icône et le texte
+                      Text(
+                        label,
                         maxLines: 1,
                         overflow: TextOverflow.fade,
                         softWrap: false,
                         style: TextStyle(
-                            color: colors['primaryText'],
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12)))),
+                          color: colors['primaryText'],
+                          fontWeight: FontWeight.w300,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             if (isMilestone)
               Align(
                   alignment: Alignment.centerRight,

@@ -64,7 +64,7 @@ class TimelineDayInfo extends StatelessWidget {
               );
             }),
             // ProgressBar
-            if (curStageProg > -1)
+            if (curStageProg != null && curStageProg > -1)
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: ReleaseChart(

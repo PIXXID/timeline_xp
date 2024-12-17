@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'stage_item.dart';
+// Tools
+import 'package:timeline_xp/src/tools/tools.dart';
 
 class StageRow extends StatefulWidget {
   const StageRow(
@@ -35,7 +37,21 @@ class _StageRow extends State<StageRow> {
       int daysWidth = widget.stagesList[index]['endDateIndex'] -
           widget.stagesList[index]['startDateIndex'] +
           1;
-      String label = widget.stagesList[index]['name'];
+
+       // Taux de progresion
+      String progressLabel = (widget.stagesList[index]['prog'] != null && widget.stagesList[index]['prog'] > 0) ? ' (${widget.stagesList[index]['prog']}%)' : '';
+
+      // Construction du label du stage
+      String label = (widget.stagesList[index]['pname'] != null) ? widget.stagesList[index]['pname'] + ' - ' : '';
+      label += (widget.stagesList[index]['name'] != null) ? widget.stagesList[index]['name'] + progressLabel : '';
+     
+      // On ajoute la couleur du projet pour l'icon
+      if(widget.stagesList[index]['pcolor'] != null) {
+        widget.colors['pcolor'] = formatStringToColor(widget.stagesList[index]['pcolor'])!;
+      } else {
+        widget.colors['pcolor'] = Color(int.parse('ffffff', radix: 16));
+      }
+
       // Largeur de l'item
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
       // On récupère l'ancien étape de la liste
@@ -61,7 +77,7 @@ class _StageRow extends State<StageRow> {
           height: widget.height,
           prsId: widget.stagesList[index]['prs_id'],
           label: label,
-          progress: widget.stagesList[index]['pro'] != null ? widget.stagesList[index]['pro'].toDouble() : 0,
+          progress: widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
           isMilestone: widget.stagesList[index]['type'] == 'milestone',
           openEditStage: widget.openEditStage));
     }
