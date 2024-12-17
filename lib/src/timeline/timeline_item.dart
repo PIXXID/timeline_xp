@@ -32,7 +32,9 @@ class TimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final DateTime date = days[index]['date'];
-    Color? busyColor = colors['accent1'];
+    Color busyColor = colors['accent2'] ?? Colors.grey;
+    double busyOpacity = 0.5;
+    Color completeColor = colors['accent1'] ?? Colors.white;
 
     // Hauteur MAX
     double heightLmax = height - 80; 
@@ -51,10 +53,15 @@ class TimelineItem extends StatelessWidget {
     }
 
     // Fond Rouge si la charge dépasse la capacité
-    if (heightBuseff >= heightLmax) {
-      busyColor = colors['error'];
-      heightBuseff = heightLmax;
+    if (heightBuseff > heightCapeff) {
+      busyColor = colors['error'] ?? Colors.red;
+      busyOpacity = 1;
+      completeColor = colors['error'] ?? Colors.red;
+      heightBuseff = heightCapeff;
     }
+
+    // Border radius
+    BorderRadius borderRadius = const BorderRadius.only( topLeft: Radius.circular(5), topRight: Radius.circular(5));
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -106,35 +113,43 @@ class TimelineItem extends StatelessWidget {
                             width: dayWidth - dayMargin - 15,
                             height: (heightCapeff > 0) ? heightCapeff : heightLmax,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: colors['accent2'],
+                              border: Border(
+                                top: BorderSide(
+                                  color: colors['accent2']!,
+                                  width: 1,
+                                ),
+                              ),
                             ),
                             child:
                               Center(
                                 child:
                                 // Icon soleil si aucune capacité
                                 (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0) ?
-                                  Icon(Icons.sunny, color: colors['primaryBackground']) : null
+                                  Icon(Icons.sunny, size: 16, color: colors['accent1']) : null
                               )
                           )
                         ),
-                        // Barre de travail affecté
+                        // Barre de travail affecté (busy)
                         Positioned(
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Container(
-                              margin: EdgeInsets.only(
-                                  left: dayMargin / 2,
-                                  right: dayMargin / 2,
-                                  bottom: dayMargin / 3),
-                              width: dayWidth - dayMargin - 16,
-                              height: heightBuseff,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: busyColor,
-                              ),
-                            )
+                          child: Opacity(
+                            opacity: busyOpacity,
+                            child: Container(
+                                margin: EdgeInsets.only(
+                                    left: dayMargin / 2,
+                                    right: dayMargin / 2,
+                                    bottom: dayMargin / 3),
+                                width: dayWidth - dayMargin - 16,
+                                // On affiche 1 pixel pour marquer une journée travaillée
+                                height: (heightBuseff == 0) ? 1 : heightBuseff,
+                                decoration: BoxDecoration(
+                                  borderRadius: borderRadius,
+                                  color: busyColor,
+                                ),
+                              )
+                          )
                         ),
                         // Barre de tavail effectué
                         Positioned(
@@ -149,8 +164,8 @@ class TimelineItem extends StatelessWidget {
                               width: dayWidth - dayMargin - 16,
                               height: heightCompeff,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: colors['primary'],
+                                borderRadius: borderRadius,
+                                color: completeColor,
                               ),
                             ))
                       ]),

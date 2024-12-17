@@ -1,3 +1,7 @@
+## 0.0.49 - 17/12/2024
+
+* Ajustement suite aux modifications de la timeline
+
 ## 0.0.48 - 13/12/2024
 
 * Ajustement suite aux modifications de l'appel

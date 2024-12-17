@@ -238,10 +238,7 @@ class _TimelineXp extends State<TimelineXp> {
       }
 
       if (capacitiesDay != null) {
-        day['lmax'] =
-            capacitiesDay.containsKey('lmax') && capacitiesDay['lmax'] != null
-                ? capacitiesDay['lmax']
-                : 0;
+        day['lmax'] = widget.infos['lmax'];
         day['capeff'] = capacitiesDay.containsKey('capeff') &&
                 capacitiesDay['capeff'] != null
             ? capacitiesDay['capeff']
