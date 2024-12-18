@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'release_chart.dart';
 
 /*
 * Affichage des informations lors du survol d'une journée
@@ -23,21 +22,9 @@ class TimelineDayInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // Informations de la journée affichée
-    final curDay = day;
-    final curStage =
-        (curDay['currentStage'] != null && curDay['currentStage'].isNotEmpty)
-            ? curDay['currentStage']
-            : null;
-    final curStageName = (curStage != null) ? curStage['name'] : ' ';
-    final curStageProg = (curStage != null) ? curStage['prog'] : -1;
-    final curActComp = (curDay['activityCompleted'] != null) ? curDay['activityCompleted'] : 0;
-    final curActTot = (curDay['activityTotal'] != null) ? curDay['activityTotal'] : 0;
-    final curDelComp = (curDay['delivrableCompleted'] != null) ? curDay['delivrableCompleted'] : 0;
-    final curDelTot = (curDay['delivrableTotal'] != null) ? curDay['delivrableTotal'] : 0;
-    final curLongDate = (curDay['date'] != null) ? DateFormat.yMMMMd(lang).format(curDay['date']) : '';
-    // TODO - A supprimer après contrôle
-    final debugInfo = '${curDay['lmax']},${curDay['capeff']},${curDay['buseff'].toStringAsFixed(1)},${curDay['compeff']}';
+    final curEltCompleted =(day['elementCompleted'] != null) ? day['elementCompleted'] : 0;
+    final curEltPending = (day['elementPending'] != null) ? day['elementPending'] : 0;
+    final curLongDate = (day['date'] != null) ? DateFormat.yMMMMd(lang).format(day['date']) : '';
 
     // Données de style
     const fontSize = 12.0;
@@ -47,63 +34,57 @@ class TimelineDayInfo extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(children: [
-          Row(children: [
-            // Nom du stage
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-              return SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.35,
-                child: Text(
-                  '$curStageName',
-                  style: TextStyle(color: colors['primaryText'],
-                    fontWeight: fontWeight,
-                    fontSize: fontSize),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              );
-            }),
-            // ProgressBar
-            if (curStageProg != null && curStageProg > -1)
-              Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: ReleaseChart(
-                    colors: colors, releaseProgress: curStageProg),
-              ),
-          ]),
-          // Totaux activités / livrables
           SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.45,
-            child: Text(
-                  '$curActComp/$curActTot act.  $curDelComp/$curDelTot liv. ($debugInfo)',
+            width: MediaQuery.sizeOf(context).width * 0.6,
+            child:
+              // Icon pour comptage des élements
+              Row(
+                children:<Widget> [
+                Icon(
+                  Icons.data_thresholding_outlined, // Remplacez par l'icône souhaitée
+                  size: fontSize, // Taille de l'icône
+                  color: colors['accent2'], // Même couleur que le texte
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  "${day['buseff'].toStringAsFixed(1)}h / ${day['capeff']}h",
                   textAlign: TextAlign.right,
-                  style: TextStyle(color: colors['primaryText'], 
-                    fontWeight: fontWeight,
-                    fontSize: fontSize),
-              )
+                  style: TextStyle(
+                    color: colors['primaryText'],
+                    fontSize: 11,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                for (var index = 0; index < curEltCompleted; index++)
+                    Icon(
+                      Icons.check_circle_rounded,
+                      size: fontSize,
+                      color: colors['primary'],
+                    ),
+                for (var index = 0; index < curEltPending; index++)
+                    Icon(
+                      Icons.circle_rounded,
+                      size: fontSize,
+                      color: colors['accent1'],
+                    ),                
+              ]),
+          ),
+          // Dat du jour
+          SizedBox(
+            child: Text(
+              curLongDate,
+              textAlign: TextAlign.center,
+              style: 
+                TextStyle(color: colors['primaryText'], 
+                fontWeight: fontWeight,
+                fontSize: fontSize),
             )
+          ),
         ])),
         Container(height: 1, color: colors['accent2']),
         // Date affichée
-        Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Align(
-            alignment: Alignment.center,
-            child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.4,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    color: colors['accent2']),
-                child: Text(curLongDate,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: colors['primaryText'],
-                      fontSize: fontSize, // Taille de l'icône
-                      fontWeight: fontWeight),
-                )),
-          ),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 20)
         ),
     ]);
   }

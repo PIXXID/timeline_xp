@@ -191,6 +191,7 @@ class _TimelineXp extends State<TimelineXp> {
         orElse: () => <String, Object>{},
       );
 
+      // Données par défaut
       Map<String, dynamic> day = {
         'date': date,
         'lmax': 0,
@@ -200,6 +201,8 @@ class _TimelineXp extends State<TimelineXp> {
         'delivrableCompleted': 0,
         'taskTotal': 0,
         'taskCompleted': 0,
+        'elementCompleted': 0,
+        'elementPending': 0,
         'preIds': [],
         'stage': {}
       };
@@ -233,10 +236,18 @@ class _TimelineXp extends State<TimelineXp> {
                 day['taskTotal']++;
                 break;
             }
+
+            // Compte le nombres d'element terminé et en attente/encours
+            if(element['status'] == 'validated' || element['status'] == 'finished') {
+                day['elementCompleted'] += 1;
+            } else if (element['status'] == 'pending' || element['status'] == 'inprogress') {
+                day['elementPending'] += 1;
+            }
           }
         }
       }
 
+      // Informations sur les capacités du jour
       if (capacitiesDay != null) {
         day['lmax'] = widget.infos['lmax'];
         day['capeff'] = capacitiesDay.containsKey('capeff') &&
@@ -253,6 +264,7 @@ class _TimelineXp extends State<TimelineXp> {
             : 0;
       }
 
+      // Calcul des points d'alertes
       if (notificationDay != null && notificationDay.containsKey('prio')) {
         day['alertLevel'] = notificationDay['prio'] ? 2 : 1;
       }
@@ -384,6 +396,19 @@ class _TimelineXp extends State<TimelineXp> {
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
                   ),
+                  Positioned(
+                    width: 100,
+                    left: 5,
+                    top: 0,
+                    child: 
+                      Text(
+                        "Max : ${widget.infos['lmax']}h",
+                        style: TextStyle(
+                          color:widget.colors['accent2'],
+                          fontSize: 11
+                        ),
+                      ),
+                    ),            
                   Column(
                     children: <Widget>[
                       // Timeline

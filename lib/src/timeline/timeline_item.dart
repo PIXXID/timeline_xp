@@ -34,7 +34,7 @@ class TimelineItem extends StatelessWidget {
     final DateTime date = days[index]['date'];
     Color busyColor = colors['accent2'] ?? Colors.grey;
     double busyOpacity = 0.5;
-    Color completeColor = colors['accent1'] ?? Colors.white;
+    Color completeColor = colors['primary'] ?? Colors.white;
 
     // Hauteur MAX
     double heightLmax = height - 80; 
