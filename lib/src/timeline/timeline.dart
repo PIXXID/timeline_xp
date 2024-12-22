@@ -49,26 +49,19 @@ class _TimelineXp extends State<TimelineXp> {
   double sliderMargin = 25;
 
   // Largeur d'un item jour
-  double dayWidth = 80.0;
-  double dayMargin = 20;
+  double dayWidth = 40.0;
+  double dayMargin = 5;
   // Hauteur de la timeline
   double timelineHeight = 240.0;
-  // Hauteur du détail de la timeline
-  double timelineDetailHeight = 40;
-  // Hauteur du slider
-  double sliderHeight = 50;
-  // Hauteur du label de la date
-  double dateLabelHeight = 30;
-
   // Diamètre des pins d'alertes
-  double alertWidth = 10;
+  double alertWidth = 6;
   // Liste des widgets des alertes
   List<Widget> alertList = [];
 
   // Liste des lignes d'étapes
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
-  double rowHeight = 25.0;
+  double rowHeight = 20.0;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -395,26 +388,13 @@ class _TimelineXp extends State<TimelineXp> {
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
-                  ),
-                  Positioned(
-                    width: 100,
-                    left: 5,
-                    top: 0,
-                    child: 
-                      Text(
-                        "Max : ${widget.infos['lmax']}h",
-                        style: TextStyle(
-                          color:widget.colors['accent2'],
-                          fontSize: 11
-                        ),
-                      ),
-                    ),            
+                  ),           
                   Column(
                     children: <Widget>[
                       // Timeline
                       SizedBox(
                         width: screenWidth,
-                        height: timelineHeight,
+                        height: timelineHeight - 20,
                         child: ListView.builder(
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
@@ -441,7 +421,7 @@ class _TimelineXp extends State<TimelineXp> {
                           constraints: BoxConstraints(
                             minHeight: 1,
                             minWidth: double.infinity,
-                            maxHeight: (rowHeight * 2) + 8,
+                            maxHeight: (rowHeight * 3) + 10,
                             maxWidth: double.infinity,
                           ),
                           child: SingleChildScrollView(
@@ -478,12 +458,14 @@ class _TimelineXp extends State<TimelineXp> {
                         padding: const EdgeInsets.only(top: 10.0),
                       ),
                       Container(
-                        height: 1, 
-                        color: widget.colors['accent2']),
+                        height: 0.4, 
+                        color: widget.colors['accent1']
+                      ),
                       TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
-                          lang: widget.lang),
+                          lang: widget.lang
+                      ),
                       Container(
                           padding:
                               const EdgeInsets.symmetric(horizontal: 0),

@@ -23,7 +23,7 @@ class StageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderRaduis = BorderRadius.all(Radius.circular(5));
+    const borderRaduis = BorderRadius.all(Radius.circular(2.5));
 
     return Row(children: [
       GestureDetector(
@@ -37,7 +37,7 @@ class StageItem extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: borderRaduis,
               color: const Color(0x00000000),
-              border: Border.all(color: colors['accent2']!)),
+              border: Border.all(color: colors['accent2']!, width: 0.5)),
           child: Stack(clipBehavior: Clip.none, children: [
             Container(
                 width: itemWidth * progress / 100,
@@ -60,15 +60,15 @@ class StageItem extends StatelessWidget {
                             colors['pcolor'], // Même couleur que le texte
                       ),
                       const SizedBox(width: 5), // Espacement entre l'icône et le texte
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        style: TextStyle(
-                          color: colors['primaryText'],
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12,
+                      Flexible(
+                        child: Text(
+                          label,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: colors['primaryText'],
+                            fontWeight: FontWeight.w300,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],

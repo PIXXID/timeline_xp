@@ -37,7 +37,7 @@ class TimelineItem extends StatelessWidget {
     Color completeColor = colors['primary'] ?? Colors.white;
 
     // Hauteur MAX
-    double heightLmax = height - 80; 
+    double heightLmax = height - 100; 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0;
     double heightBuseff = 0;
@@ -98,7 +98,7 @@ class TimelineItem extends StatelessWidget {
                   children: <Widget>[
                     // Barre avec données
                     SizedBox(
-                      height: heightLmax + 10,
+                      height: heightLmax,
                       child: Stack(children: [
                         // Barre de capacité
                         Positioned(
@@ -125,7 +125,7 @@ class TimelineItem extends StatelessWidget {
                                 child:
                                 // Icon soleil si aucune capacité
                                 (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0) ?
-                                  Icon(Icons.sunny, size: 16, color: colors['accent1']) : null
+                                  Icon(Icons.sunny, size: 16, color: colors['accent2']) : null
                               )
                           )
                         ),
@@ -170,22 +170,40 @@ class TimelineItem extends StatelessWidget {
                             ))
                       ]),
                     ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 4),
+                    ),
                     // Dates
                     Text(
-                      DateFormat.E(lang).format(date),
+                      DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
                       style: TextStyle(
-                          color: colors['primaryText'],
+                          color: (index < nowIndex) ? colors['accent1'] : colors['primaryText'],
+                          fontSize: 11,
                           fontWeight: centerItemIndex == index
-                              ? FontWeight.w700
-                              : FontWeight.w400),
+                              ? FontWeight.w900
+                              : FontWeight.w300),
                     ),
                     Text(
                       DateFormat('dd').format(date),
                       style: TextStyle(
-                          color: colors['primaryText'],
+                          color: (index < nowIndex)
+                              ? colors['accent1']
+                              : colors['primaryText'],
+                          fontSize: 11,
                           fontWeight: centerItemIndex == index
-                              ? FontWeight.w700
-                              : FontWeight.w400),
+                              ? FontWeight.w900
+                              : FontWeight.w300),
+                    ),
+                    // Affichage du mois et de l'année seulement pour la date survollée
+                    if (index == centerItemIndex)
+                      Text(
+                        DateFormat('MM  yy').format(date),
+                        style: TextStyle(
+                            color: colors['primaryText'],
+                            fontSize: 9,
+                            fontWeight: centerItemIndex == index
+                                ? FontWeight.w900
+                                : FontWeight.w300),
                     ),
                     // Alertes
                     if (index == nowIndex)
