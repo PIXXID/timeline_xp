@@ -84,6 +84,10 @@ class _Heatmap extends State<Heatmap> {
         .format(DateTime.parse('2024-10-17'))); // Jeudi
     daysLabels.add(DateFormat.E(widget.lang)
         .format(DateTime.parse('2024-10-18'))); // Vendredi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-19'))); // Samedi
+    daysLabels.add(DateFormat.E(widget.lang)
+        .format(DateTime.parse('2024-10-20'))); // Dimanche
 
     setState(() {
       // On met à jour la date sélectionnée avec la date par défaut = aujourd'hui
@@ -123,7 +127,7 @@ class _Heatmap extends State<Heatmap> {
       // Numéro du mois en cours
       int monthIndex = int.parse(DateFormat.M().format(date));
       // Numéro de la semaine du mois en cours
-      int weekIndex = weeksNumber(date, 1);
+      int weekIndex = weeksNumber(date, 0);
 
       // On vérifie si aucun mois ou si on a changé de mois dans ce cas on en ajoute un nouveau
       if (months.isEmpty || oldMonthIndex != monthIndex) {
@@ -132,7 +136,7 @@ class _Heatmap extends State<Heatmap> {
           'monthNum': DateFormat.M(lang).format(date),
           'label': DateFormat.yMMMM(lang).format(date),
           'weeks': [
-            {"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}}
+            {"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}, "Sat": {}, "Sun": {}}
           ]
         });
       }
@@ -140,7 +144,7 @@ class _Heatmap extends State<Heatmap> {
       // On vérifie si on a changé de semaine dans ce cas on en ajoute une nouvelle
       if (oldWeekIndex != weekIndex) {
         months[months.length - 1]['weeks']
-            .add({"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}});
+            .add({"Mon": {}, "Tue": {}, "Wed": {}, "Thu": {}, "Fri": {}, "Sat": {}, "Sun": {}});
       }
 
       // On récupère s'il y a des données dans les capacity pour ce jour

@@ -1,3 +1,7 @@
+## 0.0.52 - 26/12/2024
+
+* Ajustements heatmap et ajout des jours de week-end
+
 ## 0.0.51 - 22/12/2024
 
 * Ajustement suite aux modifications de la timeline

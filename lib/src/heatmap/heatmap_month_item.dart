@@ -52,7 +52,7 @@ class HeatmapMonthItem extends StatelessWidget {
       SizedBox(
           width: ((weeksNumber * daySize) + ((weeksNumber - 1) * (dayMargin)))
               .toDouble(),
-          height: (daySize + dayMargin) * 5,
+          height: (daySize + dayMargin) * 7,
           child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: weeksNumber,
@@ -61,7 +61,7 @@ class HeatmapMonthItem extends StatelessWidget {
               },
               itemBuilder: (BuildContext context, int weekIndex) {
                 return SizedBox(
-                  height: daySize * 5, // 5 Lignes
+                  height: daySize * 7,
                   child: Column(
                     children: [
                       // Lundi
@@ -125,6 +125,32 @@ class HeatmapMonthItem extends StatelessWidget {
                             lang: lang,
                             colors: colors,
                             day: months[index]['weeks'][weekIndex]['Fri'],
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
+                      SizedBox(height: dayMargin),
+                      // Samedi
+                      if (months[index]['weeks'][weekIndex]['Sat'].isEmpty)
+                        emptyContainer
+                      else
+                        HeatmapDayItem(
+                            daySize: daySize,
+                            lang: lang,
+                            colors: colors,
+                            day: months[index]['weeks'][weekIndex]['Sat'],
+                            selectedDate: selectedDate,
+                            elements: elements,
+                            openDayDetail: openDayDetail),
+                      SizedBox(height: dayMargin),
+                      // Dimanche
+                      if (months[index]['weeks'][weekIndex]['Sun'].isEmpty)
+                        emptyContainer
+                      else
+                        HeatmapDayItem(
+                            daySize: daySize,
+                            lang: lang,
+                            colors: colors,
+                            day: months[index]['weeks'][weekIndex]['Sun'],
                             selectedDate: selectedDate,
                             elements: elements,
                             openDayDetail: openDayDetail),

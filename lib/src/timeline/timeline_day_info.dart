@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 /*
 * Affichage des informations lors du survol d'une journée
