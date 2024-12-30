@@ -467,10 +467,6 @@ class _TimelineXp extends State<TimelineXp> {
                       Container(
                         padding: const EdgeInsets.only(top: 10.0),
                       ),
-                      Container(
-                        height: 0.4, 
-                        color: widget.colors['accent1']
-                      ),
                       TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
@@ -483,7 +479,7 @@ class _TimelineXp extends State<TimelineXp> {
                             // Alertes positionnées
                             SizedBox(
                                 width: screenWidth - (sliderMargin * 2),
-                                height: 50,
+                                height: 40,
                                 child: Padding(
                                     padding: EdgeInsets.only(
                                         left: sliderMargin - (alertWidth / 2)),
@@ -505,8 +501,8 @@ class _TimelineXp extends State<TimelineXp> {
                                               },
                                               child: Icon(
                                                 Icons.circle_rounded,
-                                                size: alertWidth,
-                                                color: widget.colors['accent2'],
+                                                size: alertWidth + 2,
+                                                color: widget.colors['primary'],
                                               ))));
 
                                       if (days.isNotEmpty) {
@@ -552,7 +548,9 @@ class _TimelineXp extends State<TimelineXp> {
                                           children: alerts.isNotEmpty
                                               ? alerts
                                               : [const SizedBox()]);
-                                    }))),
+                                    })
+                              )
+                            ),
                             // Slider
                             Positioned(
                                 bottom: 0,
@@ -560,17 +558,13 @@ class _TimelineXp extends State<TimelineXp> {
                                     width: screenWidth - (sliderMargin * 2),
                                     child: SliderTheme(
                                       data: SliderTheme.of(context).copyWith(
-                                        thumbShape: CustomThumbShape(
-                                            colors: widget.colors,
-                                            iconLeft:
-                                                Icons.chevron_left_rounded,
-                                            iconRight:
-                                                Icons.chevron_right_rounded),
+                                        thumbColor: widget.colors['primary'],
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:
                                             widget.colors['accent2'],
-                                        trackHeight: 8,
+                                        trackHeight: 2,
                                       ),
                                       child: Slider(
                                         value: sliderValue,

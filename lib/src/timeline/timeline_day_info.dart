@@ -27,7 +27,7 @@ class TimelineDayInfo extends StatelessWidget {
     const double badgeHeight = 18;
 
     // Données de style
-    const fontSize = 10.0;
+    const fontSize = 11.0;
     
     return Column(children: [
       Padding(

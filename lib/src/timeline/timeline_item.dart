@@ -134,7 +134,7 @@ class TimelineItem extends StatelessWidget {
                                   RichText(
                                     text: const TextSpan(
                                       text: '☀️',
-                                       style: TextStyle(fontSize: 20)
+                                       style: TextStyle(fontSize: 16)
                                     )
                                   ) : null
                               )
@@ -210,6 +210,7 @@ class TimelineItem extends StatelessWidget {
                                 ? FontWeight.w900
                                 : FontWeight.w300),
                     ),
+                    
                     // Alertes
                     if (index == nowIndex)
                       Padding(
