@@ -13,8 +13,10 @@ int weeksNumber(DateTime date, int add) {
   // Calcule le nombre de jours entre la date et le premier jour de l'année
   int daysDifference = date.difference(firstDayOfYear).inDays + add;
 
+  int weekNumber = ((daysDifference + firstDayWeekday) / 7).ceil();
+
   // Calcule le numéro de la semaine en se basant sur la différence de jours
-  return ((daysDifference + firstDayWeekday) / 7).ceil();
+  return weekNumber > 52 ? 1 : weekNumber;
 }
 
 Color? formatStringToColor(String? color) {

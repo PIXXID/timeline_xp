@@ -55,13 +55,15 @@ class TimelineDayInfo extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(2.5)),
                 color: colors['primary'],
                 border: Border.all(color: colors['primary']!)),
-              child: Text(
-                "${day['compeff'].floor()}h",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors['primaryText'],
-                  fontSize: 11,
-                ),
+              child: Center(
+                child: Text(
+                  "${day['compeff'].floor()}h",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: colors['primaryText'],
+                    fontSize: 11,
+                  ),
+                )
               )
             ),
             const SizedBox(width: 5),
@@ -80,13 +82,15 @@ class TimelineDayInfo extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(2.5)),
                   color: colors['accent2'],
                   border: Border.all(color: colors['accent2']!)),
-              child: Text(
-                "${day['buseff'].floor()}h",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors['primaryText'],
-                  fontSize: 11,
-                ),
+              child: Center(
+                child: Text(
+                  "${day['buseff'].floor()}h",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: colors['primaryText'],
+                    fontSize: 11,
+                  ),
+                )
               )
             ),
             const SizedBox(width: 5),
@@ -106,13 +110,15 @@ class TimelineDayInfo extends StatelessWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(2.5)),
                     color: const Color(0x00000000),
                     border: Border.all(color: colors['accent2']!)),
-                child: Text(
-                  "${day['capeff'].floor()}h",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: colors['primaryText'],
-                    fontSize: 11,
-                  ),
+                child: Center(
+                  child: Text(
+                    "${day['capeff'].floor()}h",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: colors['primaryText'],
+                      fontSize: 11,
+                    ),
+                  )
                 )
               ),
             const SizedBox(width: 10),

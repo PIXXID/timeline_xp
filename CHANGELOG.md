@@ -1,3 +1,11 @@
+## 0.0.54 - 27/12/2024
+
+* Corrections graphiques de la timeline
+
+## 0.0.53 - 27/12/2024
+
+* Supprime la gestion des alertes dans le plan de capacité et prend en compte la getion du jour en cours dans la timeline
+
 ## 0.0.52 - 26/12/2024
 
 * Ajustements heatmap et ajout des jours de week-end

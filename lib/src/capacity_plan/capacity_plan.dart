@@ -232,18 +232,6 @@ class _CapacityPlanState extends State<CapacityPlan> {
       }
     }
 
-    // On vérifie si on doit afficher une alerte si le nombre d'heures disponibles saisies
-    // pour le projet est inférieure au nombre d'heures déjà affectées
-    for (Map<String, dynamic> projectEffort in day['busy_effort']) {
-      var matchingProject = dayProjects.firstWhere(
-        (p) => p['prj_id'] == projectEffort['prj_id'],
-        orElse: () => null);
-      var projectData = widget.projects.firstWhere((p) => p['prj_id'] == projectEffort['prj_id']);
-      if (matchingProject == null || matchingProject['upc_capacity_effort'] < projectEffort['upc_user_busy_effort']) {
-        day['alerts'].add({ 'prj_id': projectData['prj_id'], 'prj_name': projectData['prj_name'], 'prj_color': projectData['prj_color'], 'upc_capacity_effort': (matchingProject == null ? 0 : matchingProject['upc_capacity_effort']), 'upc_user_busy_effort': projectEffort['upc_user_busy_effort'] });
-      }
-    }
-
     // On applique le jour sélectionné à la liste de jours modifiés
     // On remet à 0 les capacity pour le jour modifié (pour gérer les supressions)
     modifiedDays.removeWhere(

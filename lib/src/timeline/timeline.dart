@@ -20,8 +20,10 @@ class TimelineXp extends StatefulWidget {
       required this.capacities,
       required this.stages,
       required this.notifications,
+      this.defaultDate,
       required this.openDayDetail,
-      required this.openEditStage}) : super(key: key);
+      this.openEditStage,
+      this.updateCurrentDate}) : super(key: key);
 
   final double width;
   final double height;
@@ -33,8 +35,10 @@ class TimelineXp extends StatefulWidget {
   final dynamic capacities;
   final dynamic stages;
   final dynamic notifications;
+  final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
   final Function(String?)? openEditStage;
+  final Function(String?)? updateCurrentDate;
 
   @override
   State<TimelineXp> createState() => _TimelineXp();
@@ -71,6 +75,7 @@ class _TimelineXp extends State<TimelineXp> {
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now().add(const Duration(days: 60));
   int nowIndex = 0;
+  int defaultDateIndex = -1;
 
   double sliderMaxValue = 10;
 
@@ -111,8 +116,13 @@ class _TimelineXp extends State<TimelineXp> {
     // Calcule la valeur maximum du slider
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
 
-    // Positionne le slider sur la date du jour
+    // Calcule l'index de la date du jour
     nowIndex = now.difference(startDate).inDays;
+
+    // Calcule l'index de la date positionnée par défaut
+    if (widget.defaultDate != null) {
+      defaultDateIndex = DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
+    }
 
     // Écoute du scroll pour :
     // - calculer quel élément est au centre
@@ -132,6 +142,11 @@ class _TimelineXp extends State<TimelineXp> {
           sliderValue = _controllerTimeline.offset;
         });
 
+        if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
+          String dayDate = DateFormat('yyyy-MM-dd').format(days[centerItemIndex]['date']);
+          widget.updateCurrentDate!.call(dayDate);
+        }
+
         if (stagesRows.isNotEmpty) {
           _controllerStages.jumpTo(sliderValue);
         }
@@ -141,7 +156,7 @@ class _TimelineXp extends State<TimelineXp> {
     // Exécuter une seule fois après la construction du widget
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // On scroll sur la date du jour par défaut
-      scrollToNow(nowIndex);
+      scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex);
     });
   }
 
@@ -352,11 +367,11 @@ class _TimelineXp extends State<TimelineXp> {
     return days;
   }
 
-  // Scroll à aujourd'hui
-  void scrollToNow(int nowIndex) {
-    if (nowIndex >= 0) {
+  // Scroll à une date
+  void scrollTo(int dateIndex) {
+    if (dateIndex >= 0) {
       // On calcule la valeur du scroll en fonction de la date
-      double scroll = nowIndex * (dayWidth - dayMargin);
+      double scroll = dateIndex * (dayWidth - dayMargin);
 
       // Met à jour la valeur du scroll et scroll
       setState(() {
@@ -491,7 +506,7 @@ class _TimelineXp extends State<TimelineXp> {
                                           child: GestureDetector(
                                               // Call back lors du clic
                                               onTap: () {
-                                                scrollToNow(nowIndex);
+                                                scrollTo(nowIndex);
                                               },
                                               child: Icon(
                                                 Icons.circle_rounded,
