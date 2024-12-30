@@ -33,11 +33,10 @@ class TimelineItem extends StatelessWidget {
 
     final DateTime date = days[index]['date'];
     Color busyColor = colors['accent2'] ?? Colors.grey;
-    double busyOpacity = 0.5;
     Color completeColor = colors['primary'] ?? Colors.white;
 
     // Hauteur MAX
-    double heightLmax = height - 100; 
+    double heightLmax = height - 90; 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0;
     double heightBuseff = 0;
@@ -55,7 +54,6 @@ class TimelineItem extends StatelessWidget {
     // Fond Rouge si la charge dépasse la capacité
     if (heightBuseff > heightCapeff) {
       busyColor = colors['error'] ?? Colors.red;
-      busyOpacity = 1;
       completeColor = colors['error'] ?? Colors.red;
       heightBuseff = heightCapeff;
     }
@@ -119,11 +117,11 @@ class TimelineItem extends StatelessWidget {
                                 right: dayMargin / 2,
                                 bottom: dayMargin / 3),
                             width: dayWidth - dayMargin - 15,
-                            height: (heightCapeff > 0) ? heightCapeff : heightLmax,
+                            height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                  color: colors['accent2']!,
+                                  color: colors['accent1']!,
                                   width: 1,
                                 ),
                               ),
@@ -133,7 +131,12 @@ class TimelineItem extends StatelessWidget {
                                 child:
                                 // Icon soleil si aucune capacité
                                 (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0) ?
-                                  Icon(Icons.sunny, size: 16, color: colors['accent2']) : null
+                                  RichText(
+                                    text: const TextSpan(
+                                      text: '☀️',
+                                       style: TextStyle(fontSize: 20)
+                                    )
+                                  ) : null
                               )
                           )
                         ),
@@ -142,22 +145,19 @@ class TimelineItem extends StatelessWidget {
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Opacity(
-                            opacity: busyOpacity,
-                            child: Container(
-                                margin: EdgeInsets.only(
-                                    left: dayMargin / 2,
-                                    right: dayMargin / 2,
-                                    bottom: dayMargin / 3),
-                                width: dayWidth - dayMargin - 16,
-                                // On affiche 1 pixel pour marquer une journée travaillée
-                                height: (heightBuseff == 0) ? 1 : heightBuseff,
-                                decoration: BoxDecoration(
-                                  borderRadius: borderRadius,
-                                  color: busyColor,
-                                ),
-                              )
-                          )
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                left: dayMargin / 2,
+                                right: dayMargin / 2,
+                                bottom: dayMargin / 3),
+                            width: dayWidth - dayMargin - 16,
+                            // On affiche 1 pixel pour marquer une journée travaillée
+                            height: (heightBuseff == 0) ? 1 : heightBuseff,
+                            decoration: BoxDecoration(
+                              borderRadius: borderRadius,
+                              color: busyColor,
+                            ),
+                          ),
                         ),
                         // Barre de tavail effectué
                         Positioned(
@@ -177,9 +177,6 @@ class TimelineItem extends StatelessWidget {
                               ),
                             ))
                       ]),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4),
                     ),
                     // Dates
                     Text(

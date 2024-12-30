@@ -191,14 +191,6 @@ class _TimelineXp extends State<TimelineXp> {
         orElse: () => <String, Object>{},
       );
 
-      var notificationDay = notifications.firstWhere(
-        (e) =>
-            DateFormat('yyyy-MM-dd').format(DateTime.parse(e['date'])) ==
-                DateFormat('yyyy-MM-dd').format(date) &&
-            e['time'],
-        orElse: () => <String, Object>{},
-      );
-
       // Données par défaut
       Map<String, dynamic> day = {
         'date': date,
@@ -257,7 +249,7 @@ class _TimelineXp extends State<TimelineXp> {
 
       // Informations sur les capacités du jour
       if (capacitiesDay != null) {
-        day['lmax'] = widget.infos['lmax'];
+        day['lmax'] = widget.infos['lmax'] ?? 0;
         day['capeff'] = capacitiesDay.containsKey('capeff') &&
                 capacitiesDay['capeff'] != null
             ? capacitiesDay['capeff']
@@ -273,8 +265,11 @@ class _TimelineXp extends State<TimelineXp> {
       }
 
       // Calcul des points d'alertes
-      if (notificationDay != null && notificationDay.containsKey('prio')) {
-        day['alertLevel'] = notificationDay['prio'] ? 2 : 1;
+      double progress = day['capeff'] > 0 ? (day['buseff'] / day['capeff']) * 100 : 0;
+      if (progress > 99) {
+        day['alertLevel'] = 2;
+      } else if (progress > 80) {
+        day['alertLevel'] = 1;
       }
 
       list.add(day);
