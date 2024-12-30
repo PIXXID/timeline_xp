@@ -72,6 +72,12 @@ class _CapacityPlanState extends State<CapacityPlan> {
     selectedProject = { 'prj_id': null, 'prj_color': '#5C5E71' };
 
     weeks = formatCapacities(DateTime.parse(widget.startDate), DateTime.parse(widget.endDate), widget.planning, widget.capacities);
+
+    // Exécuter une seule fois après la construction du widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // On scroll sur la date du jour par défaut
+      _scrollRight();
+    });
   }
 
   // Formate la liste des jours pour la timeline

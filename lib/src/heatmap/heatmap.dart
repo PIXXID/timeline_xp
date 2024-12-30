@@ -155,6 +155,7 @@ class _Heatmap extends State<Heatmap> {
 
       // Détermine la couleur en fonction du type d'affichage
       String? icon;
+      int? capeff = -1;
       Color? color = colors['primaryText'];
       // Disponibilité
       if (isBusy) {
@@ -177,11 +178,15 @@ class _Heatmap extends State<Heatmap> {
           icon = capacitiesDay['ricon'];
         }
       }
+      // Capacity
+      if (capacitiesDay != null && capacitiesDay.containsKey('capeff')) {
+        capeff = capacitiesDay['capeff'];
+      }
 
       // On calcule les lundis, mardis...
       months[months.length - 1]['weeks']
               [months[months.length - 1]['weeks'].length - 1]
-      [weekDay] = {'date': date, 'color': color, 'icon': icon};
+      [weekDay] = {'date': date, 'color': color, 'icon': icon, 'capeff': capeff};
 
       // On met à jour la semaine (permet de voir si ça à changé l'itération suivante)
       oldWeekIndex = weekIndex;

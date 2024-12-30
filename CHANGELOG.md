@@ -1,3 +1,7 @@
+## 0.0.55 - 30/12/2024
+
+* Corrections semaine précédente capacityPlan et jours vides heatmap
+
 ## 0.0.54 - 27/12/2024
 
 * Corrections graphiques de la timeline
