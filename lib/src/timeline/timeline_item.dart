@@ -26,7 +26,7 @@ class TimelineItem extends StatelessWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +63,13 @@ class TimelineItem extends StatelessWidget {
     // Border radius
     BorderRadius borderRadius = const BorderRadius.only( topLeft: Radius.circular(5), topRight: Radius.circular(5));
 
+    // Indicateurs de capacité et charges
+    dynamic dayIndicators = {
+      'capacity': days[index]['capeff'],
+      'busy': days[index]['buseff'],
+      'completed': days[index]['compeff']
+    };
+
     return Align(
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
@@ -89,7 +96,8 @@ class TimelineItem extends StatelessWidget {
                   DateFormat('yyyy-MM-dd').format(date),
                   dayProgress,
                   (days[index]['preIds'] as List<dynamic>).cast<String>(),
-                  elementsDay);
+                  elementsDay,
+                  dayIndicators);
             },
             child: SizedBox(
                 width: dayWidth - dayMargin,

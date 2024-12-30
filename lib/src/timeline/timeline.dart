@@ -36,7 +36,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic stages;
   final dynamic notifications;
   final String? defaultDate;
-  final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
   final Function(String?)? openEditStage;
   final Function(String?)? updateCurrentDate;
 
