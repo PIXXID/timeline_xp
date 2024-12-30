@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'timeline_item.dart';
 import 'timeline_day_info.dart';
 import 'stage_row.dart';
-import 'custom_thumb_shape.dart';
 
 class TimelineXp extends StatefulWidget {
   const TimelineXp(
