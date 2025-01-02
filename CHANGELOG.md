@@ -1,3 +1,7 @@
+## 0.0.57 - 02/01/2025
+
+* Ajustements graphique de la timeline et du slider
+
 ## 0.0.56 - 30/12/2024
 
 * Ajustements graphique de la timeline et du slider
