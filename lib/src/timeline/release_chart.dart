@@ -33,7 +33,7 @@ class ReleaseChartState extends State<ReleaseChart> {
   List<PieChartSectionData> _getSections(colors, releaseProgress) {
     return [
       PieChartSectionData(
-          color: colors['accent2'],
+          color: colors['accent1'],
           value: 100,
           radius: 5, // Taille de la section
           showTitle: false),

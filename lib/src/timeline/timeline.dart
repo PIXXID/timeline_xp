@@ -386,6 +386,7 @@ class _TimelineXp extends State<TimelineXp> {
         backgroundColor: Colors.transparent,
         body: Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(color: widget.colors['primaryBackground']),
             child: Stack(
                 // Trait rouge indiquant le jour en cours
                 children: [
@@ -499,9 +500,9 @@ class _TimelineXp extends State<TimelineXp> {
                                                 scrollTo(nowIndex);
                                               },
                                               child: Icon(
-                                                Icons.circle_rounded,
-                                                size: alertWidth + 2,
-                                                color: widget.colors['primary'],
+                                                Icons.circle_outlined,
+                                                size: 12,
+                                                color: widget.colors['primaryText'],
                                               ))));
 
                                       if (days.isNotEmpty) {
@@ -525,7 +526,7 @@ class _TimelineXp extends State<TimelineXp> {
                                                     },
                                                     child: Icon(
                                                       Icons.circle_rounded,
-                                                      size: alertWidth,
+                                                      size: 10,
                                                       color: days[index][
                                                                   'alertLevel'] ==
                                                               1
@@ -562,7 +563,7 @@ class _TimelineXp extends State<TimelineXp> {
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:
-                                            widget.colors['accent2'],
+                                            widget.colors['accent1'],
                                         trackHeight: 2,
                                       ),
                                       child: Slider(
