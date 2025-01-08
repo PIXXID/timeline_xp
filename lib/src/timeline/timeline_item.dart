@@ -185,8 +185,8 @@ class TimelineItem extends StatelessWidget {
                     Text(
                       DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
                       style: TextStyle(
-                          color: (index < nowIndex) ? colors['secondaryBackground'] : colors['primaryText'],
-                          fontSize: 12,
+                          color: (index < nowIndex) ? colors['secondaryText'] : colors['primaryText'],
+                          fontSize: 11,
                           fontWeight: centerItemIndex == index
                               ? FontWeight.w900
                               : FontWeight.w300),
@@ -195,7 +195,7 @@ class TimelineItem extends StatelessWidget {
                       DateFormat('dd').format(date),
                       style: TextStyle(
                           color: (index < nowIndex)
-                              ? colors['secondaryBackground']
+                              ? colors['secondaryText']
                               : colors['primaryText'],
                           fontSize: 12,
                           fontWeight: centerItemIndex == index
