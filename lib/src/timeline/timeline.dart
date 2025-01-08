@@ -527,16 +527,11 @@ class _TimelineXp extends State<TimelineXp> {
                                                     child: Icon(
                                                       Icons.circle_rounded,
                                                       size: 10,
-                                                      color: days[index][
-                                                                  'alertLevel'] ==
-                                                              1
+                                                      color: days[index]['alertLevel'] == 1
                                                           ? widget
                                                               .colors['warning']
-                                                          : (days[index][
-                                                                      'alertLevel'] ==
-                                                                  2
-                                                              ? widget.colors[
-                                                                  'error']
+                                                          : (days[index]['alertLevel'] == 2
+                                                              ? widget.colors['error']
                                                               : Colors
                                                                   .transparent),
                                                     ))));
@@ -563,7 +558,7 @@ class _TimelineXp extends State<TimelineXp> {
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:
-                                            widget.colors['accent1'],
+                                            widget.colors['secondaryBackground'],
                                         trackHeight: 2,
                                       ),
                                       child: Slider(

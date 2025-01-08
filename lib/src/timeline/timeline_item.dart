@@ -32,7 +32,7 @@ class TimelineItem extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final DateTime date = days[index]['date'];
-    Color busyColor = colors['accent1'] ?? Colors.grey;
+    Color busyColor = colors['secondaryText'] ?? Colors.grey;
     Color completeColor = colors['primary'] ?? Colors.white;
 
     // Hauteur MAX
@@ -121,7 +121,7 @@ class TimelineItem extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                  color: colors['accent2']!,
+                                  color: colors['secondaryBackground']!,
                                   width: 1,
                                 ),
                               ),
@@ -182,7 +182,7 @@ class TimelineItem extends StatelessWidget {
                     Text(
                       DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
                       style: TextStyle(
-                          color: (index < nowIndex) ? colors['accent2'] : colors['primaryText'],
+                          color: (index < nowIndex) ? colors['secondaryBackground'] : colors['primaryText'],
                           fontSize: 11,
                           fontWeight: centerItemIndex == index
                               ? FontWeight.w900
@@ -192,7 +192,7 @@ class TimelineItem extends StatelessWidget {
                       DateFormat('dd').format(date),
                       style: TextStyle(
                           color: (index < nowIndex)
-                              ? colors['accent2']
+                              ? colors['secondaryBackground']
                               : colors['primaryText'],
                           fontSize: 11,
                           fontWeight: centerItemIndex == index

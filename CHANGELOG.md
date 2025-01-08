@@ -1,3 +1,7 @@
+## 0.0.58 - 08/01/2025
+
+* Correction des couleurs de la Timeline
+
 ## 0.0.57 - 02/01/2025
 
 * Ajustements graphique de la timeline et du slider

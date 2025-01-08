@@ -51,7 +51,7 @@ class TimelineDayInfo extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(2.5)),
                   color: const Color(0x00000000),
-                  border: Border.all(color: colors['accent2']!)),
+                  border: Border.all(color: colors['secondaryText']!)),
               child: Center(
                   child: Text(
                 "${day['capeff'].floor()}h",
@@ -75,8 +75,8 @@ class TimelineDayInfo extends StatelessWidget {
               height: badgeHeight,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-                  color: colors['accent1'],
-                  border: Border.all(color: colors['accent1']!)),
+                  color: colors['secondaryText'],
+                  border: Border.all(color: colors['secondaryText']!)),
               child: Center(
                   child: Text(
                 "${day['buseff'].floor()}h",
@@ -122,7 +122,7 @@ class TimelineDayInfo extends StatelessWidget {
             Icon(
               Icons.square_rounded,
               size: fontSize + 6,
-              color: colors['accent2'],
+              color: colors['secondaryBackground'],
             ),
         ]),
       ),

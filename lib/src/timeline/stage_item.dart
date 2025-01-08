@@ -37,13 +37,13 @@ class StageItem extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: borderRaduis,
               color: const Color(0x00000000),
-              border: Border.all(color: colors['accent1']!, width: 0.5)),
+              border: Border.all(color: colors['secondaryText']!, width: 0.5)),
           child: Stack(clipBehavior: Clip.none, children: [
             Container(
                 width: itemWidth * progress / 100,
                 decoration: BoxDecoration(
                   borderRadius: borderRaduis,
-                  color: colors['accent1'],
+                  color: colors['secondaryText'],
                 )),
             Align(
                 alignment: Alignment.centerLeft,
