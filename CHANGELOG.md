@@ -1,3 +1,7 @@
+## 0.0.61 - 13/01/2025
+
+* Callback des stages
+
 ## 0.0.60 - 13/01/2025
 
 * Adaptations de la Timeline
