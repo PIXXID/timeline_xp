@@ -18,7 +18,7 @@ class HeatmapDayItem extends StatelessWidget {
   final dynamic day;
   final String? selectedDate;
   final List elements;
-  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,20 @@ class HeatmapDayItem extends StatelessWidget {
                 .map((element) => element['pre_id'] as String)
                 .toList();
 
+            // Indicateurs de capacité et charges
+            dynamic dayIndicators = {
+              'capacity': day['capeff'],
+              'busy': day['buseff'],
+              'completed': day['compeff']
+            };
+
             // Callback de la fonction d'ouverture du jour
             openDayDetail?.call(
                 selectedDate,
                 0,
                 (preIds as List<dynamic>).cast<String>(),
-                elementsDay);
+                elementsDay,
+                dayIndicators);
           }
         },
         child: Container(
@@ -69,7 +77,7 @@ class HeatmapDayItem extends StatelessWidget {
             decoration: BoxDecoration(
               color: day['capeff'] > 0 ? day['color'] : colors['accent1'],
               border: Border.all(
-                color: isSelected ? colors['warning']! : Colors.transparent,
+                color: isSelected ? colors['primary']! : Colors.transparent,
                 width: isSelected ? 2.0 : 0,
               ),
             ),
@@ -88,17 +96,17 @@ class HeatmapDayItem extends StatelessWidget {
                       size: 16))
               else if (day['capeff'] == 0)
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     height: daySize,
                     child: Icon(
                         Icons.sunny,
                         color: colors['accent2'],
-                        size: 16)))
+                        size: 14)))
               else
                 Text(
                   upcDate,
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 13,
                     color: isDarkBackground
                         ? colors['primaryText']
                         : colors['primaryBackground'],

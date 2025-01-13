@@ -49,13 +49,16 @@ class TimelineItem extends StatelessWidget {
     }
     if (days[index]['compeff'] > 0) {
       heightCompeff = (heightLmax * days[index]['compeff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
+      if(heightCompeff >= heightCapeff) {
+        heightCompeff = heightCapeff;
+      }
     }
 
     // Fond Rouge si la charge dépasse la capacité
     if (heightBuseff > heightCapeff) {
       busyColor = colors['error'] ?? Colors.red;
       completeColor = colors['error'] ?? Colors.red;
-      heightBuseff = heightCapeff;
+      heightBuseff = heightCapeff - 2;
     }
 
     // Border radius
@@ -121,7 +124,7 @@ class TimelineItem extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                  color: colors['secondaryBackground']!,
+                                  color: colors['secondaryText']!,
                                   width: 1,
                                 ),
                               ),
@@ -183,7 +186,7 @@ class TimelineItem extends StatelessWidget {
                       DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
                       style: TextStyle(
                           color: (index < nowIndex) ? colors['secondaryBackground'] : colors['primaryText'],
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: centerItemIndex == index
                               ? FontWeight.w900
                               : FontWeight.w300),
@@ -194,7 +197,7 @@ class TimelineItem extends StatelessWidget {
                           color: (index < nowIndex)
                               ? colors['secondaryBackground']
                               : colors['primaryText'],
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: centerItemIndex == index
                               ? FontWeight.w900
                               : FontWeight.w300),
@@ -205,10 +208,8 @@ class TimelineItem extends StatelessWidget {
                         DateFormat('MM  yy').format(date),
                         style: TextStyle(
                             color: colors['primaryText'],
-                            fontSize: 9,
-                            fontWeight: centerItemIndex == index
-                                ? FontWeight.w900
-                                : FontWeight.w300),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300),
                     ),
                     
                     // Alertes

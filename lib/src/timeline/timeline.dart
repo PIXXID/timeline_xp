@@ -470,7 +470,9 @@ class _TimelineXp extends State<TimelineXp> {
                       TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
-                          lang: widget.lang
+                          lang: widget.lang,
+                          elements: widget.elements,
+                          openDayDetail: widget.openDayDetail
                       ),
                       Container(
                           padding:
@@ -479,7 +481,7 @@ class _TimelineXp extends State<TimelineXp> {
                             // Alertes positionnées
                             SizedBox(
                                 width: screenWidth - (sliderMargin * 2),
-                                height: 40,
+                                height: 45,
                                 child: Padding(
                                     padding: EdgeInsets.only(
                                         left: sliderMargin - (alertWidth / 2)),
@@ -501,7 +503,7 @@ class _TimelineXp extends State<TimelineXp> {
                                               },
                                               child: Icon(
                                                 Icons.circle_outlined,
-                                                size: 12,
+                                                size: 13,
                                                 color: widget.colors['primaryText'],
                                               ))));
 
@@ -526,7 +528,7 @@ class _TimelineXp extends State<TimelineXp> {
                                                     },
                                                     child: Icon(
                                                       Icons.circle_rounded,
-                                                      size: 10,
+                                                      size: 12,
                                                       color: days[index]['alertLevel'] == 1
                                                           ? widget
                                                               .colors['warning']
@@ -554,7 +556,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     child: SliderTheme(
                                       data: SliderTheme.of(context).copyWith(
                                         thumbColor: widget.colors['primary'],
-                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:

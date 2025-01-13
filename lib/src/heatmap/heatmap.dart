@@ -31,7 +31,7 @@ class Heatmap extends StatefulWidget {
   final dynamic capacities;
   final dynamic elements;
   final bool isBusy;
-  final Function(String, double?, List<String>?, List<dynamic>?)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   @override
   State<Heatmap> createState() => _Heatmap();
@@ -155,7 +155,7 @@ class _Heatmap extends State<Heatmap> {
 
       // Détermine la couleur en fonction du type d'affichage
       String? icon;
-      int? capeff = -1;
+      double capeff = -1;
       Color? color = colors['primaryText'];
       // Disponibilité
       if (isBusy) {
@@ -178,9 +178,10 @@ class _Heatmap extends State<Heatmap> {
           icon = capacitiesDay['ricon'];
         }
       }
+
       // Capacity
       if (capacitiesDay != null && capacitiesDay.containsKey('capeff')) {
-        capeff = capacitiesDay['capeff'];
+        capeff = capacitiesDay['capeff'].toDouble();
       }
 
       // On calcule les lundis, mardis...
@@ -198,12 +199,11 @@ class _Heatmap extends State<Heatmap> {
   }
 
   // Sélection du jour
-  dynamic _openDayDetail(String date, double? dayProgress, List<String>? preIds, List<dynamic>? elements) {
+  dynamic _openDayDetail(String date, double? dayProgress, List<String>? preIds, List<dynamic>? elements, dynamic dayIndicators) {
     setState(() {
       selectedDate = date;
     });
-
-    widget.openDayDetail?.call(date, dayProgress, preIds, elements);
+    widget.openDayDetail?.call(date, dayProgress, preIds, elements!, dayIndicators);
   }
 
   @override
@@ -236,9 +236,8 @@ class _Heatmap extends State<Heatmap> {
                       }))),
           Padding(
               padding: const EdgeInsets.only(top: 25),
-              child: Container(
+              child: SizedBox(
                   width: 25,
-                  color: widget.colors['primaryBackground'],
                   child: ListView.builder(
                       itemCount: daysLabels.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -247,14 +246,19 @@ class _Heatmap extends State<Heatmap> {
                             height: widget.daySize + 3,
                             child: Center(
                                 child: Text(
-                              daysLabels[index].split('')[0].toUpperCase(),
-                              style: TextStyle(
-                                color: widget.colors['accent2'],
-                                fontWeight: FontWeight.w600,
-                                fontSize: 10,
-                              ),
-                            )));
-                      }))),
+                                  daysLabels[index].split('')[0].toUpperCase(),
+                                  style: TextStyle(
+                                    color: widget.colors['secondaryText'],
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
+                                )
+                            )
+                        );
+                    }
+                  )
+                )
+            ),
         ]));
   }
 }

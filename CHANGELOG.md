@@ -1,3 +1,7 @@
+## 0.0.59 - 13/01/2025
+
+* Adaptations de la Timeline
+
 ## 0.0.58 - 08/01/2025
 
 * Correction des couleurs de la Timeline

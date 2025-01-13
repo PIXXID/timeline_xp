@@ -21,7 +21,7 @@ class HeatmapMonthItem extends StatelessWidget {
   final List months;
   final String? selectedDate;
   final List elements;
-  final Function(String, double?, List<String>?, List<dynamic>)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class HeatmapMonthItem extends StatelessWidget {
     double dayMargin = daySize / 10;
 
     Widget emptyContainer =
-        Container(width: daySize, height: daySize, color: colors['accent2']);
+        Container(width: daySize, height: daySize, color: colors['secondaryBackground']);
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
