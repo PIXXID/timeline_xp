@@ -19,7 +19,7 @@ class StageRow extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?)? openEditStage;
 
   @override
   State<StageRow> createState() => _StageRow();
@@ -76,7 +76,10 @@ class _StageRow extends State<StageRow> {
           itemWidth: itemWidth,
           height: widget.height,
           prsId: widget.stagesList[index]['prs_id'],
+          type: widget.stagesList[index]['type'],
           label: label,
+          startDate: widget.stagesList[index]['sdate'],
+          endDate: widget.stagesList[index]['sdate'],
           progress: widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
           isMilestone: widget.stagesList[index]['type'] == 'milestone',
           openEditStage: widget.openEditStage));

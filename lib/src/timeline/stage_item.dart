@@ -7,6 +7,9 @@ class StageItem extends StatelessWidget {
       required this.itemWidth,
       required this.height,
       required this.label,
+      required this.startDate,
+      required this.endDate,
+      required this.type,
       required this.prsId,
       required this.progress,
       required this.isMilestone,
@@ -16,10 +19,14 @@ class StageItem extends StatelessWidget {
   final double itemWidth;
   final double height;
   final String prsId;
+  final String startDate;
+  final String endDate;
+  final String type;
   final String label;
   final double progress;
   final bool isMilestone;
-  final Function(String?)? openEditStage;
+  //final Function(String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?)? openEditStage;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,7 @@ class StageItem extends StatelessWidget {
       GestureDetector(
         // Call back lors du clic
         onTap: () {
-          openEditStage?.call(prsId);
+          openEditStage?.call(prsId, label, type, startDate, endDate, progress);
         },   
         child: Container(
           width: itemWidth,

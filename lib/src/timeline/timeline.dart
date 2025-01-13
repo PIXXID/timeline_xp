@@ -36,7 +36,7 @@ class TimelineXp extends StatefulWidget {
   final dynamic notifications;
   final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
-  final Function(String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?)? openEditStage;
   final Function(String?)? updateCurrentDate;
 
   @override
@@ -302,6 +302,8 @@ class _TimelineXp extends State<TimelineXp> {
 
       stages[i]['startDateIndex'] = startDateIndex;
       stages[i]['endDateIndex'] = endDateIndex;
+      stages[i]['sdate'] = stages[i]['sdate'];
+      stages[i]['edate'] = stages[i]['edate'];
 
       // Exclue les stages hos plages de dates
       if (startDateIndex == -1 || endDateIndex == -1) {
