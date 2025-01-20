@@ -62,7 +62,7 @@ class TimelineItem extends StatelessWidget {
     }
 
     // Border radius
-    BorderRadius borderRadius = const BorderRadius.only( topLeft: Radius.circular(5), topRight: Radius.circular(5));
+    BorderRadius borderRadius = const BorderRadius.only( topLeft: Radius.circular(3), topRight: Radius.circular(3));
 
     // Indicateurs de capacité et charges
     dynamic dayIndicators = {
@@ -105,6 +105,50 @@ class TimelineItem extends StatelessWidget {
                 height: height,
                 child: Column(
                   children: <Widget>[
+                    // Dates
+                    Text(
+                      DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
+                      style: TextStyle(
+                          color: (index < nowIndex) ? colors['secondaryText'] : colors['primaryText'],
+                          fontSize: 11,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w900
+                              : FontWeight.w300),
+                    ),
+                    Text(
+                      DateFormat('dd').format(date),
+                      style: TextStyle(
+                          color: (index < nowIndex)
+                              ? colors['secondaryText']
+                              : colors['primaryText'],
+                          fontSize: 12,
+                          fontWeight: centerItemIndex == index
+                              ? FontWeight.w900
+                              : FontWeight.w300),
+                    ),
+                    // Alertes
+                    if (index == nowIndex)
+                      Padding(
+                          padding: const EdgeInsets.only(top: 2, bottom: 5),
+                          child: Icon(
+                            Icons.circle_outlined,
+                            size: 12,
+                            color: colors['primaryText'],
+                          ))
+                    else if (days[index]['alertLevel'] != 0)
+                      Padding(
+                          padding: const EdgeInsets.only(top: 2, bottom: 5),
+                          child: Icon(
+                            Icons.circle_rounded,
+                            size: 12,
+                            color: days[index]['alertLevel'] == 1
+                                ? colors['warning']
+                                : (days[index]['alertLevel'] == 2
+                                    ? colors['error']
+                                    : Colors.transparent),
+                          ))
+                    else
+                      Container(height: 18),
                     // Barre avec données
                     SizedBox(
                       height: heightLmax,
@@ -124,7 +168,7 @@ class TimelineItem extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                  color: colors['secondaryText']!,
+                                  color: (index == centerItemIndex) ? colors['secondaryText']! : const Color(0x00000000),
                                   width: 1,
                                 ),
                               ),
@@ -134,12 +178,10 @@ class TimelineItem extends StatelessWidget {
                                 child:
                                 // Icon soleil si aucune capacité
                                 (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0) ?
-                                  RichText(
-                                    text: const TextSpan(
-                                      text: '☀️',
-                                       style: TextStyle(fontSize: 16)
-                                    )
-                                  ) : null
+                                  Icon(
+                                    Icons.sunny,
+                                      color: colors['accent2'],
+                                      size: 14) : null
                               )
                           )
                         ),
@@ -181,60 +223,6 @@ class TimelineItem extends StatelessWidget {
                             ))
                       ]),
                     ),
-                    // Dates
-                    Text(
-                      DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
-                      style: TextStyle(
-                          color: (index < nowIndex) ? colors['secondaryText'] : colors['primaryText'],
-                          fontSize: 11,
-                          fontWeight: centerItemIndex == index
-                              ? FontWeight.w900
-                              : FontWeight.w300),
-                    ),
-                    Text(
-                      DateFormat('dd').format(date),
-                      style: TextStyle(
-                          color: (index < nowIndex)
-                              ? colors['secondaryText']
-                              : colors['primaryText'],
-                          fontSize: 12,
-                          fontWeight: centerItemIndex == index
-                              ? FontWeight.w900
-                              : FontWeight.w300),
-                    ),
-                    // Affichage du mois et de l'année seulement pour la date survollée
-                    if (index == centerItemIndex)
-                      Text(
-                        DateFormat('MM  yy').format(date),
-                        style: TextStyle(
-                            color: colors['primaryText'],
-                            fontSize: 10,
-                            fontWeight: FontWeight.w300),
-                    ),
-                    
-                    // Alertes
-                    if (index == nowIndex)
-                      Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(
-                            Icons.circle_outlined,
-                            size: 12,
-                            color: colors['primaryText'],
-                          ))
-                    else if (days[index]['alertLevel'] != 0)
-                      Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Icon(
-                            Icons.circle_rounded,
-                            size: 12,
-                            color: days[index]['alertLevel'] == 1
-                                ? colors['warning']
-                                : (days[index]['alertLevel'] == 2
-                                    ? colors['error']
-                                    : Colors.transparent),
-                          ))
-                    else
-                      Container(height: 18)
                   ],
                 ))));
   }

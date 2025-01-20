@@ -52,10 +52,10 @@ class _TimelineXp extends State<TimelineXp> {
   double sliderMargin = 25;
 
   // Largeur d'un item jour
-  double dayWidth = 40.0;
+  double dayWidth = 35.0;
   double dayMargin = 5;
   // Hauteur de la timeline
-  double timelineHeight = 240.0;
+  double timelineHeight = 150.0;
   // Diamètre des pins d'alertes
   double alertWidth = 6;
   // Liste des widgets des alertes
@@ -64,7 +64,7 @@ class _TimelineXp extends State<TimelineXp> {
   // Liste des lignes d'étapes
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
-  double rowHeight = 20.0;
+  double rowHeight = 25.0;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -394,9 +394,9 @@ class _TimelineXp extends State<TimelineXp> {
                 children: [
                   Positioned(
                     left: screenCenter,
-                    top: 0,
+                    top: 35,
                     child: Container(
-                      height: timelineHeight + (rowHeight * (stagesRows.length > 2 ? 2 : stagesRows.length)) + 18, // 18 = margin stages : 8 + Container vide paddingTop : 10
+                      height: 220,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
@@ -406,7 +406,7 @@ class _TimelineXp extends State<TimelineXp> {
                       // Timeline
                       SizedBox(
                         width: screenWidth,
-                        height: timelineHeight - 20,
+                        height: timelineHeight - 30,
                         child: ListView.builder(
                             controller: _controllerTimeline,
                             scrollDirection: Axis.horizontal,
@@ -430,10 +430,10 @@ class _TimelineXp extends State<TimelineXp> {
                       ),
                       // Stages
                       Container(
-                          constraints: BoxConstraints(
+                          constraints: const BoxConstraints(
                             minHeight: 1,
                             minWidth: double.infinity,
-                            maxHeight: (rowHeight * 3) + 10,
+                            maxHeight: 120.0,
                             maxWidth: double.infinity,
                           ),
                           child: SingleChildScrollView(

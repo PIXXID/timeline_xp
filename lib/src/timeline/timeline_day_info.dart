@@ -73,6 +73,38 @@ class TimelineDayInfo extends StatelessWidget {
                 children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          DateFormat.yMMMMd(lang).format(day['date']),
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: colors['primaryText'],
+                            fontSize: fontSize,
+                          )
+                        ),
+                        Icon(
+                          Icons.blur_linear_outlined,
+                          size: fontSize + 4,
+                          color: colors['primaryBackground'],
+                        ),
+                        for (var index = 0; index < curEltCompleted; index++)
+                          Icon(
+                            Icons.check_circle,
+                            size: fontSize + 4,
+                            color: colors['primary'],
+                          ),
+                        for (var index = 0; index < curEltPending; index++)
+                          Icon(
+                            Icons.circle_rounded,
+                            size: fontSize + 4,
+                            color: colors['secondaryBackground'],
+                          ),
+                      ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                   child: 
                     Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +114,7 @@ class TimelineDayInfo extends StatelessWidget {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: colors['primaryText'],
-                        fontSize: fontSize,
+                        fontSize: fontSize -1,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -107,7 +139,7 @@ class TimelineDayInfo extends StatelessWidget {
                       "Planifié",
                       style: TextStyle(
                         color: colors['primaryText'],
-                        fontSize: fontSize,
+                        fontSize: fontSize-1,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -132,7 +164,7 @@ class TimelineDayInfo extends StatelessWidget {
                       "Terminé",
                       style: TextStyle(
                         color: colors['primaryText'],
-                        fontSize: fontSize,
+                        fontSize: fontSize-1,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -154,32 +186,8 @@ class TimelineDayInfo extends StatelessWidget {
                         ))),
                   ]),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                    Icon(
-                      Icons.blur_linear_outlined,
-                      size: fontSize + 4,
-                      color: colors['primaryBackground'],
-                    ),
-                    for (var index = 0; index < curEltCompleted; index++)
-                      Icon(
-                        Icons.check_circle,
-                        size: fontSize + 4,
-                        color: colors['primary'],
-                      ),
-                    for (var index = 0; index < curEltPending; index++)
-                      Icon(
-                        Icons.circle_rounded,
-                        size: fontSize + 4,
-                        color: colors['secondaryBackground'],
-                      ),
-                  ]),
-                ),
                 // Date affichée
-                const Padding(padding: EdgeInsets.only(bottom: 10)),
+                const Padding(padding: EdgeInsets.only(bottom: 20)),
               ])
         )
       );

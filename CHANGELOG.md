@@ -1,3 +1,7 @@
+## 0.0.61 - 20/01/2025
+
+* Retouches graphique de la timeline
+
 ## 0.0.61 - 13/01/2025
 
 * Callback des stages
