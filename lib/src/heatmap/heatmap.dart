@@ -100,6 +100,44 @@ class _Heatmap extends State<Heatmap> {
     int monthIndex = months.indexWhere((m) {
       return int.parse(m['monthNum']) == currentMonth.toInt();
     });
+
+    // On récupère les infos d'aujourd'hui pour ls renvoyer
+    String formattedSelectedDate = DateFormat.yMd().format(DateTime.parse(selectedDate.toString()));
+    var dayDetail;
+    for (var week in months[monthIndex]['weeks']) {
+      for (var day in week.entries) {
+        if (day.value['date'] != null) {
+          String formattedWeekDate = DateFormat.yMd().format(DateTime.parse(day.value['date'].toString()));
+          if (formattedSelectedDate == formattedWeekDate) {
+            dayDetail = day.value;
+          }
+        }
+
+      }
+    }
+
+    // Liste des élements présent sur la journée pour le renvoyer automatiquement
+    var elementsDay = widget.elements
+      .where(
+        (e) =>
+            e['date'] == selectedDate,
+      ).toList();
+    if (elementsDay?.length != 0) {
+      // Liste des identifiants d'élements
+      List<String> preIds = elementsDay
+        .map((element) => element['pre_id'] as String)
+        .cast<String>()
+        .toList();
+      // Indicateurs de capacité et charges
+      dynamic dayIndicators = {
+        'capacity': dayDetail['capeff'],
+        'busy': dayDetail['buseff'],
+        'completed': dayDetail['compeff']
+      };
+
+      _openDayDetail(DateFormat('yyyy-MM-dd').format(dayDetail['date']), 0, preIds, elementsDay, dayIndicators);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       double scrollValue = (monthIndex + 1) * (widget.daySize * 4.33);
       _controllerHeatmap.jumpTo(scrollValue > 0 ? scrollValue : 0);

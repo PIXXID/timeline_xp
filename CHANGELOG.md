@@ -1,3 +1,7 @@
+## 0.0.63 - 22/01/2025
+
+* Retouche heatmap, renvoie les détails de la date du jour à l'initialisation du composant
+
 ## 0.0.62 - 20/01/2025
 
 * Retouches graphique de la timeline

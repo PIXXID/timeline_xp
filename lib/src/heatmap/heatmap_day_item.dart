@@ -41,7 +41,7 @@ class HeatmapDayItem extends StatelessWidget {
             // On calcule la progression du jour pour le renvoyer en callback
             var selectedDate = DateFormat('yyyy-MM-dd').format(day['date']);
 
-            // Lite des élements présent sur la journée
+            // Liste des élements présent sur la journée
             var elementsDay = elements
                 .where(
                   (e) =>
@@ -75,7 +75,7 @@ class HeatmapDayItem extends StatelessWidget {
             height: daySize,
             padding: EdgeInsets.all(isSelected ? 2.0 : 0),
             decoration: BoxDecoration(
-              color: day['capeff'] > 0 ? day['color'] : colors['accent1'],
+              color: day['capeff'] > 0 ? day['color'] : colors['secondaryBackground'],
               border: Border.all(
                 color: isSelected ? colors['primary']! : Colors.transparent,
                 width: isSelected ? 2.0 : 0,
@@ -100,7 +100,7 @@ class HeatmapDayItem extends StatelessWidget {
                     height: daySize,
                     child: Icon(
                         Icons.sunny,
-                        color: colors['accent2'],
+                        color: colors['secondaryText'],
                         size: 14)))
               else
                 Text(
