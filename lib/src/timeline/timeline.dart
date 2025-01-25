@@ -52,7 +52,7 @@ class _TimelineXp extends State<TimelineXp> {
   double sliderMargin = 25;
 
   // Largeur d'un item jour
-  double dayWidth = 35.0;
+  double dayWidth = 38.0;
   double dayMargin = 5;
   // Hauteur de la timeline
   double timelineHeight = 150.0;
@@ -69,12 +69,13 @@ class _TimelineXp extends State<TimelineXp> {
   // Index de l'item jour au centre
   int centerItemIndex = 0;
 
-  // Date de début et date de fin
+  // Date de début et date de fin par défaut
   DateTime now = DateTime.now();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
-  DateTime endDate = DateTime.now().add(const Duration(days: 60));
+  DateTime endDate = DateTime.now().add(const Duration(days: 30));
   int nowIndex = 0;
   int defaultDateIndex = -1;
+  bool timelineIsEmpty = false; 
 
   double sliderMaxValue = 10;
 
@@ -94,12 +95,19 @@ class _TimelineXp extends State<TimelineXp> {
     super.initState();
     debugPrint('------ Timeline InitState');
     
-    // On positionne les dates de début et de fin
-    if (widget.infos['startDate'] != null) {
-      startDate = DateTime.parse(widget.infos['startDate']!);
-    }
-    if (widget.infos['endDate'] != null) {
-      endDate = DateTime.parse(widget.infos['endDate']!);
+    // Vérifie que la timleline recoit bien des élement
+    if(widget.elements.isNotEmpty) {
+      // On positionne les dates de début et de fin
+      if (widget.infos['startDate'] != null) {
+        startDate = DateTime.parse(widget.infos['startDate']!);
+      }
+      // Si la timeline n'a aucun élement
+      if (widget.infos['endDate'] != null) {
+        endDate = DateTime.parse(widget.infos['endDate']!);
+      }
+    } else {
+       // Indique qu'il n'y a pas de données pour cette requete.
+      timelineIsEmpty = true;
     }
 
     // Formate la liste des jours pour positionner les éléments correctement
@@ -558,7 +566,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     child: SliderTheme(
                                       data: SliderTheme.of(context).copyWith(
                                         thumbColor: widget.colors['primary'],
-                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10.0),
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:
@@ -578,7 +586,24 @@ class _TimelineXp extends State<TimelineXp> {
                                     )))
                           ])),
                     ],
-                  )
-                ])));
+                  ),
+                  if (timelineIsEmpty)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.black.withOpacity(0.8),
+                        padding: const EdgeInsets.all(25),
+                        child: Center(
+                          child: Text(
+                            'Aucune activité ne voua a été attribuée. Vous pouvez consulter le détail des projets en utilisant le menu.',
+                            style: TextStyle(
+                              color: widget.colors['primaryText'], fontSize: 15),
+                            )
+                        ),
+                      ),
+                    )
+                ],
+            )
+          )
+        );
   }
 }
