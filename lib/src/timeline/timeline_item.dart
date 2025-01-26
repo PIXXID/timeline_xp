@@ -26,43 +26,63 @@ class TimelineItem extends StatelessWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
+      openDayDetail;
 
   @override
   Widget build(BuildContext context) {
-
     final DateTime date = days[index]['date'];
     Color busyColor = colors['secondaryText'] ?? Colors.grey;
-    Color completeColor = colors['primary'] ?? Colors.white;
+    Color completeColor = colors['secondaryText'] ?? Colors.white;
+    Color dayTextColor = colors['primaryText'] ?? Colors.white;
 
     // Hauteur MAX
-    double heightLmax = height - 90; 
+    double heightLmax = height - 90;
+
     // On calcule la hauteur de chaque barre
-    double heightCapeff = 0;
-    double heightBuseff = 0;
-    double heightCompeff = 0;
+    double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
+    bool dayIsCompleted = false;
     if (days[index]['capeff'] > 0) {
-      heightCapeff = (heightLmax * days[index]['capeff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
+      heightCapeff = (heightLmax * days[index]['capeff']) /
+          ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
     }
     if (days[index]['buseff'] > 0) {
-      heightBuseff = (heightLmax * days[index]['buseff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
+      heightBuseff = (heightLmax * days[index]['buseff']) /
+          ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
     }
     if (days[index]['compeff'] > 0) {
-      heightCompeff = (heightLmax * days[index]['compeff']) / ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
-      if(heightCompeff >= heightCapeff) {
+      heightCompeff = (heightLmax * days[index]['compeff']) /
+          ((days[index]['lmax'] > 0) ? days[index]['lmax'] : 1);
+      if (heightCompeff >= heightCapeff) {
         heightCompeff = heightCapeff;
+        dayIsCompleted = true;
       }
+      // Met à jour la couleur si progression
+      completeColor = (colors['primary'])!;
     }
 
-    // Fond Rouge si la charge dépasse la capacité
+    // Réduit la hauteur en cas de dépassement exessif
     if (heightBuseff > heightCapeff) {
-      busyColor = colors['error'] ?? Colors.red;
-      completeColor = colors['error'] ?? Colors.red;
       heightBuseff = heightCapeff - 2;
     }
 
+    // Gestion de l'affichage des dates en fonction de la la date au centre.
+    int idxCenter = centerItemIndex - index;
+    if (idxCenter == 0) {
+      dayTextColor = colors['primaryText']!;
+    } else if ((idxCenter >= 1 && idxCenter < 4) ||
+        (idxCenter <= -1 && idxCenter > -4)) {
+      dayTextColor = colors['secondaryText']!;
+    } else if ((idxCenter >= 4 && idxCenter < 6) ||
+        (idxCenter <= -4 && idxCenter > -6)) {
+      dayTextColor = colors['accent1']!;
+    } else {
+      dayTextColor = Colors.transparent;
+    }
+
     // Border radius
-    BorderRadius borderRadius = const BorderRadius.only( topLeft: Radius.circular(3), topRight: Radius.circular(3));
+    BorderRadius borderRadius = const BorderRadius.only(
+        topLeft: Radius.circular(4), topRight: Radius.circular(4));
 
     // Indicateurs de capacité et charges
     dynamic dayIndicators = {
@@ -88,7 +108,9 @@ class TimelineItem extends StatelessWidget {
               // Lite des élements présent sur la journée
               var elementsDay = elements
                   .where(
-                    (e) => e['date'] == DateFormat('yyyy-MM-dd').format(days[index]['date']),
+                    (e) =>
+                        e['date'] ==
+                        DateFormat('yyyy-MM-dd').format(days[index]['date']),
                   )
                   .toList();
 
@@ -107,29 +129,26 @@ class TimelineItem extends StatelessWidget {
                   children: <Widget>[
                     // Dates
                     Text(
-                      DateFormat.E(lang).format(date).toUpperCase().substring(0, 1),
+                      DateFormat.E(lang)
+                          .format(date)
+                          .toUpperCase()
+                          .substring(0, 1),
                       style: TextStyle(
-                          color: (index < nowIndex) ? colors['secondaryText'] : colors['primaryText'],
+                          color: dayTextColor,
                           fontSize: 11,
-                          fontWeight: centerItemIndex == index
-                              ? FontWeight.w900
-                              : FontWeight.w300),
+                          fontWeight: FontWeight.w300),
                     ),
                     Text(
                       DateFormat('dd').format(date),
                       style: TextStyle(
-                          color: (index < nowIndex)
-                              ? colors['secondaryText']
-                              : colors['primaryText'],
-                          fontSize: 12,
-                          fontWeight: centerItemIndex == index
-                              ? FontWeight.w900
-                              : FontWeight.w300),
+                          color: dayTextColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w300),
                     ),
                     // Alertes
                     if (index == nowIndex)
                       Padding(
-                          padding: const EdgeInsets.only(top: 2, bottom: 5),
+                          padding: const EdgeInsets.only(top: 3, bottom: 5),
                           child: Icon(
                             Icons.circle_outlined,
                             size: 12,
@@ -137,7 +156,7 @@ class TimelineItem extends StatelessWidget {
                           ))
                     else if (days[index]['alertLevel'] != 0)
                       Padding(
-                          padding: const EdgeInsets.only(top: 2, bottom: 5),
+                          padding: const EdgeInsets.only(top: 3, bottom: 5),
                           child: Icon(
                             Icons.circle_rounded,
                             size: 12,
@@ -155,36 +174,38 @@ class TimelineItem extends StatelessWidget {
                       child: Stack(children: [
                         // Barre de capacité
                         Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: dayMargin / 2,
-                                right: dayMargin / 2,
-                                bottom: dayMargin / 3),
-                            width: dayWidth - dayMargin - 15,
-                            height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: (index == centerItemIndex) ? colors['secondaryText']! : const Color(0x00000000),
-                                  width: 1,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                                margin: EdgeInsets.only(
+                                    left: dayMargin / 2,
+                                    right: dayMargin / 2,
+                                    bottom: dayMargin / 3),
+                                width: dayWidth - dayMargin - 15,
+                                height: (heightCapeff > 0)
+                                    ? heightCapeff - 2
+                                    : heightLmax,
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: (index == centerItemIndex)
+                                          ? colors['secondaryText']!
+                                          : const Color(0x00000000),
+                                      width: 1,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            child:
-                              Center(
-                                child:
-                                // Icon soleil si aucune capacité
-                                (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0) ?
-                                  Icon(
-                                    Icons.sunny,
-                                      color: colors['accent2'],
-                                      size: 14) : null
-                              )
-                          )
-                        ),
+                                child: Center(
+                                    child:
+                                        // Icon soleil si aucune capacité
+                                        (heightCapeff == 0 &&
+                                                heightBuseff == 0 &&
+                                                heightCompeff == 0)
+                                            ? Icon(Icons.sunny,
+                                                color: colors['accent2'],
+                                                size: 11)
+                                            : null))),
                         // Barre de travail affecté (busy)
                         Positioned(
                           bottom: 0,
@@ -197,30 +218,35 @@ class TimelineItem extends StatelessWidget {
                                 bottom: dayMargin / 3),
                             width: dayWidth - dayMargin - 16,
                             // On affiche 1 pixel pour marquer une journée travaillée
-                            height: (heightBuseff == 0) ? 1 : heightBuseff,
+                            height: (heightBuseff == 0) ? 0.5 : heightBuseff,
                             decoration: BoxDecoration(
                               borderRadius: borderRadius,
                               color: busyColor,
                             ),
                           ),
                         ),
-                        // Barre de tavail effectué
+                        // Barre de tavail terminé
                         Positioned(
                             bottom: 0,
                             left: 0,
                             right: 0,
                             child: Container(
-                              margin: EdgeInsets.only(
-                                  left: dayMargin / 2,
-                                  right: dayMargin / 2,
-                                  bottom: dayMargin / 3),
-                              width: dayWidth - dayMargin - 16,
-                              height: heightCompeff,
-                              decoration: BoxDecoration(
-                                borderRadius: borderRadius,
-                                color: completeColor,
-                              ),
-                            ))
+                                margin: EdgeInsets.only(
+                                    left: dayMargin / 2,
+                                    right: dayMargin / 2,
+                                    bottom: dayMargin / 3),
+                                width: dayWidth - dayMargin - 16,
+                                height: heightCompeff,
+                                decoration: BoxDecoration(
+                                  borderRadius: borderRadius,
+                                  color: completeColor,
+                                ),
+                                child: (dayIsCompleted)
+                                    ? Center(
+                                        child: Icon(Icons.check,
+                                            color: colors['primaryText'],
+                                            size: 16))
+                                    : null))
                       ]),
                     ),
                   ],
