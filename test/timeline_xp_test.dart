@@ -331,7 +331,7 @@ void main() {
 
   void openDayDetail(String date, double? dayProgress, List<String>? openDayDetail, List<dynamic>? elements, dynamic dayIndicators) {}
 
-  void openEditStage(String? prsId, String? prsName, String? prsType, String? startDate, String? endDate, double? progress) {}
+  void openEditStage(String? prsId, String? prsName, String? prsType, String? startDate, String? endDate, double? progress, String? prjId) {}
 
 
   const double width = 300;

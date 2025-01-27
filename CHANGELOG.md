@@ -1,3 +1,7 @@
+## 0.0.65 - 27/01/2025
+
+* Ajoute le prjId dans le retour de la fonction openEditStage
+
 ## 0.0.64 - 26/01/2025
 
 * Retouches graphiques Timeline (animations, couleurs, etc)
