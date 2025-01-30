@@ -97,7 +97,7 @@ class _TimelineXp extends State<TimelineXp> {
     debugPrint('------ Timeline InitState');
     
     // Vérifie que la timleline recoit bien des élement
-    if(widget.elements.isNotEmpty) {
+    if(widget.elements != null && widget.elements.isNotEmpty) {
       // On positionne les dates de début et de fin
       if (widget.infos['startDate'] != null) {
         startDate = DateTime.parse(widget.infos['startDate']!);
