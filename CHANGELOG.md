@@ -1,3 +1,15 @@
+## 0.0.68 - 30/01/2025
+
+* Correction erreurs publication
+
+## 0.0.67 - 30/01/2025
+
+* Correction erreurs publication
+
+## 0.0.66 - 30/01/2025
+
+* Supprime custom_icon pour corriger les problèmes de build
+
 ## 0.0.65 - 27/01/2025
 
 * Ajoute le prjId dans le retour de la fonction openEditStage
