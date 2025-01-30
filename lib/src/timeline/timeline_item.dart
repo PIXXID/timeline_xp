@@ -142,15 +142,15 @@ class _BouncingTimelineItem extends State<TimelineItem>
                           .substring(0, 1),
                       style: TextStyle(
                           color: dayTextColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w300),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
                     ),
                     Text(
                       DateFormat('dd').format(date),
                       style: TextStyle(
                           color: dayTextColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w300),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
                     ),
                     // Alertes
                     if (widget.index == widget.nowIndex)

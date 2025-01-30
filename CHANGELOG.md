@@ -1,3 +1,7 @@
+## 0.0.69 - 30/01/2025
+
+* Nouvel affichages des indicateurs journaliers
+
 ## 0.0.68 - 30/01/2025
 
 * Correction erreurs publication

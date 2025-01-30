@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 // Widgets
 import 'timeline_item.dart';
 import 'timeline_day_info.dart';
+import 'timeline_day_indicators.dart';
 import 'stage_row.dart';
 
 class TimelineXp extends StatefulWidget {
@@ -55,7 +56,7 @@ class _TimelineXp extends State<TimelineXp> {
   double dayWidth = 38.0;
   double dayMargin = 5;
   // Hauteur de la timeline
-  double timelineHeight = 150.0;
+  double timelineHeight = 160.0;
   // Diamètre des pins d'alertes
   double alertWidth = 6;
   // Liste des widgets des alertes
@@ -409,185 +410,196 @@ class _TimelineXp extends State<TimelineXp> {
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
                   ),
-                  Column(
-                    children: <Widget>[
-                      // TIMELINE DYNAMIQUE
-                      SizedBox(
-                        width: screenWidth,
-                        height: timelineHeight - 30,
-                        child: ListView.builder(
-                            controller: _controllerTimeline,
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: firstElementMargin),
-                            itemCount: days.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return TimelineItem(
-                                  colors: widget.colors,
-                                  lang: widget.lang,
-                                  index: index,
-                                  centerItemIndex: centerItemIndex,
-                                  nowIndex: nowIndex,
-                                  days: days,
-                                  elements: widget.elements,
-                                  dayWidth: dayWidth,
-                                  dayMargin: dayMargin,
-                                  height: timelineHeight,
-                                  openDayDetail: widget.openDayDetail);
-                            }),
-                      ),
-                      // STAGES DYNAMIQUES
-                      Container(
-                        constraints: const BoxConstraints(
-                          minHeight: 1,
-                          minWidth: double.infinity,
-                          maxHeight: 120.0,
-                          maxWidth: double.infinity,
+                  Positioned.fill(
+                    child: Column(
+                      children: <Widget>[
+                        // TIMELINE DYNAMIQUE
+                        SizedBox(
+                          width: screenWidth,
+                          height: timelineHeight - 30,
+                          child: ListView.builder(
+                              controller: _controllerTimeline,
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: firstElementMargin),
+                              itemCount: days.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return TimelineItem(
+                                    colors: widget.colors,
+                                    lang: widget.lang,
+                                    index: index,
+                                    centerItemIndex: centerItemIndex,
+                                    nowIndex: nowIndex,
+                                    days: days,
+                                    elements: widget.elements,
+                                    dayWidth: dayWidth,
+                                    dayMargin: dayMargin,
+                                    height: timelineHeight,
+                                    openDayDetail: widget.openDayDetail);
+                              }),
                         ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Stack(children: [
-                            Column(
-                              children: List.generate(stagesRows.length,
-                                  (rowIndex) {
-                              return SingleChildScrollView(
-                                  controller: _controllerStages,
-                                  scrollDirection: Axis.horizontal,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: firstElementMargin),
-                                  physics:
-                                      const NeverScrollableScrollPhysics(),
-                                  child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 2.0),
-                                      width: days.length *
-                                          (dayWidth - dayMargin),
-                                      height: rowHeight,
-                                      child: StageRow(
-                                          colors: widget.colors,
-                                          stagesList: stagesRows[rowIndex],
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: rowHeight,
-                                          openEditStage:
-                                              widget.openEditStage)));
-                            })),
-                          ]),
-                        )
-                      ),
-                      // ESPACE
-                      Container(
-                        padding: const EdgeInsets.only(top: 10.0),
-                      ),
-                      // DETAIL SURVOL
-                      TimelineDayInfo(
+                        // STAGES DYNAMIQUES
+                        Container(
+                          constraints: const BoxConstraints(
+                            minHeight: 1,
+                            minWidth: double.infinity,
+                            maxHeight: 120.0,
+                            maxWidth: double.infinity,
+                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Stack(children: [
+                              Column(
+                                children: List.generate(stagesRows.length,
+                                    (rowIndex) {
+                                return SingleChildScrollView(
+                                    controller: _controllerStages,
+                                    scrollDirection: Axis.horizontal,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: firstElementMargin),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        width: days.length *
+                                            (dayWidth - dayMargin),
+                                        height: rowHeight,
+                                        child: StageRow(
+                                            colors: widget.colors,
+                                            stagesList: stagesRows[rowIndex],
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
+                                            height: rowHeight,
+                                            openEditStage:
+                                                widget.openEditStage)));
+                              })),
+                            ]),
+                          )
+                        ),
+                        // JOUR ET ICONES ELEMENTS
+                        TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
                           lang: widget.lang,
                           elements: widget.elements,
-                          openDayDetail: widget.openDayDetail
-                      ),
-                      // ALERTES
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Stack(clipBehavior: Clip.none, children: [
-                          // Alertes positionnées
-                          SizedBox(
-                              width: screenWidth - (sliderMargin * 2),
-                              height: 50,
-                              child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: sliderMargin - (alertWidth / 2)),
-                                  child: Builder(builder: (context) {
-                                    List<Widget> alerts = [];
-                                    double screenWidthMargin =
-                                        screenWidth - ((sliderMargin) * 4);
-                                    if (days.isNotEmpty) {
-                                      // On parcourt les jours et on ajoute les alertes
-                                      for (var index = 0;
-                                          index < days.length;
-                                          index++) {
-                                        if (days[index]['alertLevel'] != 0) {
-                                          alerts.add(Positioned(
-                                              left: (index) *
-                                                  screenWidthMargin /
-                                                  days.length,
-                                              top: 0,
-                                              child: GestureDetector(
-                                                  // Call back lors du clic
-                                                  onTap: () {
-                                                    setState(() {
-                                                      sliderValue =
-                                                          index.toDouble();
-                                                    });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.circle_rounded,
-                                                    size: 12,
-                                                    color: days[index]['alertLevel'] == 1
-                                                        ? widget
-                                                            .colors['warning']
-                                                        : (days[index]['alertLevel'] == 2
-                                                            ? widget.colors['error']
-                                                            : Colors
-                                                                .transparent),
-                                                  ))));
+                          openDayDetail: widget.openDayDetail),
+                        // ALERTES
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Stack(clipBehavior: Clip.none, children: [
+                            // Alertes positionnées
+                            SizedBox(
+                                width: screenWidth - (sliderMargin * 2),
+                                height: 50,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: sliderMargin - (alertWidth / 2)),
+                                    child: Builder(builder: (context) {
+                                      List<Widget> alerts = [];
+                                      double screenWidthMargin =
+                                          screenWidth - ((sliderMargin) * 4);
+                                      if (days.isNotEmpty) {
+                                        // On parcourt les jours et on ajoute les alertes
+                                        for (var index = 0;
+                                            index < days.length;
+                                            index++) {
+                                          if (days[index]['alertLevel'] != 0) {
+                                            alerts.add(Positioned(
+                                                left: (index) *
+                                                    screenWidthMargin /
+                                                    days.length,
+                                                top: 0,
+                                                child: GestureDetector(
+                                                    // Call back lors du clic
+                                                    onTap: () {
+                                                      setState(() {
+                                                        sliderValue =
+                                                            index.toDouble();
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.circle_rounded,
+                                                      size: 12,
+                                                      color: days[index]['alertLevel'] == 1
+                                                          ? widget
+                                                              .colors['warning']
+                                                          : (days[index]['alertLevel'] == 2
+                                                              ? widget.colors['error']
+                                                              : Colors
+                                                                  .transparent),
+                                                    ))));
+                                          }
                                         }
                                       }
-                                    }
-                                    // Point sur le jour en cours
-                                    alerts.add(Positioned(
-                                        left: (nowIndex) *
-                                            screenWidthMargin /
-                                            days.length,
-                                        top: 0,
-                                        child: GestureDetector(
-                                            // Call back lors du clic
-                                            onTap: () {
-                                              scrollTo(nowIndex);
-                                            },
-                                            child: Icon(
-                                              Icons.circle_outlined,
-                                              size: 13,
-                                              color:
-                                                  widget.colors['primaryText'],
-                                            ))));
-                                    return Stack(
-                                        children: alerts.isNotEmpty
-                                            ? alerts
-                                            : [const SizedBox()]);
-                                  })
-                            )
-                          ),
-                          // Slider
-                          Positioned(
-                              bottom: 0,
-                              child: SizedBox(
-                                  width: screenWidth - (sliderMargin * 2),
-                                  child: SliderTheme(
-                                    data: SliderTheme.of(context).copyWith(
-                                      thumbColor: widget.colors['primary'],
-                                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                                      activeTrackColor:
-                                          widget.colors['primary'],
-                                      inactiveTrackColor:
-                                          widget.colors['secondaryBackground'],
-                                      trackHeight: 2,
-                                    ),
-                                    child: Slider(
-                                      value: sliderValue,
-                                      min: 0,
-                                      max: sliderMaxValue,
-                                      divisions: days.length,
-                                      onChanged: (double value) {
-                                        sliderValue = value;
-                                        _scroll(value);
-                                      },
-                                    ),
-                                  )))
-                        ])
-                      ),
-                    ],
+                                      // Point sur le jour en cours
+                                      alerts.add(Positioned(
+                                          left: (nowIndex) *
+                                              screenWidthMargin /
+                                              days.length,
+                                          top: 0,
+                                          child: GestureDetector(
+                                              // Call back lors du clic
+                                              onTap: () {
+                                                scrollTo(nowIndex);
+                                              },
+                                              child: Icon(
+                                                Icons.circle_outlined,
+                                                size: 13,
+                                                color:
+                                                    widget.colors['primaryText'],
+                                              ))));
+                                      return Stack(
+                                          children: alerts.isNotEmpty
+                                              ? alerts
+                                              : [const SizedBox()]);
+                                    })
+                              )
+                            ),
+                            // Slider
+                            Positioned(
+                                bottom: 0,
+                                child: SizedBox(
+                                    width: screenWidth - (sliderMargin * 2),
+                                    child: SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        thumbColor: widget.colors['primary'],
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                                        activeTrackColor:
+                                            widget.colors['primary'],
+                                        inactiveTrackColor:
+                                            widget.colors['secondaryBackground'],
+                                        trackHeight: 2,
+                                      ),
+                                      child: Slider(
+                                        value: sliderValue,
+                                        min: 0,
+                                        max: sliderMaxValue,
+                                        divisions: days.length,
+                                        onChanged: (double value) {
+                                          sliderValue = value;
+                                          _scroll(value);
+                                        },
+                                      ),
+                                    )))
+                          ]
+                          )
+                        ),
+                      ],
+                    )
+                  ),
+                  Positioned.fill(
+                    left: 1,
+                    top: 35,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      // INDICATEURS
+                      child: TimelineDayIndicators(
+                          day: days[centerItemIndex],
+                          colors: widget.colors,
+                          lang: widget.lang,
+                          elements: widget.elements)
+                    ),
                   ),
                   // MESSAGE SI AUCUNE ACTIVITE
                   if (timelineIsEmpty)
@@ -597,7 +609,7 @@ class _TimelineXp extends State<TimelineXp> {
                         padding: const EdgeInsets.all(25),
                         child: Center(
                           child: Text(
-                            'Aucune activité ne voua a été attribuée. Vous pouvez consulter le détail des projets en utilisant le menu.',
+                            'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets en utilisant le menu.',
                             style: TextStyle(
                               color: widget.colors['primaryText'], fontSize: 15),
                             )
