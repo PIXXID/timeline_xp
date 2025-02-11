@@ -31,6 +31,18 @@ class _StageRow extends State<StageRow> {
   // Initialisation
   @override
   void initState() {
+
+    // On vérifie si la timeline affiche un ou plusieurs projets.
+    Set<String> uniquePrjIds = {};
+    if(widget.stagesList.isNotEmpty) {
+      for (var item in widget.stagesList) {
+        String? prjId = item['prj_id'];
+        if (prjId != null) {
+          uniquePrjIds.add(prjId);
+        }
+      }
+    }
+
     // On boucle sur les étapes de la ligne
     for (int index = 0; index < widget.stagesList.length; index++) {
       // Nombre de jour de durée
@@ -42,7 +54,12 @@ class _StageRow extends State<StageRow> {
       String progressLabel = (widget.stagesList[index]['prog'] != null && widget.stagesList[index]['prog'] > 0) ? ' (${widget.stagesList[index]['prog']}%)' : '';
 
       // Construction du label du stage
-      String label = (widget.stagesList[index]['pname'] != null) ? widget.stagesList[index]['pname'] + ' - ' : '';
+      String label = '';
+      // Affiche le nom du projet seulement si plusieurs prjId
+      if(uniquePrjIds.length > 1) {
+        label += (widget.stagesList[index]['pname'] != null) ? widget.stagesList[index]['pname'] + ' - ' : '';
+      }
+      // Nom du stage
       label += (widget.stagesList[index]['name'] != null) ? widget.stagesList[index]['name'] + progressLabel : '';
      
       // On ajoute la couleur du projet pour l'icon
@@ -83,6 +100,7 @@ class _StageRow extends State<StageRow> {
           progress: widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
           prjId: widget.stagesList[index]['prj_id'],
           isMilestone: widget.stagesList[index]['type'] == 'milestone',
+          isUniqueProject: uniquePrjIds.length > 1 ? false : true,
           openEditStage: widget.openEditStage));
     }
 

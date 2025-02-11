@@ -14,6 +14,7 @@ class StageItem extends StatelessWidget {
       required this.progress,
       required this.prjId,
       required this.isMilestone,
+      required this.isUniqueProject,
       required this.openEditStage});
 
   final Map<String, Color> colors;
@@ -27,6 +28,7 @@ class StageItem extends StatelessWidget {
   final double progress;
   final String prjId;
   final bool isMilestone;
+  final bool isUniqueProject;
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
 
   @override
@@ -62,12 +64,14 @@ class StageItem extends StatelessWidget {
                     mainAxisSize:
                         MainAxisSize.min, // Ajuste la largeur à son contenu
                     children: [
-                      Icon(
-                        Icons.circle_rounded, // Remplacez par l'icône souhaitée
-                        size: fontSize, // Taille de l'icône
-                        color:
-                            colors['pcolor'], // Même couleur que le texte
-                      ),
+                      // Affiche l'icone seulement en multi-projet
+                      if(!isUniqueProject)
+                        Icon(
+                          Icons.circle_rounded, // Remplacez par l'icône souhaitée
+                          size: fontSize, // Taille de l'icône
+                          color:
+                              colors['pcolor'], // Même couleur que le texte
+                        ),
                       const SizedBox(width: 5), // Espacement entre l'icône et le texte
                       Flexible(
                         child: Text(

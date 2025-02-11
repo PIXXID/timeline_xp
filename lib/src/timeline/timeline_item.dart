@@ -212,7 +212,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                                   heightCompeff == 0)
                                               ? Icon(Icons.sunny,
                                                   color: colors['accent2'],
-                                                  size: 11)
+                                                  size: 14)
                                               : null))),
                           // Barre de travail affecté (busy)
                           Positioned(
@@ -249,7 +249,6 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                           right: margin / 2,
                                           bottom: margin / 3),
                                       width: widget.dayWidth - margin - 16,
-                                      //height: heightCompeff,
                                       decoration: BoxDecoration(
                                         borderRadius: borderRadius,
                                         color: completeColor,
