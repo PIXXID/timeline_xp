@@ -63,8 +63,8 @@ class _BouncingTimelineItem extends State<TimelineItem>
     if (day['compeff'] > 0) {
       heightCompeff =
           (heightLmax * day['compeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
-      if (heightCompeff >= heightCapeff) {
-        heightCompeff = heightCapeff;
+      if (heightCompeff >= heightLmax) {
+        heightCompeff = heightLmax;
         dayIsCompleted = true;
       }
       // Met à jour la couleur si progression
