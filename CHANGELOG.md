@@ -1,3 +1,8 @@
+## 0.0.70 - 13/02/2025
+
+* Mise à jour de la progression des étapes
+* Correction des jours terminés
+
 ## 0.0.69 - 30/01/2025
 
 * Nouvel affichages des indicateurs journaliers
