@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -45,6 +46,8 @@ class CapacityPlan extends StatefulWidget {
 }
 
 class _CapacityPlanState extends State<CapacityPlan> {
+
+  Timer? _debounceTimer;
 
   double daySize = 25;
 
@@ -261,7 +264,10 @@ class _CapacityPlanState extends State<CapacityPlan> {
 
     // On envoie le callback avec la liste des modifications
     if (widget.updateCapacity != null) {
-      widget.updateCapacity!.call(jsonEncode(modifiedDays));
+      _debounceTimer?.cancel(); // Annule le précédent timer s'il existe
+      _debounceTimer = Timer(Duration(milliseconds: 300), () {
+        widget.updateCapacity!.call(jsonEncode(modifiedDays));
+      });
     }
   }
 
@@ -291,6 +297,12 @@ class _CapacityPlanState extends State<CapacityPlan> {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel(); // Nettoie le timer lors de la destruction du widget
+    super.dispose();
   }
 
   @override

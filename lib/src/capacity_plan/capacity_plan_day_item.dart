@@ -34,7 +34,7 @@ class CapacityPlanDayItem extends StatefulWidget {
 class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
   
   OverlayEntry? _overlayEntry;
-  
+
   void _showOverlay(BuildContext context, List alert) {
     final overlay = Overlay.of(context);
 
@@ -146,7 +146,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
           verticalDirection: VerticalDirection.up,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(DateFormat.MMM(widget.lang).format(widget.day['date']).toUpperCase(),
+            Text('${DateFormat.MMM(widget.lang).format(widget.day['date']).toUpperCase().substring(0, 3)}.',
               style: TextStyle(
                 color: widget.colors['primaryText'],
                 fontWeight: FontWeight.w600,
@@ -158,14 +158,14 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                 style: TextStyle(
                   color: widget.colors['primaryText'],
                   fontWeight: FontWeight.w600,
-                  fontSize: 10,
+                  fontSize: 12,
                 ))),
             for (int index = 0; index < widget.day['hours'].length; index++)
               GestureDetector(
                 // Call back lors du clic
                 onTap: () {
                   if (!widget.day['readOnly']) {
-                    widget.updateDay.call(widget.day, index);
+                      widget.updateDay.call(widget.day, index);
                   }
                 },
                 child: Padding(

@@ -50,14 +50,14 @@ class CapacityPlanFilterItem extends StatelessWidget {
                     )
                   ),
                   if (project['prj_id'] == null)
-                  Transform.rotate(
-                    angle: -45,
-                    child: Container(
-                      width: 25,
-                      height: 2,
-                      color: Colors.red
+                    Transform.rotate(
+                      angle: -45,
+                      child: Container(
+                        width: 25,
+                        height: 2,
+                        color: Colors.red
+                      )
                     )
-                  )
                 ],
               ),  
               Text(project['prj_name'],

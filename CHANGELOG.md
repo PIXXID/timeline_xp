@@ -1,3 +1,11 @@
+## 0.0.72 - 18/02/2025
+
+* Capacity Plan, ajoute un debounce à l'envoie du call back au clic sur une heure
+
+## 0.0.71 - 14/02/2025
+
+* Correction couleur CapacityPlan
+
 ## 0.0.70 - 13/02/2025
 
 * Mise à jour de la progression des étapes
