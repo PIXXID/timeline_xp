@@ -1,3 +1,7 @@
+## 0.0.75 - 18/02/2025
+
+* Capacity Plan, corrections suppression d'un projet sur un jour
+
 ## 0.0.74 - 18/02/2025
 
 * Capacity Plan, corrections déclenchement de la call back

@@ -274,7 +274,7 @@ class _TimelineXp extends State<TimelineXp> {
 
       // Calcul des points d'alertes
       double progress = day['capeff'] > 0 ? (day['buseff'] / day['capeff']) * 100 : 0;
-      if (progress > 99) {
+      if (progress > 100) {
         day['alertLevel'] = 2;
       } else if (progress > 80) {
         day['alertLevel'] = 1;

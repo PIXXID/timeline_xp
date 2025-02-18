@@ -215,6 +215,9 @@ class _CapacityPlanState extends State<CapacityPlan> {
     for (Map<String, dynamic> projectEffort in day['busy_effort']) {
       dayProjects.add({ 'prj_id': projectEffort['prj_id'], 'upc_date': DateFormat('yyyy-MM-dd').format(day['date']), 'upc_capacity_effort': 0 });
     }
+    if (dayProjects.indexWhere((s) => s['prj_id'] == selectedProject['prj_id']) != -1) {
+      dayProjects.add({ 'prj_id': selectedProject['prj_id'], 'upc_date': DateFormat('yyyy-MM-dd').format(day['date']), 'upc_capacity_effort': 0 });
+    }
 
     // On parcours les projets 
     for (Map<String, dynamic> hour in day['hours']) {
@@ -267,8 +270,8 @@ class _CapacityPlanState extends State<CapacityPlan> {
       _debounceTimer = Timer(Duration(milliseconds: widget.debounceTime), () {
         // Déclenche le call back
         widget.updateCapacity!.call(jsonEncode(modifiedDays));
-        // Remet à 0 les données
-        modifiedDays = [];
+        // // Remet à 0 les données
+        // modifiedDays = [];
       });
     }
   }
