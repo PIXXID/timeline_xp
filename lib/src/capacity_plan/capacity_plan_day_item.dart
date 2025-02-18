@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 // Tools
 import 'package:timeline_xp/src/tools/tools.dart';
 
@@ -94,7 +92,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                   width: widget.daySize,
                   height: widget.height,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(6.0)
                     ),
                     color: widget.colors['secondaryBackground'],
