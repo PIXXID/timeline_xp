@@ -35,8 +35,6 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
   Widget build(BuildContext context) {
     double dayHeight = (widget.height - 20) / widget.maxEffortTotal;
 
-    debugPrint('${widget.day}');
-
     return Opacity(
       opacity: widget.day['readOnly'] ? 0.5 : 1,
       child: Container(
@@ -58,7 +56,7 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                 style: TextStyle(
                   color: widget.colors['primaryText'],
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
+                  fontSize: 11.5,
                 ))),
             if (widget.day['hours'].length > 0)
               for (int index = 0; index < widget.day['hours'].length; index++)

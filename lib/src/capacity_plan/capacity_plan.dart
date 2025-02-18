@@ -261,9 +261,14 @@ class _CapacityPlanState extends State<CapacityPlan> {
 
     // On envoie le callback avec la liste des modifications
     if (widget.updateCapacity != null) {
-      _debounceTimer?.cancel(); // Annule le précédent timer s'il existe
+       // Annule le précédent timer s'il existe
+      _debounceTimer?.cancel();
+      // Démarre un nouveau timer
       _debounceTimer = Timer(Duration(milliseconds: widget.debounceTime), () {
+        // Déclenche le call back
         widget.updateCapacity!.call(jsonEncode(modifiedDays));
+        // Remet à 0 les données
+        modifiedDays = [];
       });
     }
   }
