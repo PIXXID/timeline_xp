@@ -1,3 +1,7 @@
+## 0.0.74 - 18/02/2025
+
+* Capacity Plan, corrections déclenchement de la call back
+
 ## 0.0.73 - 18/02/2025
 
 * Capacity Plan, ajustement mise en forme
