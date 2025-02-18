@@ -33,109 +33,11 @@ class CapacityPlanDayItem extends StatefulWidget {
 
 class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
   
-  OverlayEntry? _overlayEntry;
-
-  void _showOverlay(BuildContext context, List alert) {
-    final overlay = Overlay.of(context);
-
-    final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final position = renderBox.localToGlobal(Offset.zero);
-    final size = renderBox.size;
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: position.dy + size.height / 2 - 75,
-        left: position.dx + size.width / 2,
-        child: Container(
-            padding: const EdgeInsets.all(10.0),
-            width: 300,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-              color: widget.colors['primaryBackground'],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'La capacité insufisante :',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: widget.colors['primaryText']
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: GestureDetector(
-                            onTap: () {
-                              widget.resetDay.call(widget.day);
-                              _removeOverlay();
-                            },
-                            child: Icon(
-                              Icons.replay_rounded,
-                              size: 18,
-                              color: widget.colors['primaryText']
-                            )
-                          )
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: GestureDetector(
-                            onTap: () => _removeOverlay(),
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 18,
-                              color: widget.colors['primaryText']
-                            )
-                          )
-                        ),
-                      ]
-                    )
-                  ]
-                ),
-                for (var alert in widget.day['alerts'])
-                  Row(children: [
-                    Text(
-                      '${alert['prj_name']}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: widget.colors['primaryText']
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Container(
-                        width: 15,
-                        height: 15,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          color: formatStringToColor(alert['prj_color'].toString())
-                        )
-                      )
-                    ),
-                  ],
-                )
-              ],
-            )
-          ),
-        ),
-      );
-
-    overlay.insert(_overlayEntry!);
-  }
-
-  void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
   @override
   Widget build(BuildContext context) {
     double dayHeight = (widget.height - 20) / widget.maxEffortTotal;
+
+    debugPrint('${widget.day}');
 
     return Opacity(
       opacity: widget.day['readOnly'] ? 0.5 : 1,
@@ -160,42 +62,48 @@ class _CapacityPlanDayItemState extends State<CapacityPlanDayItem> {
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
                 ))),
-            for (int index = 0; index < widget.day['hours'].length; index++)
-              GestureDetector(
-                // Call back lors du clic
-                onTap: () {
-                  if (!widget.day['readOnly']) {
-                      widget.updateDay.call(widget.day, index);
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 1.0),
-                  child: Container(
-                    width: widget.daySize,
-                    height: dayHeight,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(index == widget.day['hours'].length - 1 ? 6.0 : 0.0),
-                        topRight: Radius.circular(index == widget.day['hours'].length - 1 ? 6.0 : 0.0),
-                        bottomLeft: Radius.circular(index == 0 ? 6.0 : 0.0),
-                        bottomRight: Radius.circular(index == 0 ? 6.0 : 0.0)),
-                      color: formatStringToColor(widget.day['hours'][index]['prj_color'].toString()),
-                    ),
+            if (widget.day['hours'].length > 0)
+              for (int index = 0; index < widget.day['hours'].length; index++)
+                GestureDetector(
+                  // Call back lors du clic
+                  onTap: () {
+                    if (!widget.day['readOnly']) {
+                        widget.updateDay.call(widget.day, index);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1.0),
+                    child: Container(
+                      width: widget.daySize,
+                      height: dayHeight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(index == widget.day['hours'].length - 1 ? 6.0 : 0.0),
+                          topRight: Radius.circular(index == widget.day['hours'].length - 1 ? 6.0 : 0.0),
+                          bottomLeft: Radius.circular(index == 0 ? 6.0 : 0.0),
+                          bottomRight: Radius.circular(index == 0 ? 6.0 : 0.0)),
+                        color: formatStringToColor(widget.day['hours'][index]['prj_color'].toString()),
+                      ),
+                    )
                   )
+                ),
+            if (widget.day['hours'].length == 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 1.0),
+                child: Container(
+                  width: widget.daySize,
+                  height: widget.height,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(6.0)
+                    ),
+                    color: widget.colors['secondaryBackground'],
+                  ),
+                  child: Icon(Icons.sunny,
+                      color: widget.colors['secondaryText'],
+                      size: 14)
                 )
               ),
-            if (widget.day['alerts'] != null && widget.day['alerts'].length > 0)
-              GestureDetector(
-                onTap: () => _showOverlay(context, widget.day['alerts']),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: FaIcon(
-                    FontAwesomeIcons.circleExclamation,
-                    size: 20,
-                    color: widget.colors['error']
-                  )
-                )
-              )
           ]
         )
       )

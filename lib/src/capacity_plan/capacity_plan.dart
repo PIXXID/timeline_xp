@@ -20,7 +20,7 @@ class CapacityPlan extends StatefulWidget {
     required this.height,
     required this.lang,
     required this.colors,
-    required this.readOnly,
+    required this.debounceTime,
     required this.startDate,
     required this.endDate,
     required this.projects,
@@ -31,9 +31,9 @@ class CapacityPlan extends StatefulWidget {
 
   final double width;
   final double height;
+  final int debounceTime;
   final String lang;
   final Map<String, Color> colors;
-  final bool readOnly;
   final String startDate;
   final String endDate;
   final dynamic projects;
@@ -152,7 +152,6 @@ class _CapacityPlanState extends State<CapacityPlan> {
       "upl_effort_total": uplEffortTotal,
       "busy_effort": [],
       "readOnly": date.difference(now).inDays < 0,
-      "alerts": [],
       "hours": []
     };
 
@@ -211,8 +210,6 @@ class _CapacityPlanState extends State<CapacityPlan> {
     // On reconstruit les capacities mis à jour par projet
     // On sépare les projets par heure
     List dayProjects = [];
-    // On remet à 0 l'alerte
-    day['alerts'] = [];
 
     // On positionne les projets déjà présents sur le jour (pour les conserver en cas de suppression totale du projet)
     for (Map<String, dynamic> projectEffort in day['busy_effort']) {
@@ -265,7 +262,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
     // On envoie le callback avec la liste des modifications
     if (widget.updateCapacity != null) {
       _debounceTimer?.cancel(); // Annule le précédent timer s'il existe
-      _debounceTimer = Timer(Duration(milliseconds: 300), () {
+      _debounceTimer = Timer(Duration(milliseconds: widget.debounceTime), () {
         widget.updateCapacity!.call(jsonEncode(modifiedDays));
       });
     }
@@ -360,77 +357,44 @@ class _CapacityPlanState extends State<CapacityPlan> {
                 )
               )
           ),
-          // Liste des projets
-          if (widget.readOnly == true)
-            SizedBox(
-              height: 60,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  for (dynamic project in widget.projects)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.0),
-                          child: Container(
-                            width: 15,
-                            height: 15,
-                            color: formatStringToColor(project['prj_color'].toString())
-                          )
-                        )
-                      ),
-                      Text(project['prj_name'],
-                        style: TextStyle(
-                          color: widget.colors['primaryText'],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        )),
-                    ]))
-                ])
-              )
-            )
-          else
           // Filtres des projets
-            Container(
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-                color: widget.colors['primaryBackground'],
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: FaIcon(
-                        FontAwesomeIcons.brush,
-                        size: 36,
-                        color: widget.colors['secondaryBackground']
-                      )
+          Container(
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+              color: widget.colors['primaryBackground'],
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: FaIcon(
+                      FontAwesomeIcons.brush,
+                      size: 36,
+                      color: widget.colors['secondaryBackground']
+                    )
+                  ),
+                  CapacityPlanFilterItem(
+                      colors: widget.colors,
+                      lang: widget.lang,
+                      project: const { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': '#5C5E71' },
+                      selectedProject: selectedProject,
+                      updateFilter: updateFilter
                     ),
+                  for (dynamic project in widget.projects)
                     CapacityPlanFilterItem(
-                        colors: widget.colors,
-                        lang: widget.lang,
-                        project: const { 'prj_name': 'Aucun', 'prj_id': null, 'prj_color': '#5C5E71' },
-                        selectedProject: selectedProject,
-                        updateFilter: updateFilter
-                      ),
-                    for (dynamic project in widget.projects)
-                      CapacityPlanFilterItem(
-                        colors: widget.colors,
-                        lang: widget.lang,
-                        project: project,
-                        selectedProject: selectedProject,
-                        updateFilter: updateFilter
-                      )
-                  ]
-                )
+                      colors: widget.colors,
+                      lang: widget.lang,
+                      project: project,
+                      selectedProject: selectedProject,
+                      updateFilter: updateFilter
+                    )
+                ]
               )
             )
+          )
         ]
       )
     );

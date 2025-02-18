@@ -1,3 +1,7 @@
+## 0.0.73 - 18/02/2025
+
+* Capacity Plan, ajustement mise en forme
+
 ## 0.0.72 - 18/02/2025
 
 * Capacity Plan, ajoute un debounce à l'envoie du call back au clic sur une heure
