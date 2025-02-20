@@ -47,14 +47,14 @@ class StageItem extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
               borderRadius: borderRaduis,
-              color: colors['primaryBackground'],
+              color: colors['secondaryBackground'],
               border: Border.all(color: colors['secondaryBackground']!, width: 1)),
           child: Stack(clipBehavior: Clip.none, children: [
             Container(
                 width: itemWidth * progress / 100,
                 decoration: BoxDecoration(
                   borderRadius: borderRaduis,
-                  color: colors['secondaryBackground'],
+                  color: colors['primary'],
                 )),
             Align(
                 alignment: Alignment.centerLeft,

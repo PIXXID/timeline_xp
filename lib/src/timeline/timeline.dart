@@ -17,6 +17,7 @@ class TimelineXp extends StatefulWidget {
       required this.projectCount,
       required this.infos,
       required this.elements,
+      required this.elementsDone,
       required this.capacities,
       required this.stages,
       required this.notifications,
@@ -32,6 +33,7 @@ class TimelineXp extends StatefulWidget {
   final int projectCount;
   final dynamic infos;
   final dynamic elements;
+  final dynamic elementsDone;
   final dynamic capacities;
   final dynamic stages;
   final dynamic notifications;
@@ -53,7 +55,7 @@ class _TimelineXp extends State<TimelineXp> {
   double sliderMargin = 25;
 
   // Largeur d'un item jour
-  double dayWidth = 38.0;
+  double dayWidth = 45.0;
   double dayMargin = 5;
   // Hauteur de la timeline
   double timelineHeight = 160.0;
@@ -65,7 +67,7 @@ class _TimelineXp extends State<TimelineXp> {
   // Liste des lignes d'étapes
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
-  double rowHeight = 25.0;
+  double rowHeight = 30.0;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -112,7 +114,7 @@ class _TimelineXp extends State<TimelineXp> {
     }
 
     // Formate la liste des jours pour positionner les éléments correctement
-    days = formatElements(startDate, endDate, widget.elements,
+    days = formatElements(startDate, endDate, widget.elements, widget.elementsDone,
         widget.capacities, widget.notifications, widget.stages);
 
     // Formate la liste des étapes en plusieurs lignes selon les dates
@@ -176,9 +178,8 @@ class _TimelineXp extends State<TimelineXp> {
     super.dispose();
   }
 
-  // Formate la liste des jours pour la timeline
-  List formatElements(DateTime startDate, DateTime endDate, List elements,
-      List capacities, List notifications, List stages) {
+  /// Formate la liste des jours pour la timeline
+  List formatElements(DateTime startDate, DateTime endDate, List elements, List elementsDone, List capacities, List notifications, List stages) {
     List list = [];
 
     // On récupère le nombre de jours entre la date de début et la date de fin
@@ -251,6 +252,16 @@ class _TimelineXp extends State<TimelineXp> {
             } else if (element['status'] == 'pending' || element['status'] == 'inprogress') {
                 day['elementPending'] += 1;
             }
+          }
+        }
+      }
+
+      // Ajoute les élements terminée dans la liste des preIds
+      if (elementsDone.isNotEmpty) {
+        for (dynamic element in elementsDone) {         
+          // Date et preId
+          if (element['date'] == DateFormat('yyyy-MM-dd').format(date) && day['preIds'].indexOf(element['pre_id']) == -1) {
+            day['preIds'].add(element['pre_id']);
           }
         }
       }

@@ -1,3 +1,7 @@
+## 0.0.76 - 20/02/2025
+
+* Timeline : Renvoi les identifiants des élements terminés
+
 ## 0.0.75 - 18/02/2025
 
 * Capacity Plan, corrections suppression d'un projet sur un jour
