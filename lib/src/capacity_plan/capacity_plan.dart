@@ -381,7 +381,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
                     child: FaIcon(
                       FontAwesomeIcons.brush,
                       size: 36,
-                      color: widget.colors['secondaryBackground']
+                      color: widget.colors['secondaryText']
                     )
                   ),
                   CapacityPlanFilterItem(
