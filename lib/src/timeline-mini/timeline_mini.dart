@@ -19,8 +19,7 @@ class TimelineMini extends StatefulWidget {
       required this.elementsDone,
       required this.capacities,
       this.defaultDate,
-      required this.openDayDetail,
-      this.updateCurrentDate}) : super(key: key);
+      required this.openDayDetail}) : super(key: key);
 
   final double width;
   final double height;
@@ -33,7 +32,6 @@ class TimelineMini extends StatefulWidget {
   final dynamic capacities;
   final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
-  final Function(String?)? updateCurrentDate;
 
   @override
   State<TimelineMini> createState() => _TimelineMini();
@@ -135,11 +133,6 @@ class _TimelineMini extends State<TimelineMini> {
 
           sliderValue = _controllerTimeline.offset;
         });
-
-        if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
-          String dayDate = DateFormat('yyyy-MM-dd').format(days[centerItemIndex]['date']);
-          widget.updateCurrentDate!.call(dayDate);
-        }
 
       }
     });
