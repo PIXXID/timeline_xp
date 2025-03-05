@@ -12,7 +12,6 @@ class TimelineMini extends StatefulWidget {
       required this.width,
       required this.height,
       required this.colors,
-      required this.isDarkMode,
       required this.lang,
       required this.projectCount,
       required this.infos,
@@ -26,7 +25,6 @@ class TimelineMini extends StatefulWidget {
   final double width;
   final double height;
   final Map<String, Color> colors;
-  final bool isDarkMode;
   final String lang;
   final int projectCount;
   final dynamic infos;
@@ -323,7 +321,6 @@ class _TimelineMini extends State<TimelineMini> {
                               itemBuilder: (BuildContext context, int index) {
                                 return TimelineItem(
                                     colors: widget.colors,
-                                    isDarkMode: widget.isDarkMode,
                                     lang: widget.lang,
                                     index: index,
                                     centerItemIndex: centerItemIndex,
@@ -355,7 +352,6 @@ class _TimelineMini extends State<TimelineMini> {
                       child: TimelineDayIndicators(
                           day: days[centerItemIndex],
                           colors: widget.colors,
-                          isDarkMode: widget.isDarkMode,
                           lang: widget.lang,
                           elements: widget.elements)
                     ),

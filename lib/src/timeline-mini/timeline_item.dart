@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 class TimelineItem extends StatefulWidget {
   final Map<String, Color> colors;
-  final bool isDarkMode;
   final String lang;
   final int index;
   final int centerItemIndex;
@@ -19,7 +18,6 @@ class TimelineItem extends StatefulWidget {
   const TimelineItem(
       {super.key,
       required this.colors,
-      required this.isDarkMode,
       required this.lang,
       required this.index,
       required this.centerItemIndex,
@@ -44,8 +42,8 @@ class _BouncingTimelineItem extends State<TimelineItem>
     double margin = widget.dayMargin;
 
     final DateTime date = day['date'];
-    Color busyColor = (widget.isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!) ?? Colors.grey;
-    Color completeColor = (widget.isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!) ?? Colors.white;
+    Color busyColor = colors['secondaryText']! ?? Colors.grey;
+    Color completeColor = colors['secondaryText'] ?? Colors.white;
     Color dayTextColor = colors['primaryText'] ?? Colors.white;
 
     // Hauteur MAX

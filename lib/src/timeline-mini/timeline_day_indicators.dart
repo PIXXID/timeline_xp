@@ -10,13 +10,11 @@ class TimelineDayIndicators extends StatelessWidget {
     super.key,
     required this.day,
     required this.colors,
-    required this.isDarkMode,
     required this.lang,
     required this.elements,
   });
 
   final Map<String, Color> colors;
-  final bool isDarkMode;
   final dynamic day;
   final String lang;
   final List elements;
@@ -42,7 +40,7 @@ class TimelineDayIndicators extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: borderRadius,
               color: colors['primaryBackground'],
-              border: Border.all(color: isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!)),
+              border: Border.all(color: colors['secondaryText']!)),
           child: Center(
               child: Text(
                 "${day['capeff'].floor()}h",
@@ -60,8 +58,8 @@ class TimelineDayIndicators extends StatelessWidget {
           height: badgeHeight,
           decoration: BoxDecoration(
               borderRadius: borderRadius,
-              color: isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!,
-              border: Border.all(color: isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!)),
+              color: colors['secondaryText']!,
+              border: Border.all(color: colors['secondaryText']!)),
           child: Center(
               child: Text(
                 "${day['buseff'].toStringAsFixed(1)}h",

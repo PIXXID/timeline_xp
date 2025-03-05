@@ -1,3 +1,7 @@
+## 0.0.79 - 05/03/2025
+
+* Corrections Timeline mini
+
 ## 0.0.78 - 05/03/2025
 
 * Corrections Timeline mini
