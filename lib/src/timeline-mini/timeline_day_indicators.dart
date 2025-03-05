@@ -60,7 +60,7 @@ class TimelineDayIndicators extends StatelessWidget {
           height: badgeHeight,
           decoration: BoxDecoration(
               borderRadius: borderRadius,
-              color: colors['secondaryText'],
+              color: isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!,
               border: Border.all(color: isDarkMode ? colors['secondaryText']! : colors['secondaryBackground']!)),
           child: Center(
               child: Text(

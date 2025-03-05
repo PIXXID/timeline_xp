@@ -53,7 +53,7 @@ class _TimelineMini extends State<TimelineMini> {
   double dayWidth = 45.0;
   double dayMargin = 5;
   // Hauteur de la timeline
-  double timelineHeight = 160.0;
+  double timelineHeight = 140.0;
   // Diamètre des pins d'alertes
   double alertWidth = 6;
   // Liste des widgets des alertes
