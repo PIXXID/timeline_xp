@@ -43,6 +43,18 @@ void main() {
       "hustle": 1
     }
   ];
+  final elementsDone = [
+    {
+      "pre_date": "2024-03-02",
+      "activity_total": 1,
+      "activity_completed": 0,
+      "delivrable_total": 0,
+      "delivrable_completed": 0,
+      "task_total": 0,
+      "task_completed": 0,
+      "hustle": 1
+    },
+  ];
   final capacities = [
     {
       "upc_date": "2024-09-13",
@@ -348,6 +360,7 @@ void main() {
                 projectCount: projectCount,
                 infos: dateInterval,
                 elements: elements,
+                elementsDone: elementsDone,
                 capacities: capacities,
                 stages: stages,
                 notifications: notifications,

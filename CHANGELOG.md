@@ -1,3 +1,7 @@
+## 0.0.77 - 05/03/2025
+
+* Ajoute une Timeline mini
+
 ## 0.0.76 - 20/02/2025
 
 * Timeline : Renvoi les identifiants des élements terminés

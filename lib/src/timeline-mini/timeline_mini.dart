@@ -5,54 +5,48 @@ import 'package:intl/intl.dart';
 import 'timeline_item.dart';
 import 'timeline_day_info.dart';
 import 'timeline_day_indicators.dart';
-import 'stage_row.dart';
 
-class TimelineXp extends StatefulWidget {
-  const TimelineXp(
+class TimelineMini extends StatefulWidget {
+  const TimelineMini(
       {Key? key,
       required this.width,
       required this.height,
       required this.colors,
+      required this.isDarkMode,
       required this.lang,
       required this.projectCount,
       required this.infos,
       required this.elements,
       required this.elementsDone,
       required this.capacities,
-      required this.stages,
-      required this.notifications,
       this.defaultDate,
       required this.openDayDetail,
-      this.openEditStage,
       this.updateCurrentDate}) : super(key: key);
 
   final double width;
   final double height;
   final Map<String, Color> colors;
+  final bool isDarkMode;
   final String lang;
   final int projectCount;
   final dynamic infos;
   final dynamic elements;
   final dynamic elementsDone;
   final dynamic capacities;
-  final dynamic stages;
-  final dynamic notifications;
   final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
   final Function(String?)? updateCurrentDate;
 
   @override
-  State<TimelineXp> createState() => _TimelineXp();
+  State<TimelineMini> createState() => _TimelineMini();
 }
 
-class _TimelineXp extends State<TimelineXp> {
+class _TimelineMini extends State<TimelineMini> {
   // Liste des jours formatés
   List days = [];
 
   // Valeur du slider
   double sliderValue = 0.0;
-  double sliderMargin = 25;
   double sliderMaxValue = 10;
 
   // Largeur d'un item jour
@@ -83,7 +77,6 @@ class _TimelineXp extends State<TimelineXp> {
 
   // Controllers des scroll
   final ScrollController _controllerTimeline = ScrollController();
-  final ScrollController _controllerStages = ScrollController();
 
   // Déclenche le scroll dans les 2 controllers (timeline et étapes)
   void _scroll(double sliderValue) {
@@ -95,7 +88,7 @@ class _TimelineXp extends State<TimelineXp> {
   @override
   void initState() {
     super.initState();
-    debugPrint('------ Timeline InitState');
+    debugPrint('------ Timeline mini InitState');
     
     // Vérifie que la timleline recoit bien des élement
     if (widget.elements != null && widget.elements.isNotEmpty) {
@@ -111,16 +104,10 @@ class _TimelineXp extends State<TimelineXp> {
        // Indique qu'il n'y a pas de données pour cette requete.
       timelineIsEmpty = true;
     }
-
+  
     // Formate la liste des jours pour positionner les éléments correctement
     days = formatElements(startDate, endDate, widget.elements, widget.elementsDone,
-        widget.capacities, widget.notifications, widget.stages);
-
-    // Formate la liste des étapes en plusieurs lignes selon les dates
-    stagesRows = formatStagesRows(startDate, endDate, days, widget.stages);
-
-    // On positionne le stage de la première ligne par jour
-    days = getStageByDay(days, stagesRows);
+        widget.capacities);
 
     // Calcule la valeur maximum du slider
     sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
@@ -156,9 +143,6 @@ class _TimelineXp extends State<TimelineXp> {
           widget.updateCurrentDate!.call(dayDate);
         }
 
-        if (stagesRows.isNotEmpty) {
-          _controllerStages.jumpTo(sliderValue);
-        }
       }
     });
 
@@ -177,10 +161,10 @@ class _TimelineXp extends State<TimelineXp> {
     super.dispose();
   }
 
-  /// Formate la liste des jours pour la timeline
-  List formatElements(DateTime startDate, DateTime endDate, List elements, List elementsDone, List capacities, List notifications, List stages) {
+  // Formate la liste des jours pour la timeline
+  List formatElements(DateTime startDate, DateTime endDate, List elements, List elementsDone, List capacities) {
     List list = [];
-
+    
     // On récupère le nombre de jours entre la date de début et la date de fin
     int duration = endDate.difference(startDate).inDays;
 
@@ -207,12 +191,9 @@ class _TimelineXp extends State<TimelineXp> {
         'activityCompleted': 0,
         'delivrableTotal': 0,
         'delivrableCompleted': 0,
-        'taskTotal': 0,
-        'taskCompleted': 0,
         'elementCompleted': 0,
         'elementPending': 0,
         'preIds': [],
-        'stage': {}
       };
 
       // Si on a des éléments on les comptes
@@ -282,104 +263,10 @@ class _TimelineXp extends State<TimelineXp> {
             : 0;
       }
 
-      // Calcul des points d'alertes
-      double progress = day['capeff'] > 0 ? (day['buseff'] / day['capeff']) * 100 : 0;
-      if (progress > 100) {
-        day['alertLevel'] = 2;
-      } else if (progress > 80) {
-        day['alertLevel'] = 1;
-      }
-
       list.add(day);
     }
 
     return list.toList();
-  }
-
-  // Formate les étapes par lignes pour qu'ils ne se cheveauchent pas
-  List formatStagesRows(
-      DateTime startDate, DateTime endDate, List days, List stages) {
-    List rows = [];
-
-    // On parcourt les étapes pour construire les lignes
-    for (int i = 0; i < stages.length - 1; i++) {
-      // Dates des stages
-      DateTime stageStartDate = DateTime.parse(stages[i]['sdate']);
-      DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
-
-      // Prend en compte les stages commencant avant le premier élement
-      if (stageStartDate.compareTo(startDate) < 0) {
-        stageStartDate = startDate;
-      }
-
-      // On récupère les index des dates dans la liste
-      int startDateIndex = days.indexWhere((d) =>
-          DateFormat('yyyy-MM-dd').format(d["date"]) ==
-          DateFormat('yyyy-MM-dd').format(stageStartDate));
-      int endDateIndex = days.indexWhere((d) =>
-          DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(stageEndDate));
-
-      stages[i]['startDateIndex'] = startDateIndex;
-      stages[i]['endDateIndex'] = endDateIndex;
-      stages[i]['sdate'] = stages[i]['sdate'];
-      stages[i]['edate'] = stages[i]['edate'];
-
-      // Exclue les stages hos plages de dates
-      if (startDateIndex == -1 || endDateIndex == -1) {
-        continue;
-      }
-
-      // Si aucun row, on crée le premier
-      if (rows.isEmpty) {
-        rows.add([stages[i]]);
-      } else {
-        // Si on au moins un row, on les parcourt pour voir dans lequel on peut se placer sans cheveaucher un autre créneau
-        var added = false;
-        for (var row in rows) {
-          // On cherche si on cheveauche un existant
-          var overlapIndex = row.indexWhere((r) {
-            return (((r['endDateIndex'] + 1) >
-                    stages[i]['startDateIndex'])
-                ? true
-                : false);
-          });
-          // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
-          if (overlapIndex == -1) {
-            row.add(stages[i]);
-            added = true;
-            break;
-          }
-        }
-
-        // Si on a pas trouvé de place dans un row existant, on créer un nouveau row
-        if (!added) {
-          rows.add([stages[i]]);
-        }
-      }
-    }
-    return rows;
-  }
-
-  // Positionne le stage du premier niveau pour chaque jour
-  List getStageByDay(List days, List stages) {
-    // On boucle sur les jours
-    if (stages.isNotEmpty) {
-      int index = 0;
-      for (var day in days) {
-        // Pour chaque jour, on récupère le stage correspondant du premier niveau
-        int stageDate = stages[0].indexWhere((s) {
-          return (s['startDateIndex'].toInt() <= index &&
-              s['endDateIndex'].toInt() >= index);
-        });
-        if (stageDate != -1) {
-          day['currentStage'] = stages[0][stageDate];
-        }
-
-        index++;
-      }
-    }
-
-    return days;
   }
 
   // Scroll à une date
@@ -415,7 +302,7 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 35,
                     child: Container(
-                      height: 220,
+                      height: 85,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
@@ -436,6 +323,7 @@ class _TimelineXp extends State<TimelineXp> {
                               itemBuilder: (BuildContext context, int index) {
                                 return TimelineItem(
                                     colors: widget.colors,
+                                    isDarkMode: widget.isDarkMode,
                                     lang: widget.lang,
                                     index: index,
                                     centerItemIndex: centerItemIndex,
@@ -448,153 +336,13 @@ class _TimelineXp extends State<TimelineXp> {
                                     openDayDetail: widget.openDayDetail);
                               }),
                         ),
-                        // STAGES DYNAMIQUES
-                        Container(
-                          constraints: const BoxConstraints(
-                            minHeight: 1,
-                            minWidth: double.infinity,
-                            maxHeight: 120.0,
-                            maxWidth: double.infinity,
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Stack(children: [
-                              Column(
-                                children: List.generate(stagesRows.length,
-                                    (rowIndex) {
-                                return SingleChildScrollView(
-                                    controller: _controllerStages,
-                                    scrollDirection: Axis.horizontal,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: firstElementMargin),
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 2.0),
-                                        width: days.length *
-                                            (dayWidth - dayMargin),
-                                        height: rowHeight,
-                                        child: StageRow(
-                                            colors: widget.colors,
-                                            stagesList: stagesRows[rowIndex],
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: rowHeight,
-                                            openEditStage:
-                                                widget.openEditStage)));
-                              })),
-                            ]),
-                          )
-                        ),
-                        // JOUR ET ICONES ELEMENTS
+                        // INFO DU JOUR
                         TimelineDayInfo(
                           day: days[centerItemIndex],
                           colors: widget.colors,
                           lang: widget.lang,
                           elements: widget.elements,
                           openDayDetail: widget.openDayDetail),
-                        // ALERTES
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: Stack(clipBehavior: Clip.none, children: [
-                            // Alertes positionnées
-                            SizedBox(
-                                width: screenWidth - (sliderMargin * 2),
-                                height: 50,
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: sliderMargin - (alertWidth / 2)),
-                                    child: Builder(builder: (context) {
-                                      List<Widget> alerts = [];
-                                      double screenWidthMargin =
-                                          screenWidth - ((sliderMargin) * 4);
-                                      if (days.isNotEmpty) {
-                                        // On parcourt les jours et on ajoute les alertes
-                                        for (var index = 0;
-                                            index < days.length;
-                                            index++) {
-                                          if (days[index]['alertLevel'] != 0) {
-                                            alerts.add(Positioned(
-                                                left: (index) *
-                                                    screenWidthMargin /
-                                                    days.length,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                    // Call back lors du clic
-                                                    onTap: () {
-                                                      setState(() {
-                                                        sliderValue =
-                                                            index.toDouble();
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons.circle_rounded,
-                                                      size: 12,
-                                                      color: days[index]['alertLevel'] == 1
-                                                          ? widget
-                                                              .colors['warning']
-                                                          : (days[index]['alertLevel'] == 2
-                                                              ? widget.colors['error']
-                                                              : Colors
-                                                                  .transparent),
-                                                    ))));
-                                          }
-                                        }
-                                      }
-                                      // Point sur le jour en cours
-                                      alerts.add(Positioned(
-                                          left: (nowIndex) *
-                                              screenWidthMargin /
-                                              days.length,
-                                          top: 0,
-                                          child: GestureDetector(
-                                              // Call back lors du clic
-                                              onTap: () {
-                                                scrollTo(nowIndex);
-                                              },
-                                              child: Icon(
-                                                Icons.circle_outlined,
-                                                size: 13,
-                                                color:
-                                                    widget.colors['primaryText'],
-                                              ))));
-                                      return Stack(
-                                          children: alerts.isNotEmpty
-                                              ? alerts
-                                              : [const SizedBox()]);
-                                    })
-                              )
-                            ),
-                            // Slider
-                            Positioned(
-                                bottom: 0,
-                                child: SizedBox(
-                                    width: screenWidth - (sliderMargin * 2),
-                                    child: SliderTheme(
-                                      data: SliderTheme.of(context).copyWith(
-                                        thumbColor: widget.colors['primary'],
-                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.0),
-                                        activeTrackColor:
-                                            widget.colors['primary'],
-                                        inactiveTrackColor:
-                                            widget.colors['secondaryBackground'],
-                                        trackHeight: 2,
-                                      ),
-                                      child: Slider(
-                                        value: sliderValue,
-                                        min: 0,
-                                        max: sliderMaxValue,
-                                        divisions: days.length,
-                                        onChanged: (double value) {
-                                          sliderValue = value;
-                                          _scroll(value);
-                                        },
-                                      ),
-                                    )))
-                          ]
-                          )
-                        ),
                       ],
                     )
                   ),
@@ -607,6 +355,7 @@ class _TimelineXp extends State<TimelineXp> {
                       child: TimelineDayIndicators(
                           day: days[centerItemIndex],
                           colors: widget.colors,
+                          isDarkMode: widget.isDarkMode,
                           lang: widget.lang,
                           elements: widget.elements)
                     ),
