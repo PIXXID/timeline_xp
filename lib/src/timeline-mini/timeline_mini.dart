@@ -93,12 +93,6 @@ class _TimelineMini extends State<TimelineMini> {
     for (var dateIndex = 0; dateIndex <= duration; dateIndex++) {
       DateTime date = startDate.add(Duration(days: dateIndex));
 
-      var elementDay = elements
-          .where(
-            (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
-          )
-          .toList();
-
       var capacitiesDay = capacities.firstWhere(
         (e) => e['date'] == DateFormat('yyyy-MM-dd').format(date),
         orElse: () => <String, Object>{},
