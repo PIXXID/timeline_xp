@@ -5,7 +5,6 @@ class TimelineItem extends StatefulWidget {
   final Map<String, Color> colors;
   final String lang;
   final int index;
-  final int centerItemIndex;
   final int nowIndex;
   final List days;
   final List elements;
@@ -20,7 +19,6 @@ class TimelineItem extends StatefulWidget {
       required this.colors,
       required this.lang,
       required this.index,
-      required this.centerItemIndex,
       required this.nowIndex,
       required this.days,
       required this.elements,
@@ -76,19 +74,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
       heightBuseff = heightCapeff - 2;
     }
 
-    // Gestion de l'affichage des dates en fonction de la la date au centre.
-    int idxCenter = widget.centerItemIndex - widget.index;
-    if (idxCenter == 0) {
-      dayTextColor = colors['primaryText']!;
-    } else if ((idxCenter >= 1 && idxCenter < 4) ||
-        (idxCenter <= -1 && idxCenter > -4)) {
-      dayTextColor = colors['secondaryText']!;
-    } else if ((idxCenter >= 4 && idxCenter < 6) ||
-        (idxCenter <= -4 && idxCenter > -6)) {
-      dayTextColor = colors['accent1']!;
-    } else {
-      dayTextColor = Colors.transparent;
-    }
+    dayTextColor = colors['primaryText']!;
 
     // Border radius
     BorderRadius borderRadius = const BorderRadius.only(
@@ -102,7 +88,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
     };
 
     return Align(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.topCenter,
         child: GestureDetector(
             // Call back lors du clic
             onTap: () {
@@ -196,10 +182,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                   decoration: BoxDecoration(
                                     border: Border(
                                       top: BorderSide(
-                                        color: (widget.index ==
-                                                widget.centerItemIndex)
-                                            ? colors['secondaryText']!
-                                            : const Color(0x00000000),
+                                        color: colors['secondaryText']!,
                                         width: 1,
                                       ),
                                     ),
@@ -258,8 +241,15 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                               child: Icon(Icons.check,
                                                   color: colors['primaryText'],
                                                   size: 16))
-                                          : null)))
+                                          : null))),
                         ])),
+                    Text(
+                      '${day['buseff']}h',
+                      style: TextStyle(
+                          color: dayTextColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
+                    ),
                   ],
                 ))));
   }

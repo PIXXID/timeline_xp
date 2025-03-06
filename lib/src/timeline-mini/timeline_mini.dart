@@ -3,8 +3,6 @@ import 'package:intl/intl.dart';
 
 // Widgets
 import 'timeline_item.dart';
-import 'timeline_day_info.dart';
-import 'timeline_day_indicators.dart';
 
 class TimelineMini extends StatefulWidget {
   const TimelineMini(
@@ -41,44 +39,19 @@ class _TimelineMini extends State<TimelineMini> {
   // Liste des jours formatés
   List days = [];
 
-  // Valeur du slider
-  double sliderValue = 0.0;
-  double sliderMaxValue = 10;
-
   // Largeur d'un item jour
   double dayWidth = 45.0;
   double dayMargin = 5;
   // Hauteur de la timeline
-  double timelineHeight = 140.0;
-  // Diamètre des pins d'alertes
-  double alertWidth = 6;
-  // Liste des widgets des alertes
-  List<Widget> alertList = [];
+  double timelineHeight = 160.0;
 
-  // Liste des lignes d'étapes
-  List stagesRows = [];
-  // Hauteur d'une ligne d'étapes
-  double rowHeight = 30.0;
-
-  // Index de l'item jour au centre
-  int centerItemIndex = 0;
 
   // Date de début et date de fin par défaut
   DateTime now = DateTime.now();
   DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime endDate = DateTime.now().add(const Duration(days: 30));
   int nowIndex = 0;
-  int defaultDateIndex = -1;
   bool timelineIsEmpty = false; 
-
-  // Controllers des scroll
-  final ScrollController _controllerTimeline = ScrollController();
-
-  // Déclenche le scroll dans les 2 controllers (timeline et étapes)
-  void _scroll(double sliderValue) {
-    // gestion du scroll via le slide
-    _controllerTimeline.jumpTo(sliderValue);
-  }
 
   // Initialisation
   @override
@@ -105,51 +78,8 @@ class _TimelineMini extends State<TimelineMini> {
     days = formatElements(startDate, endDate, widget.elements, widget.elementsDone,
         widget.capacities);
 
-    // Calcule la valeur maximum du slider
-    sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
-
     // Calcule l'index de la date du jour
     nowIndex = now.difference(startDate).inDays;
-
-    // Calcule l'index de la date positionnée par défaut
-    if (widget.defaultDate != null) {
-      defaultDateIndex = DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
-    }
-
-    // Écoute du scroll pour :
-    // - calculer quel élément est au centre
-    // - mettre à jour la valeur du slide
-    // - reporter le scroll sur les étapes
-    _controllerTimeline.addListener(() {
-      if (_controllerTimeline.offset >= 0 &&
-          _controllerTimeline.offset < sliderMaxValue) {
-        // Met à jour les valeurs
-        setState(() {
-          // On calcule l'élément du center
-          int centerValue = (sliderValue / (dayWidth - dayMargin)).round();
-          if (centerValue >= 0 && centerValue <= days.length - 1) {
-            centerItemIndex = centerValue;
-          }
-
-          sliderValue = _controllerTimeline.offset;
-        });
-
-      }
-    });
-
-    // Exécuter une seule fois après la construction du widget
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // On scroll sur la date du jour par défaut
-      scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex);
-    });
-  }
-
-  // Destruction du widget
-  @override
-  void dispose() {
-    // On enlève l'écoute du scroll de la timeline
-    _controllerTimeline.removeListener(() {});
-    super.dispose();
   }
 
   // Formate la liste des jours pour la timeline
@@ -178,64 +108,7 @@ class _TimelineMini extends State<TimelineMini> {
       Map<String, dynamic> day = {
         'date': date,
         'lmax': 0,
-        'activityTotal': 0,
-        'activityCompleted': 0,
-        'delivrableTotal': 0,
-        'delivrableCompleted': 0,
-        'elementCompleted': 0,
-        'elementPending': 0,
-        'preIds': [],
       };
-
-      // Si on a des éléments on les comptes
-      if (elementDay.isNotEmpty) {
-        // On boucle sur les éléments pour compter le nombre d'activité/livrables/tâches
-        for (Map<String, dynamic> element in elementDay) {
-          if (day['preIds'].indexOf(element['pre_id']) == -1) {
-            // On construit la liste des éléments (qui sera transmise lors du clic)
-            day['preIds'].add(element['pre_id']);
-
-            // Selon le type d'éléments on construit les compteurs
-            switch (element['nat']) {
-              case 'activity':
-                if (element['status'] == 'status') {
-                  day['activityCompleted'] += 1;
-                }
-                day['activityTotal']++;
-                break;
-              case 'delivrable':
-                if (element['status'] == 'status') {
-                  day['delivrableCompleted'] += 1;
-                }
-                day['delivrableTotal']++;
-                break;
-              case 'task':
-                if (element['status'] == 'status') {
-                  day['taskCompleted'] += 1;
-                }
-                day['taskTotal']++;
-                break;
-            }
-
-            // Compte le nombres d'element terminé et en attente/encours
-            if (element['status'] == 'validated' || element['status'] == 'finished') {
-                day['elementCompleted'] += 1;
-            } else if (element['status'] == 'pending' || element['status'] == 'inprogress') {
-                day['elementPending'] += 1;
-            }
-          }
-        }
-      }
-
-      // Ajoute les élements terminée dans la liste des preIds
-      if (elementsDone.isNotEmpty) {
-        for (dynamic element in elementsDone) {         
-          // Date et preId
-          if (element['date'] == DateFormat('yyyy-MM-dd').format(date) && day['preIds'].indexOf(element['pre_id']) == -1) {
-            day['preIds'].add(element['pre_id']);
-          }
-        }
-      }
 
       // Informations sur les capacités du jour
       if (capacitiesDay != null) {
@@ -260,93 +133,39 @@ class _TimelineMini extends State<TimelineMini> {
     return list.toList();
   }
 
-  // Scroll à une date
-  void scrollTo(int dateIndex) {
-    if (dateIndex >= 0) {
-      // On calcule la valeur du scroll en fonction de la date
-      double scroll = dateIndex * (dayWidth - dayMargin);
-
-      // Met à jour la valeur du scroll et scroll
-      setState(() {
-        sliderValue = scroll;
-      });
-      _scroll(sliderValue);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
-    double screenCenter = (screenWidth / 2);
-
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
             decoration: BoxDecoration(color: widget.colors['primaryBackground']),
             child: Stack(
-                // Trait rouge indiquant le jour en cours
                 children: [
-                  Positioned(
-                    left: screenCenter,
-                    top: 35,
-                    child: Container(
-                      height: 85,
-                      width: 1,
-                      decoration: BoxDecoration(color: widget.colors['error']),
-                    ),
-                  ),
                   Positioned.fill(
-                    child: Column(
-                      children: <Widget>[
-                        // TIMELINE DYNAMIQUE
-                        SizedBox(
-                          width: screenWidth,
-                          height: timelineHeight - 30,
-                          child: ListView.builder(
-                              controller: _controllerTimeline,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: firstElementMargin),
-                              itemCount: days.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return TimelineItem(
-                                    colors: widget.colors,
-                                    lang: widget.lang,
-                                    index: index,
-                                    centerItemIndex: centerItemIndex,
-                                    nowIndex: nowIndex,
-                                    days: days,
-                                    elements: widget.elements,
-                                    dayWidth: dayWidth,
-                                    dayMargin: dayMargin,
-                                    height: timelineHeight,
-                                    openDayDetail: widget.openDayDetail);
-                              }),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            days.length,
+                            (index) => TimelineItem(
+                              colors: widget.colors,
+                              lang: widget.lang,
+                              index: index,
+                              nowIndex: nowIndex,
+                              days: days,
+                              elements: widget.elements,
+                              dayWidth: dayWidth,
+                              dayMargin: dayMargin,
+                              height: timelineHeight,
+                              openDayDetail: widget.openDayDetail,
+                            ),
+                          ),
                         ),
-                        // INFO DU JOUR
-                        TimelineDayInfo(
-                          day: days[centerItemIndex],
-                          colors: widget.colors,
-                          lang: widget.lang,
-                          elements: widget.elements,
-                          openDayDetail: widget.openDayDetail),
-                      ],
-                    )
-                  ),
-                  Positioned.fill(
-                    left: 1,
-                    top: 35,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      // INDICATEURS
-                      child: TimelineDayIndicators(
-                          day: days[centerItemIndex],
-                          colors: widget.colors,
-                          lang: widget.lang,
-                          elements: widget.elements)
+                      ),
                     ),
                   ),
                   // MESSAGE SI AUCUNE ACTIVITE
