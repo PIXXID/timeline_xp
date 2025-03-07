@@ -15,6 +15,7 @@ class TimelineXp extends StatefulWidget {
       required this.colors,
       required this.lang,
       required this.projectCount,
+      required this.mode,
       required this.infos,
       required this.elements,
       required this.elementsDone,
@@ -31,6 +32,7 @@ class TimelineXp extends StatefulWidget {
   final Map<String, Color> colors;
   final String lang;
   final int projectCount;
+  final String mode;
   final dynamic infos;
   final dynamic elements;
   final dynamic elementsDone;
@@ -59,7 +61,7 @@ class _TimelineXp extends State<TimelineXp> {
   double dayWidth = 45.0;
   double dayMargin = 5;
   // Hauteur de la timeline
-  double timelineHeight = 160.0;
+  double timelineHeight = 220.0;
   // Diamètre des pins d'alertes
   double alertWidth = 6;
   // Liste des widgets des alertes
@@ -83,9 +85,8 @@ class _TimelineXp extends State<TimelineXp> {
 
   // Controllers des scroll
   final ScrollController _controllerTimeline = ScrollController();
-  final ScrollController _controllerStages = ScrollController();
 
-  // Déclenche le scroll dans les 2 controllers (timeline et étapes)
+  // Déclenche le scroll dans le controller timeline
   void _scroll(double sliderValue) {
     // gestion du scroll via le slide
     _controllerTimeline.jumpTo(sliderValue);
@@ -154,10 +155,6 @@ class _TimelineXp extends State<TimelineXp> {
         if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
           String dayDate = DateFormat('yyyy-MM-dd').format(days[centerItemIndex]['date']);
           widget.updateCurrentDate!.call(dayDate);
-        }
-
-        if (stagesRows.isNotEmpty) {
-          _controllerStages.jumpTo(sliderValue);
         }
       }
     });
@@ -300,12 +297,14 @@ class _TimelineXp extends State<TimelineXp> {
   List formatStagesRows(
       DateTime startDate, DateTime endDate, List days, List stages) {
     List rows = [];
-
+    
     // On parcourt les étapes pour construire les lignes
     for (int i = 0; i < stages.length - 1; i++) {
       // Dates des stages
       DateTime stageStartDate = DateTime.parse(stages[i]['sdate']);
       DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
+
+      Map<String, dynamic> stage = Map<String, dynamic>.from(stages[i]);
 
       // Prend en compte les stages commencant avant le premier élement
       if (stageStartDate.compareTo(startDate) < 0) {
@@ -319,10 +318,10 @@ class _TimelineXp extends State<TimelineXp> {
       int endDateIndex = days.indexWhere((d) =>
           DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(stageEndDate));
 
-      stages[i]['startDateIndex'] = startDateIndex;
-      stages[i]['endDateIndex'] = endDateIndex;
-      stages[i]['sdate'] = stages[i]['sdate'];
-      stages[i]['edate'] = stages[i]['edate'];
+      stage['startDateIndex'] = startDateIndex;
+      stage['endDateIndex'] = endDateIndex;
+      stage['sdate'] = stage['sdate'];
+      stage['edate'] = stage['edate'];
 
       // Exclue les stages hos plages de dates
       if (startDateIndex == -1 || endDateIndex == -1) {
@@ -331,7 +330,7 @@ class _TimelineXp extends State<TimelineXp> {
 
       // Si aucun row, on crée le premier
       if (rows.isEmpty) {
-        rows.add([stages[i]]);
+        rows.add([stage]);
       } else {
         // Si on au moins un row, on les parcourt pour voir dans lequel on peut se placer sans cheveaucher un autre créneau
         var added = false;
@@ -339,13 +338,13 @@ class _TimelineXp extends State<TimelineXp> {
           // On cherche si on cheveauche un existant
           var overlapIndex = row.indexWhere((r) {
             return (((r['endDateIndex'] + 1) >
-                    stages[i]['startDateIndex'])
+                    stage['startDateIndex'])
                 ? true
                 : false);
           });
           // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
           if (overlapIndex == -1) {
-            row.add(stages[i]);
+            row.add(stage);
             added = true;
             break;
           }
@@ -353,7 +352,7 @@ class _TimelineXp extends State<TimelineXp> {
 
         // Si on a pas trouvé de place dans un row existant, on créer un nouveau row
         if (!added) {
-          rows.add([stages[i]]);
+          rows.add([stage]);
         }
       }
     }
@@ -421,81 +420,87 @@ class _TimelineXp extends State<TimelineXp> {
                     ),
                   ),
                   Positioned.fill(
-                    child: Column(
-                      children: <Widget>[
-                        // TIMELINE DYNAMIQUE
-                        SizedBox(
-                          width: screenWidth,
-                          height: timelineHeight - 30,
-                          child: ListView.builder(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: <Widget>[
+                          // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
+                          SizedBox(
+                            width: screenWidth,
+                            height: 220, // Hauteur combinée pour timeline et stages
+                            child: SingleChildScrollView(
                               controller: _controllerTimeline,
                               scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: firstElementMargin),
-                              itemCount: days.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return TimelineItem(
-                                    colors: widget.colors,
-                                    lang: widget.lang,
-                                    index: index,
-                                    centerItemIndex: centerItemIndex,
-                                    nowIndex: nowIndex,
-                                    days: days,
-                                    elements: widget.elements,
-                                    dayWidth: dayWidth,
-                                    dayMargin: dayMargin,
-                                    height: timelineHeight,
-                                    openDayDetail: widget.openDayDetail);
-                              }),
-                        ),
-                        // STAGES DYNAMIQUES
-                        Container(
-                          constraints: const BoxConstraints(
-                            minHeight: 1,
-                            minWidth: double.infinity,
-                            maxHeight: 120.0,
-                            maxWidth: double.infinity,
+                              padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (widget.mode == 'effort')
+                                  // TIMELINE DYNAMIQUE
+                                  SizedBox(
+                                    width: days.length * (dayWidth),
+                                    height: 220,
+                                    child: Row(
+                                      children: List.generate(
+                                        days.length,
+                                        (index) => TimelineItem(
+                                          colors: widget.colors,
+                                          lang: widget.lang,
+                                          index: index,
+                                          centerItemIndex: centerItemIndex,
+                                          nowIndex: nowIndex,
+                                          days: days,
+                                          elements: widget.elements,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: timelineHeight,
+                                          openDayDetail: widget.openDayDetail,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (widget.mode == 'chronology')
+                                  // STAGES DYNAMIQUES
+                                  Container(
+                                    width: days.length * (dayWidth - dayMargin),
+                                    height: 220, // Hauteur fixe pour la zone des stages
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: List.generate(
+                                          stagesRows.length,
+                                          (rowIndex) {
+                                            return Container(
+                                              margin: const EdgeInsets.symmetric(vertical: 2.0),
+                                              width: days.length * (dayWidth - dayMargin),
+                                              height: rowHeight,
+                                              child: StageRow(
+                                                colors: widget.colors,
+                                                stagesList: stagesRows[rowIndex],
+                                                dayWidth: dayWidth,
+                                                dayMargin: dayMargin,
+                                                height: rowHeight,
+                                                openEditStage: widget.openEditStage,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Stack(children: [
-                              Column(
-                                children: List.generate(stagesRows.length,
-                                    (rowIndex) {
-                                return SingleChildScrollView(
-                                    controller: _controllerStages,
-                                    scrollDirection: Axis.horizontal,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: firstElementMargin),
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 2.0),
-                                        width: days.length *
-                                            (dayWidth - dayMargin),
-                                        height: rowHeight,
-                                        child: StageRow(
-                                            colors: widget.colors,
-                                            stagesList: stagesRows[rowIndex],
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: rowHeight,
-                                            openEditStage:
-                                                widget.openEditStage)));
-                              })),
-                            ]),
-                          )
-                        ),
-                        // JOUR ET ICONES ELEMENTS
-                        TimelineDayInfo(
-                          day: days[centerItemIndex],
-                          colors: widget.colors,
-                          lang: widget.lang,
-                          elements: widget.elements,
-                          openDayDetail: widget.openDayDetail),
-                        // ALERTES
-                        Container(
+                          // JOUR ET ICONES ELEMENTS
+                          TimelineDayInfo(
+                            day: days[centerItemIndex],
+                            colors: widget.colors,
+                            lang: widget.lang,
+                            elements: widget.elements,
+                            openDayDetail: widget.openDayDetail),
+                          // ALERTES
+                          Container(
                           padding: const EdgeInsets.symmetric(horizontal: 0),
                           child: Stack(clipBehavior: Clip.none, children: [
                             // Alertes positionnées
@@ -574,7 +579,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     child: SliderTheme(
                                       data: SliderTheme.of(context).copyWith(
                                         thumbColor: widget.colors['primary'],
-                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
                                         activeTrackColor:
                                             widget.colors['primary'],
                                         inactiveTrackColor:
@@ -593,9 +598,9 @@ class _TimelineXp extends State<TimelineXp> {
                                       ),
                                     )))
                           ]
-                          )
-                        ),
-                      ],
+                        )
+                      ),
+                    ]),
                     )
                   ),
                   Positioned.fill(

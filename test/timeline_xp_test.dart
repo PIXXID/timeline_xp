@@ -358,6 +358,7 @@ void main() {
                 colors: colors,
                 lang: 'fr_FR',
                 projectCount: projectCount,
+                mode: 'effort',
                 infos: dateInterval,
                 elements: elements,
                 elementsDone: elementsDone,
