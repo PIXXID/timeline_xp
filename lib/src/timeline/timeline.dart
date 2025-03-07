@@ -461,7 +461,7 @@ class _TimelineXp extends State<TimelineXp> {
                                   ),
                                   if (widget.mode == 'chronology')
                                   // STAGES DYNAMIQUES
-                                  Container(
+                                  SizedBox(
                                     width: days.length * (dayWidth - dayMargin),
                                     height: 220, // Hauteur fixe pour la zone des stages
                                     child: SingleChildScrollView(
