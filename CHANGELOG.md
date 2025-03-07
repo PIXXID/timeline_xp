@@ -1,3 +1,7 @@
+## 0.0.85 - 07/03/2025
+
+* Timeline : Corrections affichage
+
 ## 0.0.84 - 07/03/2025
 
 * Timeline : Corrections affichage

@@ -70,16 +70,18 @@ class TimelineDayInfo extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 12, 0, 10),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
+                      Container(
+                        height: 24,
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(
+                        child: Center(child: Text(
                           '${DateFormat.E(lang).format(day['date'])} ${DateFormat.yMMMMd(lang).format(day['date'])}',
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color: colors['primaryText'],
                             fontSize: fontSize,
-                          )
+                          ))
                         )
                       ),
                       for (var index = 0; index < curEltCompleted; index++)
