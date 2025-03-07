@@ -65,7 +65,7 @@ class TimelineDayIndicators extends StatelessWidget {
                 "${day['buseff'].toStringAsFixed(1)}h",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: colors['primaryText'],
+                  color: colors['info'],
                   fontSize: fontSize,
                 ),
               )
@@ -84,7 +84,7 @@ class TimelineDayIndicators extends StatelessWidget {
                 "${day['compeff'].toStringAsFixed(1)}h",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: colors['primaryText'],
+                  color: colors['info'],
                   fontSize: fontSize,
                 ),
               )

@@ -236,7 +236,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                       child: (dayIsCompleted)
                                           ? Center(
                                               child: Icon(Icons.check,
-                                                  color: colors['primaryText'],
+                                                  color: colors['info'],
                                                   size: 16))
                                           : null)))
                         ])),
