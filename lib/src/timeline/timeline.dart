@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'timeline_item.dart';
 import 'timeline_day_info.dart';
 import 'timeline_day_indicators.dart';
+import 'timeline_day_item.dart';
 import 'stage_row.dart';
 
 class TimelineXp extends StatefulWidget {
@@ -414,7 +415,7 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 35,
                     child: Container(
-                      height: 220,
+                      height: 183,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
@@ -435,17 +436,37 @@ class _TimelineXp extends State<TimelineXp> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // DATES
+                                  SizedBox(
+                                    width: days.length * (dayWidth),
+                                    height: 40,
+                                    child: Row(
+                                      children: List.generate(
+                                        days.length,
+                                        (index) => TimelineDayItem(
+                                          colors: widget.colors,
+                                          lang: widget.lang,
+                                          index: index,
+                                          centerItemIndex: centerItemIndex,
+                                          nowIndex: nowIndex,
+                                          days: days,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: timelineHeight,
+                                        )
+                                      )
+                                    )
+                                  ),
                                   if (widget.mode == 'effort')
                                   // TIMELINE DYNAMIQUE
                                   SizedBox(
                                     width: days.length * (dayWidth),
-                                    height: 220,
+                                    height: 180,
                                     child: Row(
                                       children: List.generate(
                                         days.length,
                                         (index) => TimelineItem(
                                           colors: widget.colors,
-                                          lang: widget.lang,
                                           index: index,
                                           centerItemIndex: centerItemIndex,
                                           nowIndex: nowIndex,
@@ -462,28 +483,26 @@ class _TimelineXp extends State<TimelineXp> {
                                   if (widget.mode == 'chronology')
                                   // STAGES DYNAMIQUES
                                   SizedBox(
-                                    width: days.length * (dayWidth - dayMargin),
-                                    height: 220, // Hauteur fixe pour la zone des stages
+                                    width: days.length * (dayWidth),
+                                    height: 180, // Hauteur fixe pour la zone des stages
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Column(
                                         children: List.generate(
                                           stagesRows.length,
-                                          (rowIndex) {
-                                            return Container(
-                                              margin: const EdgeInsets.symmetric(vertical: 2.0),
-                                              width: days.length * (dayWidth - dayMargin),
+                                          (rowIndex) => Container(
+                                            margin: const EdgeInsets.symmetric(vertical: 2.0),
+                                            width: days.length * (dayWidth - dayMargin),
+                                            height: rowHeight,
+                                            child: StageRow(
+                                              colors: widget.colors,
+                                              stagesList: stagesRows[rowIndex],
+                                              dayWidth: dayWidth,
+                                              dayMargin: dayMargin,
                                               height: rowHeight,
-                                              child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList: stagesRows[rowIndex],
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
-                                                height: rowHeight,
-                                                openEditStage: widget.openEditStage,
-                                              ),
-                                            );
-                                          },
+                                              openEditStage: widget.openEditStage,
+                                            ),
+                                          )
                                         ),
                                       ),
                                     ),
@@ -501,104 +520,104 @@ class _TimelineXp extends State<TimelineXp> {
                             openDayDetail: widget.openDayDetail),
                           // ALERTES
                           Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          child: Stack(clipBehavior: Clip.none, children: [
-                            // Alertes positionnées
-                            SizedBox(
-                                width: screenWidth - (sliderMargin * 2),
-                                height: 50,
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: sliderMargin - (alertWidth / 2)),
-                                    child: Builder(builder: (context) {
-                                      List<Widget> alerts = [];
-                                      double screenWidthMargin =
-                                          screenWidth - ((sliderMargin) * 4);
-                                      if (days.isNotEmpty) {
-                                        // On parcourt les jours et on ajoute les alertes
-                                        for (var index = 0;
-                                            index < days.length;
-                                            index++) {
-                                          if (days[index]['alertLevel'] != 0) {
-                                            alerts.add(Positioned(
-                                                left: (index) *
-                                                    screenWidthMargin /
-                                                    days.length,
-                                                top: 0,
-                                                child: GestureDetector(
-                                                    // Call back lors du clic
-                                                    onTap: () {
-                                                      setState(() {
-                                                        sliderValue =
-                                                            index.toDouble();
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons.circle_rounded,
-                                                      size: 12,
-                                                      color: days[index]['alertLevel'] == 1
-                                                          ? widget
-                                                              .colors['warning']
-                                                          : (days[index]['alertLevel'] == 2
-                                                              ? widget.colors['error']
-                                                              : Colors
-                                                                  .transparent),
-                                                    ))));
+                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                            child: Stack(clipBehavior: Clip.none, children: [
+                              // Alertes positionnées
+                              SizedBox(
+                                  width: screenWidth - (sliderMargin * 2),
+                                  height: 50,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: sliderMargin - (alertWidth / 2)),
+                                      child: Builder(builder: (context) {
+                                        List<Widget> alerts = [];
+                                        double screenWidthMargin =
+                                            screenWidth - ((sliderMargin) * 4);
+                                        if (days.isNotEmpty) {
+                                          // On parcourt les jours et on ajoute les alertes
+                                          for (var index = 0;
+                                              index < days.length;
+                                              index++) {
+                                            if (days[index]['alertLevel'] != 0) {
+                                              alerts.add(Positioned(
+                                                  left: (index) *
+                                                      screenWidthMargin /
+                                                      days.length,
+                                                  top: 0,
+                                                  child: GestureDetector(
+                                                      // Call back lors du clic
+                                                      onTap: () {
+                                                        setState(() {
+                                                          sliderValue =
+                                                              index.toDouble();
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.circle_rounded,
+                                                        size: 12,
+                                                        color: days[index]['alertLevel'] == 1
+                                                            ? widget
+                                                                .colors['warning']
+                                                            : (days[index]['alertLevel'] == 2
+                                                                ? widget.colors['error']
+                                                                : Colors
+                                                                    .transparent),
+                                                      ))));
+                                            }
                                           }
                                         }
-                                      }
-                                      // Point sur le jour en cours
-                                      alerts.add(Positioned(
-                                          left: (nowIndex) *
-                                              screenWidthMargin /
-                                              days.length,
-                                          top: 0,
-                                          child: GestureDetector(
-                                              // Call back lors du clic
-                                              onTap: () {
-                                                scrollTo(nowIndex);
-                                              },
-                                              child: Icon(
-                                                Icons.circle_outlined,
-                                                size: 13,
-                                                color:
-                                                    widget.colors['primaryText'],
-                                              ))));
-                                      return Stack(
-                                          children: alerts.isNotEmpty
-                                              ? alerts
-                                              : [const SizedBox()]);
-                                    })
-                              )
-                            ),
-                            // Slider
-                            Positioned(
-                                bottom: 0,
-                                child: SizedBox(
-                                    width: screenWidth - (sliderMargin * 2),
-                                    child: SliderTheme(
-                                      data: SliderTheme.of(context).copyWith(
-                                        thumbColor: widget.colors['primary'],
-                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
-                                        activeTrackColor:
-                                            widget.colors['primary'],
-                                        inactiveTrackColor:
-                                            widget.colors['secondaryBackground'],
-                                        trackHeight: 2,
-                                      ),
-                                      child: Slider(
-                                        value: sliderValue,
-                                        min: 0,
-                                        max: sliderMaxValue,
-                                        divisions: days.length,
-                                        onChanged: (double value) {
-                                          sliderValue = value;
-                                          _scroll(value);
-                                        },
-                                      ),
-                                    )))
-                          ]
-                        )
+                                        // Point sur le jour en cours
+                                        alerts.add(Positioned(
+                                            left: (nowIndex) *
+                                                screenWidthMargin /
+                                                days.length,
+                                            top: 0,
+                                            child: GestureDetector(
+                                                // Call back lors du clic
+                                                onTap: () {
+                                                  scrollTo(nowIndex);
+                                                },
+                                                child: Icon(
+                                                  Icons.circle_outlined,
+                                                  size: 13,
+                                                  color:
+                                                      widget.colors['primaryText'],
+                                                ))));
+                                        return Stack(
+                                            children: alerts.isNotEmpty
+                                                ? alerts
+                                                : [const SizedBox()]);
+                                      })
+                                )
+                              ),
+                              // Slider
+                              Positioned(
+                                  bottom: 0,
+                                  child: SizedBox(
+                                      width: screenWidth - (sliderMargin * 2),
+                                      child: SliderTheme(
+                                        data: SliderTheme.of(context).copyWith(
+                                          thumbColor: widget.colors['primary'],
+                                          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4.0),
+                                          activeTrackColor:
+                                              widget.colors['primary'],
+                                          inactiveTrackColor:
+                                              widget.colors['secondaryBackground'],
+                                          trackHeight: 2,
+                                        ),
+                                        child: Slider(
+                                          value: sliderValue,
+                                          min: 0,
+                                          max: sliderMaxValue,
+                                          divisions: days.length,
+                                          onChanged: (double value) {
+                                            sliderValue = value;
+                                            _scroll(value);
+                                          },
+                                        ),
+                                      )))
+                            ]
+                          )
                       ),
                     ]),
                     )

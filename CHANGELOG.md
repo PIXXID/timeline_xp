@@ -1,3 +1,7 @@
+## 0.0.83 - 07/03/2025
+
+* Timeline : mutualise les dates pour la partie effort ou chronologie
+
 ## 0.0.82 - 07/03/2025
 
 * Timeline : sépare la partie effort de la partie chronologie

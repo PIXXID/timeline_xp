@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 class TimelineItem extends StatefulWidget {
   final Map<String, Color> colors;
-  final String lang;
   final int index;
   final int centerItemIndex;
   final int nowIndex;
@@ -18,7 +17,6 @@ class TimelineItem extends StatefulWidget {
   const TimelineItem(
       {super.key,
       required this.colors,
-      required this.lang,
       required this.index,
       required this.centerItemIndex,
       required this.nowIndex,
@@ -134,24 +132,6 @@ class _BouncingTimelineItem extends State<TimelineItem>
                 height: widget.height,
                 child: Column(
                   children: <Widget>[
-                    // Dates
-                    Text(
-                      DateFormat.E(widget.lang)
-                          .format(date)
-                          .toUpperCase()
-                          .substring(0, 1),
-                      style: TextStyle(
-                          color: dayTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      DateFormat('dd').format(date),
-                      style: TextStyle(
-                          color: dayTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
-                    ),
                     // Alertes
                     if (widget.index == widget.nowIndex)
                       Padding(
