@@ -1,3 +1,7 @@
+## 0.0.82 - 07/03/2025
+
+* Timeline : sépare la partie effort de la partie chronologie
+
 ## 0.0.81 - 06/03/2025
 
 * Simplifications Timeline mini
