@@ -243,13 +243,16 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                                   size: 16))
                                           : null))),
                         ])),
-                    Text(
-                      '${day['buseff']}h',
-                      style: TextStyle(
-                          color: dayTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
-                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Text(
+                        '${double.parse(day['buseff'].toStringAsFixed(1))}h',
+                        style: TextStyle(
+                            color: dayTextColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    )
                   ],
                 ))));
   }

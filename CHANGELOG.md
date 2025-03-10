@@ -1,3 +1,7 @@
+## 0.0.86 - 10/03/2025
+
+* Timeline/Timelinem mini : Corrections diverses
+
 ## 0.0.85 - 07/03/2025
 
 * Timeline : Corrections affichage

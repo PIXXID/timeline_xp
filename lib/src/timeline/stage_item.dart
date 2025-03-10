@@ -10,7 +10,7 @@ class StageItem extends StatelessWidget {
       required this.startDate,
       required this.endDate,
       required this.type,
-      required this.prsId,
+      required this.id,
       required this.progress,
       required this.prjId,
       required this.isMilestone,
@@ -20,7 +20,7 @@ class StageItem extends StatelessWidget {
   final Map<String, Color> colors;
   final double itemWidth;
   final double height;
-  final String prsId;
+  final String id;
   final String startDate;
   final String endDate;
   final String type;
@@ -40,7 +40,7 @@ class StageItem extends StatelessWidget {
       GestureDetector(
         // Call back lors du clic
         onTap: () {
-          openEditStage?.call(prsId, label, type, startDate, endDate, progress, prjId);
+          openEditStage?.call(id, label, type, startDate, endDate, progress, prjId);
         },   
         child: Container(
           width: itemWidth,

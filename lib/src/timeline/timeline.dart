@@ -119,7 +119,7 @@ class _TimelineXp extends State<TimelineXp> {
         widget.capacities, widget.notifications, widget.stages);
 
     // Formate la liste des étapes en plusieurs lignes selon les dates
-    stagesRows = formatStagesRows(startDate, endDate, days, widget.stages);
+    stagesRows = formatStagesRows(startDate, endDate, days, widget.stages, widget.elements);
 
     // On positionne le stage de la première ligne par jour
     days = getStageByDay(days, stagesRows);
@@ -296,16 +296,22 @@ class _TimelineXp extends State<TimelineXp> {
 
   // Formate les étapes par lignes pour qu'ils ne se cheveauchent pas
   List formatStagesRows(
-      DateTime startDate, DateTime endDate, List days, List stages) {
+      DateTime startDate, DateTime endDate, List days, List stages, List elements) {
     List rows = [];
     
-    // On parcourt les étapes pour construire les lignes
-    for (int i = 0; i < stages.length - 1; i++) {
-      // Dates des stages
-      DateTime stageStartDate = DateTime.parse(stages[i]['sdate']);
-      DateTime stageEndDate = DateTime.parse(stages[i]['edate']);
+    // On fusionne les stages et les élément triés par date de début
+    // List<Map<String, dynamic>> mergedList = [...stages, ...elements];
+    // mergedList.sort((a, b) => a["sdate"].compareTo(b["sdate"]));
+    List mergedList = stages;
 
-      Map<String, dynamic> stage = Map<String, dynamic>.from(stages[i]);
+
+    // On parcourt les étapes pour construire les lignes
+    for (int i = 0; i < mergedList.length - 1; i++) {
+      // Dates des stages
+      DateTime stageStartDate = DateTime.parse(mergedList[i]['sdate']);
+      DateTime stageEndDate = DateTime.parse(mergedList[i]['edate']);
+
+      Map<String, dynamic> stage = Map<String, dynamic>.from(mergedList[i]);
 
       // Prend en compte les stages commencant avant le premier élement
       if (stageStartDate.compareTo(startDate) < 0) {
@@ -622,19 +628,20 @@ class _TimelineXp extends State<TimelineXp> {
                     ]),
                     )
                   ),
-                  Positioned.fill(
-                    left: 1,
-                    top: 35,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      // INDICATEURS
-                      child: TimelineDayIndicators(
-                          day: days[centerItemIndex],
-                          colors: widget.colors,
-                          lang: widget.lang,
-                          elements: widget.elements)
+                  if (widget.mode == 'effort')
+                    Positioned.fill(
+                      left: 1,
+                      top: 35,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        // INDICATEURS
+                        child: TimelineDayIndicators(
+                            day: days[centerItemIndex],
+                            colors: widget.colors,
+                            lang: widget.lang,
+                            elements: widget.elements)
+                      ),
                     ),
-                  ),
                   // MESSAGE SI AUCUNE ACTIVITE
                   if (timelineIsEmpty)
                     Positioned.fill(

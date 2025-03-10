@@ -88,11 +88,15 @@ class _StageRow extends State<StageRow> {
          ));
       }
 
+      String id = widget.stagesList[index]['prs_id'] != null ? widget.stagesList[index]['prs_id'] : widget.stagesList[index]['pre_id'];
+      debugPrint("==========");
+      debugPrint('$id');
+
       list.add(StageItem(
           colors: Map.from(widget.colors),
           itemWidth: itemWidth,
           height: widget.height,
-          prsId: widget.stagesList[index]['prs_id'],
+          id: id,
           type: widget.stagesList[index]['type'],
           label: label,
           startDate: widget.stagesList[index]['sdate'],

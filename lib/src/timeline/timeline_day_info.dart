@@ -69,7 +69,7 @@ class TimelineDayInfo extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 12, 0, 10),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
