@@ -39,7 +39,7 @@ class CapacityPlan extends StatefulWidget {
   final dynamic projects;
   final dynamic planning;
   final dynamic capacities;
-  final Function(String)? updateCapacity;
+  final Function(List<Map<String, dynamic>>)? updateCapacity;
 
   @override
   State<CapacityPlan> createState() => _CapacityPlanState();
@@ -269,7 +269,7 @@ class _CapacityPlanState extends State<CapacityPlan> {
       // Démarre un nouveau timer
       _debounceTimer = Timer(Duration(milliseconds: widget.debounceTime), () {
         // Déclenche le call back
-        widget.updateCapacity!.call(jsonEncode(modifiedDays));
+        widget.updateCapacity!.call(modifiedDays);
         // // Remet à 0 les données
         // modifiedDays = [];
       });

@@ -1,3 +1,7 @@
+## 0.0.87 - 14/03/2025
+
+* Capacity plan : Corrections type du paramètre de la call back updateCapacity
+
 ## 0.0.86 - 10/03/2025
 
 * Timeline/Timelinem mini : Corrections diverses
