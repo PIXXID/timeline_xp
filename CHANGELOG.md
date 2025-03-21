@@ -1,3 +1,7 @@
+## 0.0.88 - 21/03/2025
+
+* Timeline : Ajoute les éléments dans le GANTT de la Timeline
+
 ## 0.0.87 - 14/03/2025
 
 * Capacity plan : Corrections type du paramètre de la call back updateCapacity
