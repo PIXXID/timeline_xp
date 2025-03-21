@@ -38,6 +38,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
     dynamic day = widget.days[widget.index];
     dynamic colors = widget.colors;
     double margin = widget.dayMargin;
+    const fontSize = 14.0;
 
     final DateTime date = day['date'];
     Color busyColor = colors['secondaryText'] ?? Colors.grey;
@@ -45,7 +46,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
     Color dayTextColor = colors['primaryText'] ?? Colors.white;
 
     // Hauteur MAX
-    double heightLmax = widget.height - 60;
+    double heightLmax = widget.height - 90;
 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
@@ -132,6 +133,20 @@ class _BouncingTimelineItem extends State<TimelineItem>
                 height: widget.height,
                 child: Column(
                   children: <Widget>[
+                    // Météo
+                    if (day['eicon'] != null)
+                      Padding(
+                          padding: const EdgeInsets.only(top: 3, bottom: 5),
+                          child: Text(
+                            '${day['eicon']}',
+                            style: TextStyle(
+                              color: colors['primaryText'],
+                              fontWeight: FontWeight.w300,
+                              fontSize: fontSize,
+                            ),
+                          ))
+                    else
+                      Container(height: 28),
                     // Alertes
                     if (widget.index == widget.nowIndex)
                       Padding(

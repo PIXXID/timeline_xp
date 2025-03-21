@@ -26,6 +26,7 @@ class TimelineXp extends StatefulWidget {
       this.defaultDate,
       required this.openDayDetail,
       this.openEditStage,
+      this.openEditElement,
       this.updateCurrentDate}) : super(key: key);
 
   final double width;
@@ -43,6 +44,7 @@ class TimelineXp extends StatefulWidget {
   final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
   final Function(String?)? updateCurrentDate;
 
   @override
@@ -72,6 +74,10 @@ class _TimelineXp extends State<TimelineXp> {
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
   double rowHeight = 30.0;
+
+  // Largeur minimum en jour des labels
+  // des éléments dans le Gantt
+  int elementLength = 5;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -210,7 +216,8 @@ class _TimelineXp extends State<TimelineXp> {
         'elementCompleted': 0,
         'elementPending': 0,
         'preIds': [],
-        'stage': {}
+        'stage': {},
+        'eicon': ''
       };
 
       // Si on a des éléments on les comptes
@@ -278,6 +285,7 @@ class _TimelineXp extends State<TimelineXp> {
                 capacitiesDay['compeff'] != null
             ? capacitiesDay['compeff']
             : 0;
+        day['eicon'] = capacitiesDay['eicon'];
       }
 
       // Calcul des points d'alertes
@@ -299,13 +307,36 @@ class _TimelineXp extends State<TimelineXp> {
       DateTime startDate, DateTime endDate, List days, List stages, List elements) {
     List rows = [];
     
-    // On fusionne les stages et les élément triés par date de début
-    // List<Map<String, dynamic>> mergedList = [...stages, ...elements];
-    // mergedList.sort((a, b) => a["sdate"].compareTo(b["sdate"]));
-    List mergedList = stages;
+    List<dynamic> mergedList = [];
 
+    // Pour chaque stage, on positionne à la suite les éléments associés
+    for (int i = 0; i < stages.length - 1; i++) {
+      // On ajoute le stage
+      mergedList.add(stages[i]);
+      // On filtre les éléments associés au stage
+      Set<dynamic> addedPreIds = {};
+      List<dynamic> stageElements = elements.where((e) {
+        // Vérifie si l'élément est dans la liste des pre_ids et s'il n'a pas déjà été ajouté
+        return stages[i]['elm_ids']?.contains(e['pre_id']) == true && addedPreIds.add(e['pre_id']);
+      }).map((e) {
+        // Ajoute le paramètre 'pcolor' directement dans l'élément
+        return {
+          ...e,
+          'pcolor': stages[i]['pcolor'],
+          'prs_id': stages[i]['prs_id'],
+        };
+      }).toList();
+      // Trie la liste par 'sdate'
+      stageElements.sort((a, b) => a['sdate'].compareTo(b['sdate']));
+      // On ajoute ces éléments à la liste
+      mergedList = [...mergedList, ...stageElements];
+    }
 
-    // On parcourt les étapes pour construire les lignes
+    // Si on définit l'index de départ uniquement dans le cas d'un stage
+    // Une fois un stage défini, on parcourera les lignes libres à partir de l'index de ce stage
+    // pour éviter que les éléments ne remontent au dessus sur une autre ligne
+    int lastStageRowIndex = 0;
+    // On parcourt les étapes et éléments pour construire les lignes
     for (int i = 0; i < mergedList.length - 1; i++) {
       // Dates des stages
       DateTime stageStartDate = DateTime.parse(mergedList[i]['sdate']);
@@ -335,23 +366,40 @@ class _TimelineXp extends State<TimelineXp> {
         continue;
       }
 
+      bool isStage = ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
+      
       // Si aucun row, on crée le premier
       if (rows.isEmpty) {
         rows.add([stage]);
       } else {
         // Si on au moins un row, on les parcourt pour voir dans lequel on peut se placer sans cheveaucher un autre créneau
         var added = false;
-        for (var row in rows) {
+        for (var j = lastStageRowIndex;j < rows.length;j++) {
           // On cherche si on cheveauche un existant
-          var overlapIndex = row.indexWhere((r) {
-            return (((r['endDateIndex'] + 1) >
+          var overlapIndex = rows[j].indexWhere((r) {
+            // Dans le cas où il s'agit d'un élément qui a une durée inférieure à 5 jours,
+            // on positionne 5 jours minimim
+            int duration = r['endDateIndex'] - r['startDateIndex'];
+            if (duration < elementLength) {
+              return (((r['endDateIndex'] + (elementLength - duration)) >
                     stage['startDateIndex'])
                 ? true
                 : false);
+            } else {
+              return (((r['endDateIndex'] + 1) >
+                    stage['startDateIndex'])
+                ? true
+                : false);
+            }
           });
+
           // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
           if (overlapIndex == -1) {
-            row.add(stage);
+            // Met à jour le premier row de référence pour ne pas remonter au dessus un stage
+            if (isStage) {
+              lastStageRowIndex = j;
+            }
+            rows[j].add(stage);
             added = true;
             break;
           }
@@ -360,9 +408,14 @@ class _TimelineXp extends State<TimelineXp> {
         // Si on a pas trouvé de place dans un row existant, on créer un nouveau row
         if (!added) {
           rows.add([stage]);
+          // Met à jour le premier row de référence pour ne pas remonter au dessus un stage
+          if (isStage) {
+            lastStageRowIndex = rows.length;
+          }
         }
       }
     }
+
     return rows;
   }
 
@@ -464,55 +517,58 @@ class _TimelineXp extends State<TimelineXp> {
                                     )
                                   ),
                                   if (widget.mode == 'effort')
-                                  // TIMELINE DYNAMIQUE
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: 180,
-                                    child: Row(
-                                      children: List.generate(
-                                        days.length,
-                                        (index) => TimelineItem(
-                                          colors: widget.colors,
-                                          index: index,
-                                          centerItemIndex: centerItemIndex,
-                                          nowIndex: nowIndex,
-                                          days: days,
-                                          elements: widget.elements,
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: timelineHeight,
-                                          openDayDetail: widget.openDayDetail,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  if (widget.mode == 'chronology')
-                                  // STAGES DYNAMIQUES
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: 180, // Hauteur fixe pour la zone des stages
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
+                                    // TIMELINE DYNAMIQUE
+                                    SizedBox(
+                                      width: days.length * (dayWidth),
+                                      height: 180,
+                                      child: Row(
                                         children: List.generate(
-                                          stagesRows.length,
-                                          (rowIndex) => Container(
-                                            margin: const EdgeInsets.symmetric(vertical: 2.0),
-                                            width: days.length * (dayWidth - dayMargin),
-                                            height: rowHeight,
-                                            child: StageRow(
-                                              colors: widget.colors,
-                                              stagesList: stagesRows[rowIndex],
-                                              dayWidth: dayWidth,
-                                              dayMargin: dayMargin,
-                                              height: rowHeight,
-                                              openEditStage: widget.openEditStage,
-                                            ),
-                                          )
+                                          days.length,
+                                          (index) => TimelineItem(
+                                            colors: widget.colors,
+                                            index: index,
+                                            centerItemIndex: centerItemIndex,
+                                            nowIndex: nowIndex,
+                                            days: days,
+                                            elements: widget.elements,
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
+                                            height: timelineHeight,
+                                            openDayDetail: widget.openDayDetail,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  if (widget.mode == 'chronology')
+                                    // STAGES DYNAMIQUES
+                                    SizedBox(
+                                      width: days.length * (dayWidth),
+                                      height: 180, // Hauteur fixe pour la zone des stages
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: List.generate(
+                                            stagesRows.length,
+                                            (rowIndex) => Container(
+                                              margin: const EdgeInsets.symmetric(vertical: 2.0),
+                                              width: days.length * (dayWidth - dayMargin),
+                                              height: rowHeight,
+                                              child: StageRow(
+                                                colors: widget.colors,
+                                                stagesList: stagesRows[rowIndex],
+                                                dayWidth: dayWidth,
+                                                dayMargin: dayMargin,
+                                                elementLength: elementLength,
+                                                height: rowHeight,
+                                                openEditStage: widget.openEditStage,
+                                                openEditElement: widget.openEditElement,
+                                              ),
+                                            )
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
