@@ -244,7 +244,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                           : null))),
                         ])),
                     Padding(
-                      padding: EdgeInsets.only(top: 5),
+                      padding: const EdgeInsets.only(top: 5),
                       child: Text(
                         '${double.parse(day['buseff'].toStringAsFixed(1))}h',
                         style: TextStyle(
