@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TimelineDayItem extends StatefulWidget {
+class TimelineDayDate extends StatefulWidget {
   final Map<String, Color> colors;
   final String lang;
   final int index;
@@ -12,7 +12,7 @@ class TimelineDayItem extends StatefulWidget {
   final double dayMargin;
   final double height;
 
-  const TimelineDayItem(
+  const TimelineDayDate(
       {super.key,
       required this.colors,
       required this.lang,
@@ -25,10 +25,10 @@ class TimelineDayItem extends StatefulWidget {
       required this.height});
 
   @override
-  State<TimelineDayItem> createState() => _TimelineDayItem();
+  State<TimelineDayDate> createState() => _TimelineDayDate();
 }
 
-class _TimelineDayItem extends State<TimelineDayItem>
+class _TimelineDayDate extends State<TimelineDayDate>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
@@ -79,6 +79,20 @@ class _TimelineDayItem extends State<TimelineDayItem>
                           fontSize: 12,
                           fontWeight: FontWeight.w500),
                     ),
+                    // Météo
+                    if (day['eicon'] != null)
+                      Padding(
+                          padding: const EdgeInsets.only(top: 3, bottom: 5),
+                          child: Text(
+                            '${day['eicon']}',
+                            style: TextStyle(
+                              color: colors['primaryText'],
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12,
+                            ),
+                          ))
+                    else
+                      Container(height: 28),
                   ],
                 ))));
   }

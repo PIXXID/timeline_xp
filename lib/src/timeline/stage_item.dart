@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class StageItem extends StatelessWidget {
   const StageItem(
@@ -9,7 +10,6 @@ class StageItem extends StatelessWidget {
       required this.itemWidth,
       required this.daysNumber,
       required this.height,
-      required this.elementLength,
       required this.label,
       this.icon,
       this.users,
@@ -19,6 +19,7 @@ class StageItem extends StatelessWidget {
       required this.entityId,
       required this.progress,
       required this.prjId,
+      this.pname,
       required this.parentStageId,
       required this.isStage,
       required this.isUniqueProject,
@@ -31,7 +32,6 @@ class StageItem extends StatelessWidget {
   final double itemWidth;
   final int daysNumber;
   final double height;
-  final int elementLength;
   final String entityId;
   final String startDate;
   final String endDate;
@@ -41,6 +41,7 @@ class StageItem extends StatelessWidget {
   final String? users;
   final double progress;
   final String prjId;
+  final String? pname;
   final String parentStageId;
   final bool isStage;
   final bool isUniqueProject;
@@ -49,37 +50,15 @@ class StageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderRaduis = BorderRadius.all(Radius.circular(2.5));
+    const borderRadius = BorderRadius.all(Radius.circular(2.5));
     const fontSize = 14.0;
-
-    String typeLabel;
-    switch(type) {
-      case 'delivrable':
-        typeLabel = 'Livrable';
-        break;
-      case 'activity':
-        typeLabel = 'Activité';
-        break;
-      case 'task':
-        typeLabel = 'Tâche';
-        break;
-      case 'attachment':
-        typeLabel = 'Fichier';
-        break;
-      case 'reminder':
-        typeLabel = 'Rappel';
-        break;
-      default:
-        typeLabel = type;
-    }
 
     List<String> usersList = [];
     if (users != null) {
       usersList = users!.split(',');
     }
 
-    return Row(children: [
-      GestureDetector(
+    return GestureDetector(
         // Call back lors du clic
         onTap: () {
           if (isStage) {
@@ -90,143 +69,55 @@ class StageItem extends StatelessWidget {
         },
         child: Stack(
           children: [
+            // FOND DU STAGE/ELEMENT
             Container(
               width: itemWidth,
               height: height,
               decoration: BoxDecoration(
-                  borderRadius: borderRaduis,
+                  borderRadius: borderRadius,
                   color: colors['secondaryBackground'],
-                  border: Border.all(color: colors['secondaryBackground']!, width: 1)),
+                  border: Border.all(color: colors['primaryBackground']!, width: 2)),
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
                       width: itemWidth * progress / 100,
                       decoration: BoxDecoration(
-                        borderRadius: borderRaduis,
+                        borderRadius: borderRadius,
                         color: colors['primary'],
                       )),
-                  if (type == 'milestone')
+                   
+                  // TEXTE STAGES
+                  if (isStage)
                     Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Icon(
-                            Icons.flag,
-                            size: 15,
-                            color: colors['primaryText'],
-                          ),
-                        ))
-              ])),
-            if (isStage)
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 20.0),
-                    child: Row(
-                      mainAxisSize:
-                          MainAxisSize.min, // Ajuste la largeur à son contenu
-                      children: [
-                        // Affiche l'icône seulement en multi-projet
-                        if (!isUniqueProject)
-                          Icon(
-                            Icons.circle_rounded,
-                            size: fontSize,
-                            color:
-                                colors['pcolor'],
-                          ),
-                        const SizedBox(width: 5), // Espacement entre l'icône et le texte
-                        Flexible(
-                          child: Text(
-                            label,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: colors['primaryText'],
-                              fontWeight: FontWeight.w300,
-                              fontSize: fontSize,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            if (!isStage)
-              Row(
-                children: [
-                if (usersList.isNotEmpty)
-                  const SizedBox(width: 5),
-                if (usersList.isNotEmpty)
-                  Stack(
-                    children: [
-                      for (int i = 0; i < usersList.length; i++)
-                        Padding(
-                          padding: EdgeInsets.only(left: i * 10),
-                            child: Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                color: colors['primaryBackground'],
-                                shape: BoxShape.circle,
-                                border: Border.all(color: colors['secondaryBackground']!, width: 1)
-                              ),
-                              child: Center(
-                                child: Text(
-                                  usersList[i],
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: colors['primaryText'],
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: fontSize - 2,
-                                  ),
-                                )
-                              ),
-                            )
-                          )
-                      ]
-                  ),
-                ClipRRect(
-                  child: SizedBox(
-                    width: daysNumber > elementLength ? itemWidth : (dayWidth - dayMargin) * elementLength,
-                    child: Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 20.0),
+                        padding: const EdgeInsets.only(left: 5.0, right: 10.0),
                         child: Row(
                           mainAxisSize:
                               MainAxisSize.min, // Ajuste la largeur à son contenu
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
+                            // Affiche l'icône seulement en multi-projet
+                            if (!isUniqueProject && pname != null)
+                              Container(
+                                decoration: BoxDecoration(
                                 color: colors['pcolor'] ?? colors['primaryText']!,
                                 borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                                child: Text(
-                                  typeLabel,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: colors['primaryText'],
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: fontSize - 2,
-                                  ),
-                                )
-                              )
-                            ),
-                            if (icon != null)
-                              const SizedBox(width: 5),
-                            if (icon != null)
-                              Text(
-                                icon!,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: colors['primaryText'],
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: fontSize,
                                 ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                  child: Text(
+                                    pname!,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: colors['primaryText'],
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: fontSize,
+                                    ),
+                                  )
+                                )
                               ),
-                            const SizedBox(width: 5),
+                            const SizedBox(width: 5), // Espacement entre l'icône et le texte
                             Flexible(
                               child: Text(
                                 label,
@@ -242,20 +133,108 @@ class StageItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                )
-              ]),
-            Text(
-              startDate,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: colors['primaryText'],
-                fontWeight: FontWeight.w300,
-                fontSize: fontSize,
-              ),
-            ),
+                  if (type == 'milestone')
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Icon(
+                          Icons.flag,
+                          size: 15,
+                          color: colors['primaryText'],
+                        ),
+                      )),
+
+                  // TEXTE ELEMENT
+                  if (!isStage)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: Row(
+                          children: [
+                            // COMPTEUR USERS
+                            if (usersList.isNotEmpty)
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: 18,
+                                    height: 18,
+                                    decoration: BoxDecoration(
+                                      color: colors['secondaryBackground'],
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: colors['primaryBackground']!, width: 1),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        usersList[0],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: colors['primaryText'],
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: fontSize - 2,
+                                        ),
+                                      )
+                                    ),
+                                  ),
+                                if (usersList.length > 1)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 14),
+                                    child: Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                        color: colors['secondaryBackground'],
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: colors['primaryBackground']!, width: 1),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '+${usersList.length - 1}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: colors['primaryText'],
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: fontSize - 2,
+                                          ),
+                                        ),
+                                      )
+                                    )
+                                  )
+                              ]),
+                            // ICON
+                            if (daysNumber > 1) ...{
+                              if (icon != null)
+                                const SizedBox(width: 5),
+                                Text(
+                                  icon ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: colors['primaryText'],
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: fontSize,
+                                  ),
+                                ),
+                              // LABEL
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: colors['primaryText'],
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: fontSize,
+                                  ),
+                                ),
+                              )
+                            },
+                          ]
+                        )
+                      )
+                    )
+              ])),
         ]),
-      )
-    ]);
+      );
   }
 }

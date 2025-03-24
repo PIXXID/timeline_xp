@@ -1,3 +1,7 @@
+## 0.0.89 - 24/03/2025
+
+* Timeline : Finalisation affichage des éléments dans la timeline
+
 ## 0.0.88 - 21/03/2025
 
 * Timeline : Ajoute les éléments dans le GANTT de la Timeline

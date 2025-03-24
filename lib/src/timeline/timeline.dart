@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'timeline_item.dart';
 import 'timeline_day_info.dart';
 import 'timeline_day_indicators.dart';
-import 'timeline_day_item.dart';
+import 'timeline_day_date.dart';
 import 'stage_row.dart';
 
 class TimelineXp extends StatefulWidget {
@@ -63,6 +63,8 @@ class _TimelineXp extends State<TimelineXp> {
   // Largeur d'un item jour
   double dayWidth = 45.0;
   double dayMargin = 5;
+  // Hauteut de la liste des jours
+  double datesHeight = 65.0;
   // Hauteur de la timeline
   double timelineHeight = 220.0;
   // Diamètre des pins d'alertes
@@ -74,10 +76,6 @@ class _TimelineXp extends State<TimelineXp> {
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
   double rowHeight = 30.0;
-
-  // Largeur minimum en jour des labels
-  // des éléments dans le Gantt
-  int elementLength = 5;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -377,22 +375,11 @@ class _TimelineXp extends State<TimelineXp> {
         for (var j = lastStageRowIndex;j < rows.length;j++) {
           // On cherche si on cheveauche un existant
           var overlapIndex = rows[j].indexWhere((r) {
-            // Dans le cas où il s'agit d'un élément qui a une durée inférieure à 5 jours,
-            // on positionne 5 jours minimim
-            int duration = r['endDateIndex'] - r['startDateIndex'];
-            if (duration < elementLength) {
-              return (((r['endDateIndex'] + (elementLength - duration)) >
+            return (((r['endDateIndex'] + 1) >
                     stage['startDateIndex'])
                 ? true
                 : false);
-            } else {
-              return (((r['endDateIndex'] + 1) >
-                    stage['startDateIndex'])
-                ? true
-                : false);
-            }
           });
-
           // Si il n'y a pas de cheveauchement, on l'ajoute à ce row
           if (overlapIndex == -1) {
             // Met à jour le premier row de référence pour ne pas remonter au dessus un stage
@@ -474,20 +461,18 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 35,
                     child: Container(
-                      height: 183,
+                      height: 250,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
                   ),
                   Positioned.fill(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
+                    child: Column(
                         children: <Widget>[
                           // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
                           SizedBox(
                             width: screenWidth,
-                            height: 220, // Hauteur combinée pour timeline et stages
+                            height: 300, // Hauteur combinée pour timeline et stages
                             child: SingleChildScrollView(
                               controller: _controllerTimeline,
                               scrollDirection: Axis.horizontal,
@@ -498,11 +483,11 @@ class _TimelineXp extends State<TimelineXp> {
                                   // DATES
                                   SizedBox(
                                     width: days.length * (dayWidth),
-                                    height: 40,
+                                    height: datesHeight,
                                     child: Row(
                                       children: List.generate(
                                         days.length,
-                                        (index) => TimelineDayItem(
+                                        (index) => TimelineDayDate(
                                           colors: widget.colors,
                                           lang: widget.lang,
                                           index: index,
@@ -511,7 +496,7 @@ class _TimelineXp extends State<TimelineXp> {
                                           days: days,
                                           dayWidth: dayWidth,
                                           dayMargin: dayMargin,
-                                          height: timelineHeight,
+                                          height: datesHeight,
                                         )
                                       )
                                     )
@@ -520,7 +505,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     // TIMELINE DYNAMIQUE
                                     SizedBox(
                                       width: days.length * (dayWidth),
-                                      height: 180,
+                                      height: 235,
                                       child: Row(
                                         children: List.generate(
                                           days.length,
@@ -540,35 +525,43 @@ class _TimelineXp extends State<TimelineXp> {
                                       ),
                                     ),
                                   if (widget.mode == 'chronology')
-                                    // STAGES DYNAMIQUES
-                                    SizedBox(
-                                      width: days.length * (dayWidth),
-                                      height: 180, // Hauteur fixe pour la zone des stages
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: List.generate(
-                                            stagesRows.length,
-                                            (rowIndex) => Container(
-                                              margin: const EdgeInsets.symmetric(vertical: 2.0),
-                                              width: days.length * (dayWidth - dayMargin),
-                                              height: rowHeight,
-                                              child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList: stagesRows[rowIndex],
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
-                                                elementLength: elementLength,
-                                                height: rowHeight,
-                                                openEditStage: widget.openEditStage,
-                                                openEditElement: widget.openEditElement,
+                                    // STAGES/ELEMENTS DYNAMIQUES
+                                    Stack(
+                                      children: [
+                                        // LISTE
+                                        SizedBox(
+                                          width: days.length * (dayWidth),
+                                          height: 235, // Hauteur fixe pour la zone des stages
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: List.generate(
+                                                stagesRows.length,
+                                                (rowIndex) => Container(
+                                                  margin: const EdgeInsets.symmetric(vertical: 2.0),
+                                                  width: days.length * (dayWidth - dayMargin),
+                                                  height: rowHeight,
+                                                  child: StageRow(
+                                                    colors: widget.colors,
+                                                    stagesList: stagesRows[rowIndex],
+                                                    centerItemIndex: centerItemIndex,
+                                                    dayWidth: dayWidth,
+                                                    dayMargin: dayMargin,
+                                                    height: rowHeight,
+                                                    openEditStage: widget.openEditStage,
+                                                    openEditElement: widget.openEditElement,
+                                                  ),
+                                                )
                                               ),
-                                            )
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
+                                        // SCROLLBAR
+                                        Container(
+
+                                        )
+                                      ])
                                 ],
                               ),
                             ),
@@ -682,7 +675,6 @@ class _TimelineXp extends State<TimelineXp> {
                           )
                       ),
                     ]),
-                    )
                   ),
                   if (widget.mode == 'effort')
                     Positioned.fill(

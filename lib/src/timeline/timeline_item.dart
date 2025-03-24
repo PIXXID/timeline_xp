@@ -133,20 +133,6 @@ class _BouncingTimelineItem extends State<TimelineItem>
                 height: widget.height,
                 child: Column(
                   children: <Widget>[
-                    // Météo
-                    if (day['eicon'] != null)
-                      Padding(
-                          padding: const EdgeInsets.only(top: 3, bottom: 5),
-                          child: Text(
-                            '${day['eicon']}',
-                            style: TextStyle(
-                              color: colors['primaryText'],
-                              fontWeight: FontWeight.w300,
-                              fontSize: fontSize,
-                            ),
-                          ))
-                    else
-                      Container(height: 28),
                     // Alertes
                     if (widget.index == widget.nowIndex)
                       Padding(
