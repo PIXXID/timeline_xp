@@ -38,7 +38,6 @@ class _BouncingTimelineItem extends State<TimelineItem>
     dynamic day = widget.days[widget.index];
     dynamic colors = widget.colors;
     double margin = widget.dayMargin;
-    const fontSize = 14.0;
 
     final DateTime date = day['date'];
     Color busyColor = colors['secondaryText'] ?? Colors.grey;
