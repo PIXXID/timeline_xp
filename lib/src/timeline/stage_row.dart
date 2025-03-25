@@ -13,6 +13,7 @@ class StageRow extends StatefulWidget {
       required this.dayWidth,
       required this.dayMargin,
       required this.height,
+      required this.isUniqueProject,
       required this.openEditStage,
       required this.openEditElement});
 
@@ -22,6 +23,7 @@ class StageRow extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
+  final bool isUniqueProject;
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
 
@@ -65,17 +67,6 @@ class _StageRow extends State<StageRow> {
     labels.clear();
     currentPosition = 0;
     
-    // On vérifie si la timeline affiche un ou plusieurs projets
-    Set<String> uniquePrjIds = {};
-    if (widget.stagesList.isNotEmpty) {
-      for (var item in widget.stagesList) {
-        String? prjId = item['prj_id'];
-        if (prjId != null) {
-          uniquePrjIds.add(prjId);
-        }
-      }
-    }
-    
     // On boucle sur les étapes de la ligne
     for (int index = 0; index < widget.stagesList.length; index++) {
       // Nombre de jour de durée
@@ -90,14 +81,10 @@ class _StageRow extends State<StageRow> {
       // Construction du label du stage
       String label = '';
       if (isStage) {
-        // Affiche le nom du projet seulement si plusieurs prjId
-        if (uniquePrjIds.length > 1) {
-          label += (widget.stagesList[index]['pname'] != null) ? widget.stagesList[index]['pname'] + ' - ' : '';
-        }
         // Nom du stage
-        label += (widget.stagesList[index]['name'] != null) ? widget.stagesList[index]['name'] + progressLabel : '';
+        label = (widget.stagesList[index]['name'] != null) ? widget.stagesList[index]['name'] + progressLabel : '';
       } else {
-        label += widget.stagesList[index]['pre_name'] ?? '';
+        label = widget.stagesList[index]['pre_name'] ?? '';
       }
       
       // On ajoute la couleur du projet pour l'icon
@@ -159,45 +146,62 @@ class _StageRow extends State<StageRow> {
             icon: widget.stagesList[index]['icon'],
             users: widget.stagesList[index]['users'],
             startDate: widget.stagesList[index]['sdate'],
-            endDate: widget.stagesList[index]['sdate'],
+            endDate: widget.stagesList[index]['edate'],
             progress: widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
             prjId: widget.stagesList[index]['prj_id'],
             pname: widget.stagesList[index]['pname'],
             parentStageId: widget.stagesList[index]['prs_id'],
             isStage: isStage,
-            isUniqueProject: uniquePrjIds.length > 1 ? false : true,
+            isUniqueProject: widget.isUniqueProject,
             openEditStage: widget.openEditStage,
             openEditElement: widget.openEditElement
           )
         )
       );
       
-      // On vérifie si l'élément est au centre de l'écran
+      // On vérifie si :
+      // - Éléments uniquement
+      // - Inférieur à 6 jours
+      // - au centre de l'écran
       // Dans ce cas on affiche le label
       if (!isStage &&
+        daysWidth < 6 &&
         widget.stagesList[index]['startDateIndex'] <= widget.centerItemIndex && widget.stagesList[index]['endDateIndex'] >= widget.centerItemIndex) {
         // Ajoute le label associé
         labels.add(
           Positioned(
-            left: stageItemPosition + 25, // Décalage vers la droite par rapport au StageItem
-            top: 6, // Positionnement vertical
-            child: Container(
-              height: widget.height - 12,
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-                color: widget.colors['secondaryBackground'],
-                border: Border.all(color: widget.colors['accent1']!, width: 1)
-              ),
-              child: Text(
-                label,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: widget.colors['primaryText'],
-                  fontWeight: FontWeight.w300,
-                  fontSize: 12,
+            left: stageItemPosition + 35, // Décalage vers la droite par rapport au StageItem
+            top: 5, // Positionnement vertical
+            child: GestureDetector(
+              // Call back lors du clic
+              onTap: () {
+                widget.openEditElement?.call(
+                  entityId,
+                  label,
+                  widget.stagesList[index]['type'],
+                  widget.stagesList[index]['sdate'],
+                  widget.stagesList[index]['edate'],
+                  widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
+                  widget.stagesList[index]['prj_id']);
+              },
+              child: Container(
+                height: widget.height - 10,
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(2.5)),
+                  color: widget.colors['secondaryBackground'],
+                  border: Border.all(color: widget.colors['accent1']!, width: 1)
                 ),
-              ),
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: widget.colors['primaryText'],
+                    fontWeight: FontWeight.w300,
+                    fontSize: 13,
+                  ),
+                ),
+              )
             )
           )
         );

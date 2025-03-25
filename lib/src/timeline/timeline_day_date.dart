@@ -88,7 +88,7 @@ class _TimelineDayDate extends State<TimelineDayDate>
                             style: TextStyle(
                               color: colors['primaryText'],
                               fontWeight: FontWeight.w300,
-                              fontSize: 12,
+                              fontSize: 16,
                             ),
                           ))
                     else

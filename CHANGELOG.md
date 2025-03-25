@@ -1,3 +1,7 @@
+## 0.0.93 - 25/03/2025
+
+* Timeline : Correction diverses
+
 ## 0.0.92 - 25/03/2025
 
 * Timeline : Correction callback détail élément

@@ -96,8 +96,8 @@ class StageItem extends StatelessWidget {
                           mainAxisSize:
                               MainAxisSize.min, // Ajuste la largeur à son contenu
                           children: [
-                            // Affiche l'icône seulement en multi-projet
-                            if (!isUniqueProject && pname != null)
+                            // Affiche le badge seulement en multi-projet
+                            if (!isUniqueProject)
                               Container(
                                 decoration: BoxDecoration(
                                 color: colors['pcolor'] ?? colors['primaryText']!,
@@ -106,10 +106,10 @@ class StageItem extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                                   child: Text(
-                                    pname!,
+                                    pname ?? '',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: colors['primaryText'],
+                                      color: ThemeData.estimateBrightnessForColor((colors['pcolor'] ?? colors['primaryText']!)) == Brightness.dark ? Colors.white : Colors.black,
                                       fontWeight: FontWeight.w300,
                                       fontSize: fontSize,
                                     ),

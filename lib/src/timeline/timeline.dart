@@ -98,6 +98,8 @@ class _TimelineXp extends State<TimelineXp> {
   double scrollbarHeight = 0.0;
   double scrollbarOffset = 0.0;
 
+  bool isUniqueProject = false;
+
   // Déclenche le scroll dans le controller timeline
   void _scroll(double sliderValue) {
     // gestion du scroll via le slide
@@ -170,6 +172,21 @@ class _TimelineXp extends State<TimelineXp> {
         }
       }
     });
+  
+    // On vérifie si la timeline affiche un ou plusieurs projets
+    if (widget.stages.isNotEmpty) {
+      Set<String> uniquePrjIds = {};
+      for (var item in widget.stages) {
+        String? prjId = item['prj_id'];
+        if (prjId != null) {
+          uniquePrjIds.add(prjId);
+        }
+      }
+      isUniqueProject = uniquePrjIds.length > 1 ? false : true;
+
+      timelineHeightContainer = isUniqueProject ? 185.0 : 335;
+      timelineHeight = isUniqueProject ? 250.0 : 385;
+    }
 
     // Calcule la position de la scrollbar
     scrollbarHeight = timelineHeightContainer * timelineHeightContainer / (stagesRows.length * rowHeight);
@@ -178,11 +195,11 @@ class _TimelineXp extends State<TimelineXp> {
     // Écoute le scroll vertical pour ajuster la scrollbar
     _controllerVerticalStages.addListener(() {
       setState(() {
-        double _currentVerticalScrollOffset = _controllerVerticalStages.position.pixels;
+        double currentVerticalScrollOffset = _controllerVerticalStages.position.pixels;
         // Hauteur de la barre de scroll
         scrollbarHeight = timelineHeightContainer * timelineHeightContainer / (stagesRows.length * rowHeight);
         // Position de la bar selon le scroll (en tenant compte de la hauteur de la barre)
-        scrollbarOffset = _currentVerticalScrollOffset * (timelineHeightContainer - (scrollbarHeight / 2)) / (stagesRows.length * rowHeight);
+        scrollbarOffset = currentVerticalScrollOffset * (timelineHeightContainer - (scrollbarHeight / 2)) / (stagesRows.length * rowHeight);
       });
     });
 
@@ -338,7 +355,7 @@ class _TimelineXp extends State<TimelineXp> {
       Set<dynamic> addedPreIds = {};
       List<dynamic> stageElements = elements.where((e) {
         // Vérifie si l'élément est dans la liste des pre_ids et s'il n'a pas déjà été ajouté
-        return stages[i]['elm_ids']?.contains(e['pre_id']) == true && addedPreIds.add(e['pre_id']);
+        return stages[i]['elm_filtered']?.contains(e['pre_id']) == true && addedPreIds.add(e['pre_id']);
       }).map((e) {
         // Ajoute le paramètre 'pcolor' directement dans l'élément
         return {
@@ -484,7 +501,7 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 35,
                     child: Container(
-                      height: 270,
+                      height: isUniqueProject ? 220 : 370,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
@@ -495,7 +512,6 @@ class _TimelineXp extends State<TimelineXp> {
                           // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
                           SizedBox(
                             width: screenWidth,
-                            height: 300, // Hauteur combinée pour timeline et stages
                             child: SingleChildScrollView(
                               controller: _controllerTimeline,
                               scrollDirection: Axis.horizontal,
@@ -549,7 +565,7 @@ class _TimelineXp extends State<TimelineXp> {
                                     ),
                                   if (widget.mode == 'chronology')
                                     // STAGES/ELEMENTS DYNAMIQUES
-                                    Container(
+                                    SizedBox(
                                       height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
                                       child: SingleChildScrollView(
                                         controller: _controllerVerticalStages,
@@ -569,6 +585,7 @@ class _TimelineXp extends State<TimelineXp> {
                                                 dayWidth: dayWidth,
                                                 dayMargin: dayMargin,
                                                 height: rowHeight,
+                                                isUniqueProject: isUniqueProject,
                                                 openEditStage: widget.openEditStage,
                                                 openEditElement: widget.openEditElement,
                                               ),
@@ -709,9 +726,9 @@ class _TimelineXp extends State<TimelineXp> {
                     // SCROLLBAR CUSTOM
                     // Scrollbar personnalisée (Positionné à droite)
                     Positioned(
-                      right: 5,
+                      right: 0,
                       top: 65,
-                      child: Container(
+                      child: SizedBox(
                         width: 8,
                         height: timelineHeightContainer,
                         child: Stack(
