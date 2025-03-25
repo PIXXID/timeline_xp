@@ -1,3 +1,7 @@
+## 0.0.91 - 25/03/2025
+
+* Timeline : Correction de l'affichage de la scrollbar
+
 ## 0.0.90 - 25/03/2025
 
 * Timeline : Ajoute une scrollbar sur la partie GANTT

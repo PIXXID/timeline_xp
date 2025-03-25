@@ -705,32 +705,33 @@ class _TimelineXp extends State<TimelineXp> {
                             elements: widget.elements)
                       ),
                     ),
-                  // SCROLLBAR CUSTOM
-                  // Scrollbar personnalisée (Positionné à droite)
-                  Positioned(
-                    right: 5,
-                    top: 65,
-                    child: Container(
-                      width: 8,
-                      height: timelineHeightContainer,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: 0,
-                            top: scrollbarOffset,
-                            child: Container(
-                              width: 8,
-                              height: scrollbarHeight,
-                              decoration: BoxDecoration(
-                                color: widget.colors['primary']!.withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                  if (widget.mode == 'chronology')
+                    // SCROLLBAR CUSTOM
+                    // Scrollbar personnalisée (Positionné à droite)
+                    Positioned(
+                      right: 5,
+                      top: 65,
+                      child: Container(
+                        width: 8,
+                        height: timelineHeightContainer,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: 0,
+                              top: scrollbarOffset,
+                              child: Container(
+                                width: 8,
+                                height: scrollbarHeight,
+                                decoration: BoxDecoration(
+                                  color: widget.colors['primary']!.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              )
                             )
-                          )
-                        ]
+                          ]
+                        ),
                       ),
                     ),
-                  ),
                   // MESSAGE SI AUCUNE ACTIVITE
                   if (timelineIsEmpty)
                     Positioned.fill(
