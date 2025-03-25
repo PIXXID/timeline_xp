@@ -1,3 +1,7 @@
+## 0.0.92 - 25/03/2025
+
+* Timeline : Correction callback détail élément
+
 ## 0.0.91 - 25/03/2025
 
 * Timeline : Correction de l'affichage de la scrollbar

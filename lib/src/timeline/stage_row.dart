@@ -142,7 +142,7 @@ class _StageRow extends State<StageRow> {
       double stageItemPosition = currentPosition;
       
       // Ajoute le StageItem
-      String entityId = widget.stagesList[index]['prs_id'] ?? widget.stagesList[index]['pre_id'];
+      String entityId = isStage ? widget.stagesList[index]['prs_id'] : widget.stagesList[index]['pre_id'];
       stageItems.add(
         Positioned(
           left: stageItemPosition,
