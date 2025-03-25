@@ -184,8 +184,8 @@ class _TimelineXp extends State<TimelineXp> {
       }
       isUniqueProject = uniquePrjIds.length > 1 ? false : true;
 
-      timelineHeightContainer = isUniqueProject ? 185.0 : 335;
-      timelineHeight = isUniqueProject ? 250.0 : 385;
+      timelineHeightContainer = isUniqueProject ? 169.0 : 319;
+      timelineHeight = isUniqueProject ? 236.0 : 369;
     }
 
     // Calcule la position de la scrollbar
@@ -501,7 +501,7 @@ class _TimelineXp extends State<TimelineXp> {
                     left: screenCenter,
                     top: 35,
                     child: Container(
-                      height: isUniqueProject ? 220 : 370,
+                      height: isUniqueProject ? 204 : 354,
                       width: 1,
                       decoration: BoxDecoration(color: widget.colors['error']),
                     ),
