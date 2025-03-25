@@ -1,3 +1,7 @@
+## 0.0.90 - 25/03/2025
+
+* Timeline : Ajoute une scrollbar sur la partie GANTT
+
 ## 0.0.89 - 24/03/2025
 
 * Timeline : Finalisation affichage des éléments dans la timeline
