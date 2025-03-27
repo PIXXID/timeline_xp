@@ -1,3 +1,7 @@
+## 0.0.97 - 27/03/2025
+
+* Timeline : Ajustement du scroll automatique
+
 ## 0.0.96 - 27/03/2025
 
 * Timeline : Ajustement du scroll automatique

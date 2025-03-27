@@ -99,6 +99,8 @@ class _TimelineXp extends State<TimelineXp> {
   // Position du scroll vertical
   double scrollbarHeight = 0.0;
   double scrollbarOffset = 0.0;
+  // Scroll vertical si l'utilisateur a scrollé à la main
+  double? userScrollOffset;
 
   bool isUniqueProject = false;
 
@@ -189,17 +191,30 @@ class _TimelineXp extends State<TimelineXp> {
 
           // Index à gauche de l'écran
           int leftItemIndex = centerItemIndex - 4;
-          // On récupère l'index de la ligne du stage/élément le plus haut
+          // Index à droite de l'écran
+          int rightItemIndex = centerItemIndex - 4;
+          // On récupère l'index de la ligne du stage/élément la plus haute
           int higherRowIndex = getHigherStageRowIndex(leftItemIndex > 0 ? leftItemIndex : 0);
-          // On calcule la hauteur à scroller
+          // On récupère l'index de la ligne du stage/élément la plus basse
+          int lowerRowIndex = getLowerStageRowIndex(rightItemIndex > 0 ? rightItemIndex : 0);
+          // On calcule la hauteur de la ligne du stage/élément la plus haute
           double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
+          // On calcule la hauteur de la ligne du stage/élément la plus basse
+          double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
           // On vérifie si on est pas en bas du scroll pour éviter l'effet  rebomb du scroll en bas
           double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
-          if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
-            // On déclenche le scroll
-            _scrollV(higherRowHeight);
-          } else {
-            _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+
+          // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
+          // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
+          if (userScrollOffset == null || (userScrollOffset != null && (userScrollOffset! < higherRowHeight || userScrollOffset! > lowerRowHeight))) {
+            if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
+              // On déclenche le scroll
+              _scrollV(higherRowHeight);
+            } else {
+              _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+            }
+            // Réinitialise le scroll saisi par l'utilisateur
+            userScrollOffset = null;
           }
         });
 
@@ -532,6 +547,16 @@ class _TimelineXp extends State<TimelineXp> {
       );
     });
   }
+  
+  // Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
+  int getLowerStageRowIndex(centerItemIndex) {
+    return stagesRows.lastIndexWhere((row) {
+      return row.any((stage) =>
+        centerItemIndex >= stage['startDateIndex'] &&
+        centerItemIndex <= stage['endDateIndex']
+      );
+    }) + 1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -618,32 +643,38 @@ class _TimelineXp extends State<TimelineXp> {
                                     // STAGES/ELEMENTS DYNAMIQUES
                                     SizedBox(
                                       height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
-                                      child:SingleChildScrollView(
-                                        controller: _controllerVerticalStages,
-                                        scrollDirection: Axis.vertical,
-                                        physics: const ClampingScrollPhysics(), // Permet un scroll fluide
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: List.generate(
-                                            stagesRows.length,
-                                            (rowIndex) => Container(
-                                              margin: EdgeInsets.symmetric(vertical: rowMargin),
-                                              width: days.length * (dayWidth - dayMargin),
-                                              height: rowHeight,
-                                              child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList: stagesRows[rowIndex],
-                                                centerItemIndex: centerItemIndex,
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
+                                      child: NotificationListener<UserScrollNotification>(
+                                        onNotification: (notification) {
+                                          userScrollOffset = _controllerVerticalStages.position.pixels;
+                                          return false;
+                                        },
+                                        child: SingleChildScrollView(
+                                          controller: _controllerVerticalStages,
+                                          scrollDirection: Axis.vertical,
+                                          physics: const ClampingScrollPhysics(), // Permet un scroll fluide
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: List.generate(
+                                              stagesRows.length,
+                                              (rowIndex) => Container(
+                                                margin: EdgeInsets.symmetric(vertical: rowMargin),
+                                                width: days.length * (dayWidth - dayMargin),
                                                 height: rowHeight,
-                                                isUniqueProject: isUniqueProject,
-                                                openEditStage: widget.openEditStage,
-                                                openEditElement: widget.openEditElement,
-                                              ),
-                                            )
+                                                child: StageRow(
+                                                  colors: widget.colors,
+                                                  stagesList: stagesRows[rowIndex],
+                                                  centerItemIndex: centerItemIndex,
+                                                  dayWidth: dayWidth,
+                                                  dayMargin: dayMargin,
+                                                  height: rowHeight,
+                                                  isUniqueProject: isUniqueProject,
+                                                  openEditStage: widget.openEditStage,
+                                                  openEditElement: widget.openEditElement,
+                                                ),
+                                              )
+                                            ),
                                           ),
-                                        ),
+                                        )
                                       )
                                     ),
                                 ],
