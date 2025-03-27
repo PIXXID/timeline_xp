@@ -1,6 +1,10 @@
+## 0.0.96 - 27/03/2025
+
+* Timeline : Ajustement du scroll automatique
+
 ## 0.0.95 - 27/03/2025
 
-* Timeline : Ajout du scroll automatique
+* Timeline : Ajout du scroll automatique vertical stages/éléments
 
 ## 0.0.94 - 25/03/2025
 
