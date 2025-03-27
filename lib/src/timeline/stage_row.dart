@@ -43,7 +43,7 @@ class _StageRow extends State<StageRow> {
   // Initialisation
   @override
   void initState() {
-    _buildStageList();
+    buildStageList();
     super.initState();
   }
 
@@ -52,15 +52,16 @@ class _StageRow extends State<StageRow> {
   void didUpdateWidget(StageRow oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.centerItemIndex != oldWidget.centerItemIndex) {
-      // Reconstruire la liste des étapes si l'index central change
-      _buildStageList();
-      setState(() {}); // Demander un rebuild
+      // Reconstruit la liste des étapes si la date en cours change
+      buildStageList();
+
+      setState(() {}); // Fait un rebuild
     }
   }
 
-  // Construit la liste de stages et éléments
-  void _buildStageList() {
-    // Réinitialiser toutes les listes et positions
+  // Construit la liste de stages/éléments
+  void buildStageList() {
+    // Reset toutes les listes
     list.clear();
     spacers.clear();
     stageItems.clear();

@@ -1,6 +1,6 @@
 name: timeline_xp
 description: "This Flutter package provides a customizable timeline system to display events or milestones in a linear or vertical layout."
-version: 0.0.94
+version: 0.0.95
 homepage: https://github.com/PIXXID/timeline_xp
 repository: https://github.com/PIXXID/timeline_xp
 

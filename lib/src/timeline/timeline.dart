@@ -66,7 +66,7 @@ class _TimelineXp extends State<TimelineXp> {
   // Hauteut de la liste des jours
   double datesHeight = 65.0;
   // Hauteur du container de la timeline et des stages/éléments
-  double timelineHeightContainer = 235.0;
+  double timelineHeightContainer = 300.0;
   // Hauteur de la timeline
   double timelineHeight = 300.0;
   // Diamètre des pins d'alertes
@@ -78,6 +78,8 @@ class _TimelineXp extends State<TimelineXp> {
   List stagesRows = [];
   // Hauteur d'une ligne d'étapes
   double rowHeight = 30.0;
+  // Marges d'une ligne d'étapes
+  double rowMargin = 2.0;
 
   // Index de l'item jour au centre
   int centerItemIndex = 0;
@@ -101,9 +103,19 @@ class _TimelineXp extends State<TimelineXp> {
   bool isUniqueProject = false;
 
   // Déclenche le scroll dans le controller timeline
-  void _scroll(double sliderValue) {
+  void _scrollH(double sliderValue) {
     // gestion du scroll via le slide
     _controllerTimeline.jumpTo(sliderValue);
+  }
+
+  // Scroll vertical des stages automatique
+  void _scrollV(double sliderValue) {
+    // gestion du scroll via le slide
+    _controllerVerticalStages.animateTo(
+      sliderValue,
+      duration: const Duration(milliseconds: 270),
+      curve: Curves.easeInOut
+    );
   }
 
   // Initialisation
@@ -152,6 +164,7 @@ class _TimelineXp extends State<TimelineXp> {
     // - calculer quel élément est au centre
     // - mettre à jour la valeur du slide
     // - reporter le scroll sur les étapes
+    // - Si mode stages/éléments, scroll vertical automatique
     _controllerTimeline.addListener(() {
       if (_controllerTimeline.offset >= 0 &&
           _controllerTimeline.offset < sliderMaxValue) {
@@ -164,6 +177,21 @@ class _TimelineXp extends State<TimelineXp> {
           }
 
           sliderValue = _controllerTimeline.offset;
+
+          // Index à gauche de l'écran
+          int leftItemIndex = centerItemIndex - 4;
+          // On récupère l'index de la ligne du stage/élément le plus haut
+          int higherRowIndex = getHigherStageRowIndex(leftItemIndex > 0 ? leftItemIndex : 0);
+          // On calcule la hauteur à scroller
+          double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
+          // On vérifie si on est pas en bas du scroll pour éviter l'effet  rebomb du scroll en bas
+          double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+          if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
+            // On déclenche le scroll
+            _scrollV(higherRowHeight);
+          } else {
+            _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+          }
         });
 
         if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
@@ -199,7 +227,7 @@ class _TimelineXp extends State<TimelineXp> {
         // Hauteur de la barre de scroll
         scrollbarHeight = timelineHeightContainer * timelineHeightContainer / (stagesRows.length * rowHeight);
         // Position de la bar selon le scroll (en tenant compte de la hauteur de la barre)
-        scrollbarOffset = currentVerticalScrollOffset * (timelineHeightContainer - (scrollbarHeight / 2)) / (stagesRows.length * rowHeight);
+        scrollbarOffset = currentVerticalScrollOffset * (timelineHeightContainer - (scrollbarHeight * 2)) / (stagesRows.length * rowHeight);
       });
     });
 
@@ -478,8 +506,18 @@ class _TimelineXp extends State<TimelineXp> {
       setState(() {
         sliderValue = scroll;
       });
-      _scroll(sliderValue);
+      _scrollH(sliderValue);
     }
+  }
+
+  // Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
+  int getHigherStageRowIndex(centerItemIndex) {
+    return stagesRows.indexWhere((row) {
+      return row.any((stage) =>
+        centerItemIndex >= stage['startDateIndex'] &&
+        centerItemIndex <= stage['endDateIndex']
+      );
+    });
   }
 
   @override
@@ -512,90 +550,102 @@ class _TimelineXp extends State<TimelineXp> {
                           // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
                           SizedBox(
                             width: screenWidth,
-                            child: SingleChildScrollView(
-                              controller: _controllerTimeline,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // DATES
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: datesHeight,
-                                    child: Row(
-                                      children: List.generate(
-                                        days.length,
-                                        (index) => TimelineDayDate(
-                                          colors: widget.colors,
-                                          lang: widget.lang,
-                                          index: index,
-                                          centerItemIndex: centerItemIndex,
-                                          nowIndex: nowIndex,
-                                          days: days,
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: datesHeight,
-                                        )
-                                      )
-                                    )
-                                  ),
-                                  if (widget.mode == 'effort')
-                                    // TIMELINE DYNAMIQUE
+                            child: NotificationListener<OverscrollIndicatorNotification>(
+                              onNotification: (overscroll) {
+                                overscroll.disallowIndicator(); // Supprime l'effet de sur-scroll
+                                return true;
+                              },
+                              child: SingleChildScrollView(
+                                controller: _controllerTimeline,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // DATES
                                     SizedBox(
                                       width: days.length * (dayWidth),
-                                      height: timelineHeightContainer,
+                                      height: datesHeight,
                                       child: Row(
                                         children: List.generate(
                                           days.length,
-                                          (index) => TimelineItem(
+                                          (index) => TimelineDayDate(
                                             colors: widget.colors,
+                                            lang: widget.lang,
                                             index: index,
                                             centerItemIndex: centerItemIndex,
                                             nowIndex: nowIndex,
                                             days: days,
-                                            elements: widget.elements,
                                             dayWidth: dayWidth,
                                             dayMargin: dayMargin,
-                                            height: timelineHeight,
-                                            openDayDetail: widget.openDayDetail,
-                                          ),
-                                        ),
-                                      ),
+                                            height: datesHeight,
+                                          )
+                                        )
+                                      )
                                     ),
-                                  if (widget.mode == 'chronology')
-                                    // STAGES/ELEMENTS DYNAMIQUES
-                                    SizedBox(
-                                      height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
-                                      child: SingleChildScrollView(
-                                        controller: _controllerVerticalStages,
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                    if (widget.mode == 'effort')
+                                      // TIMELINE DYNAMIQUE
+                                      SizedBox(
+                                        width: days.length * (dayWidth),
+                                        height: timelineHeightContainer,
+                                        child: Row(
                                           children: List.generate(
-                                            stagesRows.length,
-                                            (rowIndex) => Container(
-                                              margin: const EdgeInsets.symmetric(vertical: 2.0),
-                                              width: days.length * (dayWidth - dayMargin),
-                                              height: rowHeight,
-                                              child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList: stagesRows[rowIndex],
-                                                centerItemIndex: centerItemIndex,
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
-                                                height: rowHeight,
-                                                isUniqueProject: isUniqueProject,
-                                                openEditStage: widget.openEditStage,
-                                                openEditElement: widget.openEditElement,
-                                              ),
-                                            )
+                                            days.length,
+                                            (index) => TimelineItem(
+                                              colors: widget.colors,
+                                              index: index,
+                                              centerItemIndex: centerItemIndex,
+                                              nowIndex: nowIndex,
+                                              days: days,
+                                              elements: widget.elements,
+                                              dayWidth: dayWidth,
+                                              dayMargin: dayMargin,
+                                              height: timelineHeight,
+                                              openDayDetail: widget.openDayDetail,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
+                                    if (widget.mode == 'chronology')
+                                      // STAGES/ELEMENTS DYNAMIQUES
+                                      SizedBox(
+                                        height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
+                                        child: NotificationListener<ScrollNotification>(
+                                          onNotification: (scrollNotification) {
+                                            return false; // Laisse le scroll se propager
+                                          },
+                                          child: SingleChildScrollView(
+                                            controller: _controllerVerticalStages,
+                                            scrollDirection: Axis.vertical,
+                                            physics: const ClampingScrollPhysics(), // Permet un scroll fluide
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: List.generate(
+                                                stagesRows.length,
+                                                (rowIndex) => Container(
+                                                  margin: EdgeInsets.symmetric(vertical: rowMargin),
+                                                  width: days.length * (dayWidth - dayMargin),
+                                                  height: rowHeight,
+                                                  child: StageRow(
+                                                    colors: widget.colors,
+                                                    stagesList: stagesRows[rowIndex],
+                                                    centerItemIndex: centerItemIndex,
+                                                    dayWidth: dayWidth,
+                                                    dayMargin: dayMargin,
+                                                    height: rowHeight,
+                                                    isUniqueProject: isUniqueProject,
+                                                    openEditStage: widget.openEditStage,
+                                                    openEditElement: widget.openEditElement,
+                                                  ),
+                                                )
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ),
+                                  ],
+                                ),
+                              )
                             ),
                           ),
                           // JOUR ET ICONES ELEMENTS
@@ -699,7 +749,7 @@ class _TimelineXp extends State<TimelineXp> {
                                           divisions: days.length,
                                           onChanged: (double value) {
                                             sliderValue = value;
-                                            _scroll(value);
+                                            _scrollH(value);
                                           },
                                         ),
                                       )))
