@@ -49,8 +49,13 @@ class StageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderRadius = BorderRadius.all(Radius.circular(2.5));
+    const borderRadius = BorderRadius.all(Radius.circular(4));
     const fontSize = 14.0;
+    const fontWeight = FontWeight.w400;
+    // Couleur du texte dynamique en fonction de la couleur du projet
+    Color fontColor = ThemeData.estimateBrightnessForColor((colors['pcolor'] ?? colors['primaryText']!)) == Brightness.dark ? Colors.white : Colors.black;
+    Color backgroundColor = (colors['pcolor'] ?? colors['primaryText'])!.withAlpha(150);
+    Color completeColor = colors['pcolor'] ?? colors['primaryText']!;
 
     List<String> usersList = [];
     if (users != null) {
@@ -74,8 +79,7 @@ class StageItem extends StatelessWidget {
               height: height,
               decoration: BoxDecoration(
                   borderRadius: borderRadius,
-                  color: colors['secondaryBackground'],
-                  border: Border.all(color: colors['primaryBackground']!, width: 2)),
+                  color: backgroundColor),
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -83,25 +87,24 @@ class StageItem extends StatelessWidget {
                       width: itemWidth * progress / 100,
                       decoration: BoxDecoration(
                         borderRadius: borderRadius,
-                        color: colors['primary'],
+                        color: completeColor,
                       )),
                    
                   // TEXTE STAGES
                   if (isStage)
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.topLeft,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 10.0),
+                        padding: const EdgeInsets.only(top: 3.0, left: 5.0, right: 10.0),
                         child: Row(
-                          mainAxisSize:
-                              MainAxisSize.min, // Ajuste la largeur à son contenu
+                          mainAxisSize: MainAxisSize.min, // Ajuste la largeur à son contenu
                           children: [
                             // Affiche le badge seulement en multi-projet
                             if (!isUniqueProject)
                               Container(
                                 decoration: BoxDecoration(
-                                color: colors['pcolor'] ?? colors['primaryText']!,
-                                borderRadius: BorderRadius.circular(2),
+                                color: completeColor,
+                                borderRadius: borderRadius,
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -109,8 +112,8 @@ class StageItem extends StatelessWidget {
                                     pname ?? '',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: ThemeData.estimateBrightnessForColor((colors['pcolor'] ?? colors['primaryText']!)) == Brightness.dark ? Colors.white : Colors.black,
-                                      fontWeight: FontWeight.w300,
+                                      color: fontColor,
+                                      fontWeight: fontWeight,
                                       fontSize: fontSize,
                                     ),
                                   )
@@ -122,8 +125,8 @@ class StageItem extends StatelessWidget {
                                 label,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: colors['primaryText'],
-                                  fontWeight: FontWeight.w300,
+                                  color: fontColor,
+                                  fontWeight: fontWeight,
                                   fontSize: fontSize,
                                 ),
                               ),
@@ -157,44 +160,42 @@ class StageItem extends StatelessWidget {
                               Stack(
                                 children: [
                                   Container(
-                                    width: 18,
-                                    height: 18,
+                                    width: 20,
+                                    height: 20,
                                     decoration: BoxDecoration(
-                                      color: colors['secondaryBackground'],
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: colors['primaryBackground']!, width: 1),
+                                      color: Colors.white.withAlpha(220),
+                                      shape: BoxShape.circle
                                     ),
                                     child: Center(
                                       child: Text(
                                         usersList[0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: colors['primaryText'],
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: fontSize - 2,
+                                          color: completeColor,
+                                          fontWeight: fontWeight,
+                                          fontSize: fontSize,
                                         ),
                                       )
                                     ),
                                   ),
                                 if (usersList.length > 1)
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 14),
+                                    padding: const EdgeInsets.only(left: 18),
                                     child: Container(
-                                      width: 18,
-                                      height: 18,
+                                      width: 20,
+                                      height: 20,
                                       decoration: BoxDecoration(
-                                        color: colors['secondaryBackground'],
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: colors['primaryBackground']!, width: 1),
+                                        color: Colors.white.withAlpha(220),
+                                        shape: BoxShape.circle
                                       ),
                                       child: Center(
                                         child: Text(
                                           '+${usersList.length - 1}',
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: colors['primaryText'],
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: fontSize - 2,
+                                            color: completeColor,
+                                            fontWeight: fontWeight,
+                                            fontSize: fontSize -4,
                                           ),
                                         ),
                                       )
@@ -210,7 +211,7 @@ class StageItem extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: colors['primaryText'],
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: fontWeight,
                                     fontSize: fontSize,
                                   ),
                                 ),
@@ -222,7 +223,7 @@ class StageItem extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: colors['primaryText'],
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: fontWeight,
                                     fontSize: fontSize,
                                   ),
                                 ),
@@ -233,7 +234,26 @@ class StageItem extends StatelessWidget {
                       )
                     )
               ])),
+            if (isStage)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: itemWidth-10,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colors['primaryBackground'],
+                  ),
+                ),
+              ),
+            ),
+
+
         ]),
       );
   }
 }
+
+//colors['primaryBackground']

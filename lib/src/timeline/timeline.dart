@@ -819,7 +819,7 @@ class _TimelineXp extends State<TimelineXp> {
                                       child: SliderTheme(
                                         data: SliderTheme.of(context).copyWith(
                                           thumbColor: widget.colors['primary'],
-                                          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6.0),
+                                          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
                                           activeTrackColor:
                                               widget.colors['primary'],
                                           inactiveTrackColor:
