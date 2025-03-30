@@ -619,8 +619,13 @@ class _TimelineXp extends State<TimelineXp> {
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            decoration: BoxDecoration(color: widget.colors['primaryBackground']),
+            decoration: BoxDecoration(
+              color: widget.colors['primaryBackground'],
+              border: Border(
+                bottom: BorderSide(
+                  color: widget.colors['secondaryBackground']!, width: 1),
+              ),
+            ),
             child: Stack(
                 // Trait rouge indiquant le jour en cours
                 children: [
@@ -637,98 +642,116 @@ class _TimelineXp extends State<TimelineXp> {
                     child: Column(
                         children: <Widget>[
                           // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-                          SizedBox(
-                            width: screenWidth,
-                            child: SingleChildScrollView(
-                              controller: _controllerTimeline,
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // DATES
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: datesHeight,
-                                    child: Row(
-                                      children: List.generate(
-                                        days.length,
-                                        (index) => TimelineDayDate(
-                                          colors: widget.colors,
-                                          lang: widget.lang,
-                                          index: index,
-                                          centerItemIndex: centerItemIndex,
-                                          nowIndex: nowIndex,
-                                          days: days,
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: datesHeight,
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(color: widget.colors['secondaryBackground']!, width: 1),
+                                bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: 0.5),
+                              ),
+                            ),
+                          child:
+                            SizedBox(
+                              width: screenWidth,
+                              child: SingleChildScrollView(
+                                controller: _controllerTimeline,
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // DATES
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(color: widget.colors['accent1']!, width: 0.5),
+                                        ),
+                                      ),
+                                    child:
+                                      SizedBox(
+                                        width: days.length * (dayWidth),
+                                        height: datesHeight,
+                                        child: Row(
+                                          children: List.generate(
+                                            days.length,
+                                            (index) => TimelineDayDate(
+                                              colors: widget.colors,
+                                              lang: widget.lang,
+                                              index: index,
+                                              centerItemIndex: centerItemIndex,
+                                              nowIndex: nowIndex,
+                                              days: days,
+                                              dayWidth: dayWidth,
+                                              dayMargin: dayMargin,
+                                              height: datesHeight,
+                                            )
+                                          )
                                         )
-                                      )
-                                    )
-                                  ),
-                                  if (widget.mode == 'effort')
-                                    // TIMELINE DYNAMIQUE
-                                    SizedBox(
-                                      width: days.length * (dayWidth),
-                                      height: timelineHeightContainer,
-                                      child: Row(
-                                        children: List.generate(
-                                          days.length,
-                                          (index) => TimelineItem(
-                                            colors: widget.colors,
-                                            index: index,
-                                            centerItemIndex: centerItemIndex,
-                                            nowIndex: nowIndex,
-                                            days: days,
-                                            elements: widget.elements,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: timelineHeight,
-                                            openDayDetail: widget.openDayDetail,
+                                      ),
+                                    ),
+                                    if (widget.mode == 'effort')
+                                      // TIMELINE DYNAMIQUE
+                                      SizedBox(
+                                        width: days.length * (dayWidth),
+                                        height: timelineHeightContainer,
+                                        child: Row(
+                                          children: List.generate(
+                                            days.length,
+                                            (index) => TimelineItem(
+                                              colors: widget.colors,
+                                              index: index,
+                                              centerItemIndex: centerItemIndex,
+                                              nowIndex: nowIndex,
+                                              days: days,
+                                              elements: widget.elements,
+                                              dayWidth: dayWidth,
+                                              dayMargin: dayMargin,
+                                              height: timelineHeight,
+                                              openDayDetail: widget.openDayDetail,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  if (widget.mode == 'chronology')
-                                    // STAGES/ELEMENTS DYNAMIQUES
-                                    SizedBox(
-                                      height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
-                                      child: NotificationListener<UserScrollNotification>(
-                                        onNotification: (notification) {
-                                          userScrollOffset = _controllerVerticalStages.position.pixels;
-                                          return false;
-                                        },
-                                        child: SingleChildScrollView(
-                                          controller: _controllerVerticalStages,
-                                          scrollDirection: Axis.vertical,
-                                          physics: const ClampingScrollPhysics(), // Permet un scroll fluide
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: List.generate(
-                                              stagesRows.length,
-                                              (rowIndex) => Container(
-                                                margin: EdgeInsets.symmetric(vertical: rowMargin),
-                                                width: days.length * (dayWidth - dayMargin),
-                                                height: rowHeight,
-                                                child: StageRow(
-                                                  colors: widget.colors,
-                                                  stagesList: stagesRows[rowIndex],
-                                                  centerItemIndex: centerItemIndex,
-                                                  dayWidth: dayWidth,
-                                                  dayMargin: dayMargin,
+                                    if (widget.mode == 'chronology')
+                                      // STAGES/ELEMENTS DYNAMIQUES
+                                      SizedBox(
+                                        height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
+                                        child: NotificationListener<UserScrollNotification>(
+                                          onNotification: (notification) {
+                                            userScrollOffset = _controllerVerticalStages.position.pixels;
+                                            return false;
+                                          },
+                                          child: SingleChildScrollView(
+                                            controller: _controllerVerticalStages,
+                                            scrollDirection: Axis.vertical,
+                                            physics: const ClampingScrollPhysics(), // Permet un scroll fluide
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: List.generate(
+                                                stagesRows.length,
+                                                (rowIndex) => Container(
+                                                  margin: EdgeInsets.symmetric(vertical: rowMargin),
+                                                  width: days.length * (dayWidth - dayMargin),
                                                   height: rowHeight,
-                                                  isUniqueProject: isUniqueProject,
-                                                  openEditStage: widget.openEditStage,
-                                                  openEditElement: widget.openEditElement,
-                                                ),
-                                              )
+                                                  child: StageRow(
+                                                    colors: widget.colors,
+                                                    stagesList: stagesRows[rowIndex],
+                                                    centerItemIndex: centerItemIndex,
+                                                    dayWidth: dayWidth,
+                                                    dayMargin: dayMargin,
+                                                    height: rowHeight,
+                                                    isUniqueProject: isUniqueProject,
+                                                    openEditStage: widget.openEditStage,
+                                                    openEditElement: widget.openEditElement,
+                                                  ),
+                                                )
+                                              ),
                                             ),
-                                          ),
+                                          )
                                         )
-                                      )
-                                    ),
-                                ],
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -871,10 +894,10 @@ class _TimelineXp extends State<TimelineXp> {
                               right: 0,
                               top: scrollbarOffset,
                               child: Container(
-                                width: 8,
+                                width: 4,
                                 height: scrollbarHeight,
                                 decoration: BoxDecoration(
-                                  color: widget.colors['primary']!.withOpacity(0.6),
+                                  color: widget.colors['accent2']!.withAlpha(180),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               )
