@@ -1,3 +1,7 @@
+## 0.0.100 - 31/03/2025
+
+* Timeline : Correction design des stages/éléments
+
 ## 0.0.99 - 31/03/2025
 
 * Timeline : Correction design des stages/éléments
