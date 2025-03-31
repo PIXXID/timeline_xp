@@ -1,4 +1,8 @@
-## 0.0.98 - 27/03/2025
+## 0.0.99 - 31/03/2025
+
+* Timeline : Correction design des stages/éléments
+
+## 0.0.98 - 31/03/2025
 
 * Timeline : Optimisations du scroll automatique
 

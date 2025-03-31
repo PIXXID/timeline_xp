@@ -170,7 +170,7 @@ class StageItem extends StatelessWidget {
                                       child: Text(
                                         usersList[0],
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight: fontWeight,
                                           fontSize: fontSize,
@@ -192,7 +192,7 @@ class StageItem extends StatelessWidget {
                                         child: Text(
                                           '+${usersList.length - 1}',
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: fontWeight,
                                             fontSize: fontSize - 4,
