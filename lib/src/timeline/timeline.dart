@@ -210,7 +210,7 @@ class _TimelineXp extends State<TimelineXp> {
 
             // On ne calcule l'élément le plus bas que si on scroll vers la gauche
             // et que l'utilsateur a scrollé à la main (optimisation)
-            if (sliderValue < oldSliderValue && userScrollOffset != null) {
+            if (sliderValue < oldSliderValue && userScrollOffset != null && widget.mode == 'chronology') {
               // Index à droite de l'écran
               int rightItemIndex = centerItemIndex + 4;
               // On récupère l'index de la ligne du stage/élément la plus basse
@@ -647,7 +647,7 @@ class _TimelineXp extends State<TimelineXp> {
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(color: widget.colors['secondaryBackground']!, width: 1),
-                                bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: 0.5),
+                                bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: widget.mode == 'chronology' ? 0.5 : 0),
                               ),
                             ),
                           child:

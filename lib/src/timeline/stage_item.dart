@@ -209,8 +209,7 @@ class StageItem extends StatelessWidget {
                                 Text(
                                   icon ?? '',
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: colors['primaryText'],
+                                  style: const TextStyle(
                                     fontWeight: fontWeight,
                                     fontSize: fontSize,
                                   ),
@@ -222,7 +221,7 @@ class StageItem extends StatelessWidget {
                                   label,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: colors['primaryText'],
+                                    color: fontColor,
                                     fontWeight: fontWeight,
                                     fontSize: fontSize,
                                   ),
