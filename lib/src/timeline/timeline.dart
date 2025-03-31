@@ -176,6 +176,8 @@ class _TimelineXp extends State<TimelineXp> {
     // - mettre à jour la valeur du slide
     // - reporter le scroll sur les étapes
     // - Si mode stages/éléments, scroll vertical automatique
+    double oldSliderValue = 0.0;
+    int oldCenterItemIndex = 0;
     _controllerTimeline.addListener(() {
       if (_controllerTimeline.offset >= 0 &&
           _controllerTimeline.offset < sliderMaxValue) {
@@ -187,35 +189,57 @@ class _TimelineXp extends State<TimelineXp> {
             centerItemIndex = centerValue;
           }
 
+          // On met à jour la valeur du slider
           sliderValue = _controllerTimeline.offset;
 
-          // Index à gauche de l'écran
-          int leftItemIndex = centerItemIndex - 4;
-          // Index à droite de l'écran
-          int rightItemIndex = centerItemIndex - 4;
-          // On récupère l'index de la ligne du stage/élément la plus haute
-          int higherRowIndex = getHigherStageRowIndex(leftItemIndex > 0 ? leftItemIndex : 0);
-          // On récupère l'index de la ligne du stage/élément la plus basse
-          int lowerRowIndex = getLowerStageRowIndex(rightItemIndex > 0 ? rightItemIndex : 0);
-          // On calcule la hauteur de la ligne du stage/élément la plus haute
-          double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
-          // On calcule la hauteur de la ligne du stage/élément la plus basse
-          double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
-          // On vérifie si on est pas en bas du scroll pour éviter l'effet  rebomb du scroll en bas
-          double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+          // On fait le croll vertical automatique uniquement si l'élément du centre a changé. (optimisation)
+          if (oldCenterItemIndex != centerItemIndex) {
+            bool enableAutoScroll = false;
 
-          // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
-          // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
-          if (userScrollOffset == null || (userScrollOffset != null && (userScrollOffset! < higherRowHeight || userScrollOffset! > lowerRowHeight))) {
-            if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
-              // On déclenche le scroll
-              _scrollV(higherRowHeight);
-            } else {
-              _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+            // Index à gauche de l'écran
+            int leftItemIndex = centerItemIndex - 4;
+            // On récupère l'index de la ligne du stage/élément la plus haute
+            int higherRowIndex = getHigherStageRowIndex(leftItemIndex > 0 ? leftItemIndex : 0);
+            // On calcule la hauteur de la ligne du stage/élément la plus haute
+            double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
+            // On vérifie si on est pas en bas du scroll pour éviter l'effet  rebomb du scroll en bas
+            double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+            // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la droite,
+            // le stage/élément le plus haut est plus bas que le niveau de scroll de l'utilisateur
+            enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! < higherRowHeight);
+
+            // On ne calcule l'élément le plus bas que si on scroll vers la gauche
+            // et que l'utilsateur a scrollé à la main (optimisation)
+            if (sliderValue < oldSliderValue && userScrollOffset != null) {
+              // Index à droite de l'écran
+              int rightItemIndex = centerItemIndex + 4;
+              // On récupère l'index de la ligne du stage/élément la plus basse
+              int lowerRowIndex = getLowerStageRowIndex(rightItemIndex > 0 ? rightItemIndex : 0);
+              // On calcule la hauteur de la ligne du stage/élément la plus basse
+              double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
+              // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la gauche,
+              // le stage/élément le plus bas est plus haut que le niveau de scroll de l'utilisateur
+              enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! > lowerRowHeight);
             }
-            // Réinitialise le scroll saisi par l'utilisateur
-            userScrollOffset = null;
+
+            // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
+            // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
+            if (enableAutoScroll) {
+              if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
+                // On déclenche le scroll
+                _scrollV(higherRowHeight);
+              } else {
+                _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+              }
+              // Réinitialise le scroll saisi par l'utilisateur
+              userScrollOffset = null;
+            }
           }
+
+          // Mise à jour de la position précédente
+          oldSliderValue = sliderValue;
+          // Mise à jour du centre précédent
+          oldCenterItemIndex = centerItemIndex;
         });
 
         if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
@@ -539,23 +563,50 @@ class _TimelineXp extends State<TimelineXp> {
   }
 
   // Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
-  int getHigherStageRowIndex(centerItemIndex) {
-    return stagesRows.indexWhere((row) {
-      return row.any((stage) =>
-        centerItemIndex >= stage['startDateIndex'] &&
-        centerItemIndex <= stage['endDateIndex']
-      );
-    });
+  int getHigherStageRowIndex(int centerItemIndex) {
+    final int rowCount = stagesRows.length;
+    
+    for (int i = 0; i < rowCount; i++) {
+      final row = stagesRows[i];
+
+      // On parcourt les stages de chaque ligne
+      for (final stage in row) {
+        final int startIndex = stage['startDateIndex'];
+        final int endIndex = stage['endDateIndex'];
+        
+        // On Vérifie si l'index est dans la plage de date
+        if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
+          return i;
+        }
+      }
+    }
+    
+    // Aucune correspondance trouvée
+    return -1;
   }
   
   // Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
-  int getLowerStageRowIndex(centerItemIndex) {
-    return stagesRows.lastIndexWhere((row) {
-      return row.any((stage) =>
-        centerItemIndex >= stage['startDateIndex'] &&
-        centerItemIndex <= stage['endDateIndex']
-      );
-    }) + 1;
+  int getLowerStageRowIndex(int centerItemIndex) {
+    final int rowCount = stagesRows.length;
+    
+    // On parcourt les lignes en ordre inverse
+    for (int i = rowCount - 1; i >= 0; i--) {
+      final row = stagesRows[i];
+      
+      // On parcourt les stages de chaque ligne
+      for (final stage in row) {
+        final int startIndex = stage['startDateIndex'];
+        final int endIndex = stage['endDateIndex'];
+        
+        // On Vérifie si l'index est dans la plage de date
+        if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
+          return i + 1;
+        }
+      }
+    }
+    
+    // Aucune correspondance trouvée
+    return -1;
   }
 
   @override
