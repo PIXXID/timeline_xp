@@ -160,8 +160,8 @@ class StageItem extends StatelessWidget {
                               Stack(
                                 children: [
                                   Container(
-                                    width: 20,
-                                    height: 20,
+                                    width: 19,
+                                    height: 19,
                                     decoration: BoxDecoration(
                                       color: Colors.white.withAlpha(220),
                                       shape: BoxShape.circle
@@ -171,7 +171,7 @@ class StageItem extends StatelessWidget {
                                         usersList[0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: fontColor,
+                                          color: Colors.black,
                                           fontWeight: fontWeight,
                                           fontSize: fontSize,
                                         ),
@@ -180,10 +180,10 @@ class StageItem extends StatelessWidget {
                                   ),
                                 if (usersList.length > 1)
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 20),
+                                    padding: const EdgeInsets.only(left: 19),
                                     child: Container(
-                                      width: 20,
-                                      height: 20,
+                                      width: 19,
+                                      height: 19,
                                       decoration: BoxDecoration(
                                         color: Colors.white.withAlpha(220),
                                         shape: BoxShape.circle
@@ -193,7 +193,7 @@ class StageItem extends StatelessWidget {
                                           '+${usersList.length - 1}',
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: fontColor,
+                                            color: Colors.black,
                                             fontWeight: fontWeight,
                                             fontSize: fontSize - 4,
                                           ),
