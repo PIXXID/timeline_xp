@@ -171,7 +171,7 @@ class StageItem extends StatelessWidget {
                                         usersList[0],
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: completeColor,
+                                          color: fontColor,
                                           fontWeight: fontWeight,
                                           fontSize: fontSize,
                                         ),
@@ -180,7 +180,7 @@ class StageItem extends StatelessWidget {
                                   ),
                                 if (usersList.length > 1)
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 18),
+                                    padding: const EdgeInsets.only(left: 20),
                                     child: Container(
                                       width: 20,
                                       height: 20,
@@ -193,9 +193,9 @@ class StageItem extends StatelessWidget {
                                           '+${usersList.length - 1}',
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: completeColor,
+                                            color: fontColor,
                                             fontWeight: fontWeight,
-                                            fontSize: fontSize -4,
+                                            fontSize: fontSize - 4,
                                           ),
                                         ),
                                       )

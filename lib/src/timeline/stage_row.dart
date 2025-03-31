@@ -94,6 +94,7 @@ class _StageRow extends State<StageRow> {
       } else {
         widget.colors['pcolor'] = Color(int.parse('ffffff', radix: 16));
       }
+      Color fontColor = ThemeData.estimateBrightnessForColor((widget.colors['pcolor'] ?? widget.colors['primaryText']!)) == Brightness.dark ? Colors.white : Colors.black;
       
       // Largeur de l'item
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
@@ -171,7 +172,7 @@ class _StageRow extends State<StageRow> {
         // Ajoute le label associé
         labels.add(
           Positioned(
-            left: stageItemPosition + 35, // Décalage vers la droite par rapport au StageItem
+            left: stageItemPosition + 43, // Décalage vers la droite par rapport au StageItem
             top: 5, // Positionnement vertical
             child: GestureDetector(
               // Call back lors du clic
@@ -190,14 +191,13 @@ class _StageRow extends State<StageRow> {
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-                  color: widget.colors['secondaryBackground'],
-                  border: Border.all(color: widget.colors['accent1']!, width: 1)
+                  color: widget.colors['pcolor']
                 ),
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: widget.colors['primaryText'],
+                    color: fontColor,
                     fontWeight: FontWeight.w300,
                     fontSize: 13,
                   ),
