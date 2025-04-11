@@ -1,3 +1,7 @@
+## 0.1.0 - 11/04/2025
+
+* Timeline : Nouveau design modifié
+
 ## 0.0.100 - 31/03/2025
 
 * Timeline : Correction design des stages/éléments
