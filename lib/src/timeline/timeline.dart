@@ -646,7 +646,7 @@ class _TimelineXp extends State<TimelineXp> {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                           border: Border(
-                            bottom: BorderSide(color: widget.colors['secondaryText']!, width: widget.mode == 'chronology' ? 0.6 : 0),
+                            bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: widget.mode == 'chronology' ? 1.5 : 0),
                           ),
                         ),
                       child:
@@ -663,7 +663,7 @@ class _TimelineXp extends State<TimelineXp> {
                                 Container(
                                   decoration: BoxDecoration(
                                     border: Border(
-                                      bottom: BorderSide(color: widget.colors['secondaryText']!, width: 0.6),
+                                      bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: 1.5),
                                     ),
                                   ),
                                 child:
@@ -896,7 +896,7 @@ class _TimelineXp extends State<TimelineXp> {
                             width: 4,
                             height: scrollbarHeight,
                             decoration: BoxDecoration(
-                              color: widget.colors['primaryText']!.withAlpha(120),
+                              color: widget.colors['secondaryBackground']!.withAlpha(120),
                               borderRadius: BorderRadius.circular(10),
                             ),
                           )
@@ -909,11 +909,11 @@ class _TimelineXp extends State<TimelineXp> {
               if (timelineIsEmpty)
                 Positioned.fill(
                   child: Container(
-                    color: Colors.black.withOpacity(0.8),
+                    color: widget.colors['primaryBackground'],
                     padding: const EdgeInsets.all(25),
                     child: Center(
                       child: Text(
-                        'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets en utilisant le menu.',
+                        'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets et configurer vos équipes.',
                         style: TextStyle(
                           color: widget.colors['primaryText'], fontSize: 15),
                         )

@@ -1,3 +1,7 @@
+## 1.0.2 - 26/04/2025
+
+* Timeline : Adaptations graphiques
+
 ## 1.0.1 - 26/04/2025
 
 * Timeline : Corrections mineures

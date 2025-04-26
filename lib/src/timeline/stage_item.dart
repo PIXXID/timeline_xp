@@ -103,7 +103,7 @@ class StageItem extends StatelessWidget {
                       child: Center(
                         child: Container(
                           width: itemSize - 2,
-                          height: 26,
+                          height: 28,
                           decoration: BoxDecoration(
                             color: colors['primaryBackground']?.withAlpha(220),
                           ),
@@ -115,14 +115,14 @@ class StageItem extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0, left: 3.0),
+                        padding: const EdgeInsets.only(top: 8.0, left: 8.0),
                         child: Row(
                           mainAxisSize: MainAxisSize.min, // Ajuste la largeur à son contenu
                           children: [
                             // Affiche le badge seulement en multi-projet
                             if (!isUniqueProject)
                               Padding(
-                                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                                padding: const EdgeInsets.only(right: 5.0),
                                 child: Text(
                                   pname != null ? '$pname |' : '',
                                   overflow: TextOverflow.ellipsis,
@@ -133,7 +133,7 @@ class StageItem extends StatelessWidget {
                                   ),
                                 )
                               ),
-                             // Nom du stage
+                            // Nom du stage
                             Flexible(
                               child: Text(
                                 label,
