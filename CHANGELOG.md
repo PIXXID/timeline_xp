@@ -1,3 +1,7 @@
+## 1.0.0 - 26/04/2025
+
+* Timeline : Première version finalisée
+
 ## 0.1.0 - 11/04/2025
 
 * Timeline : Nouveau design modifié
