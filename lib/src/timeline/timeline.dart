@@ -646,7 +646,7 @@ class _TimelineXp extends State<TimelineXp> {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
                           border: Border(
-                            bottom: BorderSide(color: widget.colors['accent1']!, width: widget.mode == 'chronology' ? 1.5 : 0),
+                            bottom: BorderSide(color: widget.colors['secondaryText']!, width: widget.mode == 'chronology' ? 0.6 : 0),
                           ),
                         ),
                       child:
@@ -663,7 +663,7 @@ class _TimelineXp extends State<TimelineXp> {
                                 Container(
                                   decoration: BoxDecoration(
                                     border: Border(
-                                      bottom: BorderSide(color: widget.colors['accent1']!, width: 1.5),
+                                      bottom: BorderSide(color: widget.colors['secondaryText']!, width: 0.6),
                                     ),
                                   ),
                                 child:
