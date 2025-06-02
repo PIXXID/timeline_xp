@@ -1,3 +1,7 @@
+## 1.0.3 - 02/06/2025
+
+* Timeline : Fix _positions.isNotEmpty
+
 ## 1.0.2 - 26/04/2025
 
 * Timeline : Adaptations graphiques
