@@ -231,7 +231,7 @@ class _TimelineXp extends State<TimelineXp> {
 
             // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
             // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
-            if (enableAutoScroll) {
+            if (enableAutoScroll && widget.mode == 'chronology') {
               if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
                 // On déclenche le scroll
                 _scrollV(higherRowHeight);
