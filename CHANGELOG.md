@@ -1,5 +1,10 @@
 ## 1.0.3 - 02/06/2025
 
+* Timeline : Correction de la largeur de la timeline
+* Heatmap : Centre et agrandit le texte des jours
+
+## 1.0.3 - 02/06/2025
+
 * Timeline : Fix _positions.isNotEmpty
 
 ## 1.0.2 - 26/04/2025

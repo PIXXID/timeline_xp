@@ -81,7 +81,9 @@ class HeatmapDayItem extends StatelessWidget {
                 width: isSelected ? 2.0 : 0,
               ),
             ),
-            child: Column(children: [
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
               if (day['icon'] != null)
                 Padding(
                   padding: EdgeInsets.only(top: isSelected ? 2 : 6),
@@ -106,7 +108,7 @@ class HeatmapDayItem extends StatelessWidget {
                 Text(
                   upcDate,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 16,
                     color: isDarkBackground
                         ? colors['primaryText']
                         : colors['primaryBackground'],

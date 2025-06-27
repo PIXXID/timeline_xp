@@ -620,308 +620,312 @@ class _TimelineXp extends State<TimelineXp> {
   @override
   Widget build(BuildContext context) {
     // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
-    double screenWidth = MediaQuery.sizeOf(context).width;
+    // double screenWidth = MediaQuery.sizeOf(context).width;
+    double screenWidth = widget.width;
     double firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
     double screenCenter = (screenWidth / 2);
 
     return Scaffold(
         backgroundColor: widget.colors['primaryBackground'],
-        body: Stack(
-            // Trait rouge indiquant le jour en cours
-            children: [
-              Positioned(
-                left: screenCenter,
-                top: 45,
-                child: Container(
-                  height: timelineHeightContainer,
-                  width: 1,
-                  decoration: BoxDecoration(color: widget.colors['error']),
+        body: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: widget.width),
+          child: Stack(
+              // Trait rouge indiquant le jour en cours
+              children: [
+                Positioned(
+                  left: screenCenter,
+                  top: 45,
+                  child: Container(
+                    height: timelineHeightContainer,
+                    width: 1,
+                    decoration: BoxDecoration(color: widget.colors['error']),
+                  ),
                 ),
-              ),
-              Positioned.fill(
-                child: Column(
-                    children: <Widget>[
-                      // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: widget.mode == 'chronology' ? 1.5 : 0),
+                Positioned.fill(
+                  child: Column(
+                      children: <Widget>[
+                        // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: widget.mode == 'chronology' ? 1.5 : 0),
+                            ),
                           ),
-                        ),
-                      child:
-                        SizedBox(
-                          width: screenWidth,
-                          child: SingleChildScrollView(
-                            controller: _controllerTimeline,
-                            scrollDirection: Axis.horizontal,
-                            padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // DATES
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: 1.5),
+                        child:
+                          SizedBox(
+                            width: screenWidth,
+                            child: SingleChildScrollView(
+                              controller: _controllerTimeline,
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(horizontal: firstElementMargin),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // DATES
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(color: widget.colors['secondaryBackground']!, width: 1.5),
+                                      ),
                                     ),
-                                  ),
-                                child:
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: datesHeight,
-                                    child: Row(
-                                      children: List.generate(
-                                        days.length,
-                                        (index) => TimelineDayDate(
-                                          colors: widget.colors,
-                                          lang: widget.lang,
-                                          index: index,
-                                          centerItemIndex: centerItemIndex,
-                                          nowIndex: nowIndex,
-                                          days: days,
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: datesHeight,
+                                  child:
+                                    SizedBox(
+                                      width: days.length * (dayWidth),
+                                      height: datesHeight,
+                                      child: Row(
+                                        children: List.generate(
+                                          days.length,
+                                          (index) => TimelineDayDate(
+                                            colors: widget.colors,
+                                            lang: widget.lang,
+                                            index: index,
+                                            centerItemIndex: centerItemIndex,
+                                            nowIndex: nowIndex,
+                                            days: days,
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
+                                            height: datesHeight,
+                                          )
                                         )
                                       )
-                                    )
+                                    ),
                                   ),
-                                ),
-                                if (widget.mode == 'effort')
-                                  // TIMELINE DYNAMIQUE
-                                  SizedBox(
-                                    width: days.length * (dayWidth),
-                                    height: timelineHeightContainer,
-                                    child: Row(
-                                      children: List.generate(
-                                        days.length,
-                                        (index) => TimelineItem(
-                                          colors: widget.colors,
-                                          index: index,
-                                          centerItemIndex: centerItemIndex,
-                                          nowIndex: nowIndex,
-                                          days: days,
-                                          elements: widget.elements,
-                                          dayWidth: dayWidth,
-                                          dayMargin: dayMargin,
-                                          height: timelineHeight,
-                                          openDayDetail: widget.openDayDetail,
+                                  if (widget.mode == 'effort')
+                                    // TIMELINE DYNAMIQUE
+                                    SizedBox(
+                                      width: days.length * (dayWidth),
+                                      height: timelineHeightContainer,
+                                      child: Row(
+                                        children: List.generate(
+                                          days.length,
+                                          (index) => TimelineItem(
+                                            colors: widget.colors,
+                                            index: index,
+                                            centerItemIndex: centerItemIndex,
+                                            nowIndex: nowIndex,
+                                            days: days,
+                                            elements: widget.elements,
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
+                                            height: timelineHeight,
+                                            openDayDetail: widget.openDayDetail,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                if (widget.mode == 'chronology')
-                                  // STAGES/ELEMENTS DYNAMIQUES
-                                  SizedBox(
-                                    height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
-                                    child: NotificationListener<UserScrollNotification>(
-                                      onNotification: (notification) {
-                                        userScrollOffset = _controllerVerticalStages.position.pixels;
-                                        return false;
-                                      },
-                                      child: SingleChildScrollView(
-                                        controller: _controllerVerticalStages,
-                                        scrollDirection: Axis.vertical,
-                                        physics: const ClampingScrollPhysics(), // Permet un scroll fluide
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: List.generate(
-                                            stagesRows.length,
-                                            (rowIndex) => Container(
-                                              margin: EdgeInsets.symmetric(vertical: rowMargin),
-                                              width: days.length * (dayWidth - dayMargin),
-                                              height: rowHeight,
-                                              child: StageRow(
-                                                colors: widget.colors,
-                                                stagesList: stagesRows[rowIndex],
-                                                centerItemIndex: centerItemIndex,
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
+                                  if (widget.mode == 'chronology')
+                                    // STAGES/ELEMENTS DYNAMIQUES
+                                    SizedBox(
+                                      height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
+                                      child: NotificationListener<UserScrollNotification>(
+                                        onNotification: (notification) {
+                                          userScrollOffset = _controllerVerticalStages.position.pixels;
+                                          return false;
+                                        },
+                                        child: SingleChildScrollView(
+                                          controller: _controllerVerticalStages,
+                                          scrollDirection: Axis.vertical,
+                                          physics: const ClampingScrollPhysics(), // Permet un scroll fluide
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: List.generate(
+                                              stagesRows.length,
+                                              (rowIndex) => Container(
+                                                margin: EdgeInsets.symmetric(vertical: rowMargin),
+                                                width: days.length * (dayWidth - dayMargin),
                                                 height: rowHeight,
-                                                isUniqueProject: isUniqueProject,
-                                                openEditStage: widget.openEditStage,
-                                                openEditElement: widget.openEditElement,
-                                              ),
-                                            )
+                                                child: StageRow(
+                                                  colors: widget.colors,
+                                                  stagesList: stagesRows[rowIndex],
+                                                  centerItemIndex: centerItemIndex,
+                                                  dayWidth: dayWidth,
+                                                  dayMargin: dayMargin,
+                                                  height: rowHeight,
+                                                  isUniqueProject: isUniqueProject,
+                                                  openEditStage: widget.openEditStage,
+                                                  openEditElement: widget.openEditElement,
+                                                ),
+                                              )
+                                            ),
                                           ),
-                                        ),
+                                        )
                                       )
-                                    )
-                                  ),
-                              ],
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // JOUR ET ICONES ELEMENTS
-                      TimelineDayInfo(
-                        day: days[centerItemIndex],
-                        colors: widget.colors,
-                        lang: widget.lang,
-                        elements: widget.elements,
-                        openDayDetail: widget.openDayDetail),
-                      // ALERTES
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Stack(clipBehavior: Clip.none, children: [
-                          // Alertes positionnées
-                          SizedBox(
-                              width: screenWidth - (sliderMargin * 2),
-                              height: 50,
-                              child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: sliderMargin - (alertWidth / 2)),
-                                  child: Builder(builder: (context) {
-                                    List<Widget> alerts = [];
-                                    double screenWidthMargin =
-                                        screenWidth - ((sliderMargin) * 4);
-                                    if (days.isNotEmpty) {
-                                      // On parcourt les jours et on ajoute les alertes
-                                      for (var index = 0;
-                                          index < days.length;
-                                          index++) {
-                                        if (days[index]['alertLevel'] != 0) {
-                                          alerts.add(Positioned(
-                                              left: (index) *
-                                                  screenWidthMargin /
-                                                  days.length,
-                                              top: 0,
-                                              child: GestureDetector(
-                                                  // Call back lors du clic
-                                                  onTap: () {
-                                                    setState(() {
-                                                      sliderValue =
-                                                          index.toDouble();
-                                                    });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.circle_rounded,
-                                                    size: 12,
-                                                    color: days[index]['alertLevel'] == 1
-                                                        ? widget
-                                                            .colors['warning']
-                                                        : (days[index]['alertLevel'] == 2
-                                                            ? widget.colors['error']
-                                                            : Colors
-                                                                .transparent),
-                                                  ))));
+                        // JOUR ET ICONES ELEMENTS
+                        TimelineDayInfo(
+                          day: days[centerItemIndex],
+                          colors: widget.colors,
+                          lang: widget.lang,
+                          elements: widget.elements,
+                          openDayDetail: widget.openDayDetail),
+                        // ALERTES
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Stack(clipBehavior: Clip.none, children: [
+                            // Alertes positionnées
+                            SizedBox(
+                                width: screenWidth - (sliderMargin * 2),
+                                height: 50,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: sliderMargin - (alertWidth / 2)),
+                                    child: Builder(builder: (context) {
+                                      List<Widget> alerts = [];
+                                      double screenWidthMargin =
+                                          screenWidth - ((sliderMargin) * 4);
+                                      if (days.isNotEmpty) {
+                                        // On parcourt les jours et on ajoute les alertes
+                                        for (var index = 0;
+                                            index < days.length;
+                                            index++) {
+                                          if (days[index]['alertLevel'] != 0) {
+                                            alerts.add(Positioned(
+                                                left: (index) *
+                                                    screenWidthMargin /
+                                                    days.length,
+                                                top: 0,
+                                                child: GestureDetector(
+                                                    // Call back lors du clic
+                                                    onTap: () {
+                                                      setState(() {
+                                                        sliderValue =
+                                                            index.toDouble();
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.circle_rounded,
+                                                      size: 12,
+                                                      color: days[index]['alertLevel'] == 1
+                                                          ? widget
+                                                              .colors['warning']
+                                                          : (days[index]['alertLevel'] == 2
+                                                              ? widget.colors['error']
+                                                              : Colors
+                                                                  .transparent),
+                                                    ))));
+                                          }
                                         }
                                       }
-                                    }
-                                    // Point sur le jour en cours
-                                    alerts.add(Positioned(
-                                        left: (nowIndex) *
-                                            screenWidthMargin /
-                                            days.length,
-                                        top: 0,
-                                        child: GestureDetector(
-                                            // Call back lors du clic
-                                            onTap: () {
-                                              scrollTo(nowIndex);
-                                            },
-                                            child: Icon(
-                                              Icons.circle_outlined,
-                                              size: 13,
-                                              color:
-                                                  widget.colors['primaryText'],
-                                            ))));
-                                    return Stack(
-                                        children: alerts.isNotEmpty
-                                            ? alerts
-                                            : [const SizedBox()]);
-                                  })
-                            )
-                          ),
-                          // Slider
-                          Positioned(
-                              bottom: 0,
-                              child: SizedBox(
-                                  width: screenWidth - (sliderMargin * 2),
-                                  child: SliderTheme(
-                                    data: SliderTheme.of(context).copyWith(
-                                      thumbColor: widget.colors['primary'],
-                                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
-                                      activeTrackColor:
-                                          widget.colors['primary'],
-                                      inactiveTrackColor:
-                                          widget.colors['secondaryBackground'],
-                                      trackHeight: 2,
-                                    ),
-                                    child: Slider(
-                                      value: sliderValue,
-                                      min: 0,
-                                      max: sliderMaxValue,
-                                      divisions: days.length,
-                                      onChanged: (double value) {
-                                        sliderValue = value;
-                                        _scrollH(value);
-                                      },
-                                    ),
-                                  )))
-                        ]
-                      )
-                  ),
-                ]),
-              ),
-              if (widget.mode == 'effort')
-                Positioned.fill(
-                  left: 1,
-                  top: 35,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    // INDICATEURS
-                    child: TimelineDayIndicators(
-                        day: days[centerItemIndex],
-                        colors: widget.colors,
-                        lang: widget.lang,
-                        elements: widget.elements)
-                  ),
-                ),
-              if (widget.mode == 'chronology')
-                // SCROLLBAR CUSTOM
-                // Scrollbar personnalisée (Positionné à droite)
-                Positioned(
-                  right: 0,
-                  top: 65,
-                  child: SizedBox(
-                    width: 8,
-                    height: timelineHeightContainer,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          right: 0,
-                          top: scrollbarOffset,
-                          child: Container(
-                            width: 4,
-                            height: scrollbarHeight,
-                            decoration: BoxDecoration(
-                              color: widget.colors['secondaryBackground']!.withAlpha(120),
-                              borderRadius: BorderRadius.circular(10),
+                                      // Point sur le jour en cours
+                                      alerts.add(Positioned(
+                                          left: (nowIndex) *
+                                              screenWidthMargin /
+                                              days.length,
+                                          top: 0,
+                                          child: GestureDetector(
+                                              // Call back lors du clic
+                                              onTap: () {
+                                                scrollTo(nowIndex);
+                                              },
+                                              child: Icon(
+                                                Icons.circle_outlined,
+                                                size: 13,
+                                                color:
+                                                    widget.colors['primaryText'],
+                                              ))));
+                                      return Stack(
+                                          children: alerts.isNotEmpty
+                                              ? alerts
+                                              : [const SizedBox()]);
+                                    })
+                              )
                             ),
-                          )
+                            // Slider
+                            Positioned(
+                                bottom: 0,
+                                child: SizedBox(
+                                    width: screenWidth - (sliderMargin * 2),
+                                    child: SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        thumbColor: widget.colors['primary'],
+                                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
+                                        activeTrackColor:
+                                            widget.colors['primary'],
+                                        inactiveTrackColor:
+                                            widget.colors['secondaryBackground'],
+                                        trackHeight: 2,
+                                      ),
+                                      child: Slider(
+                                        value: sliderValue,
+                                        min: 0,
+                                        max: sliderMaxValue,
+                                        divisions: days.length,
+                                        onChanged: (double value) {
+                                          sliderValue = value;
+                                          _scrollH(value);
+                                        },
+                                      ),
+                                    )))
+                          ]
                         )
-                      ]
                     ),
-                  ),
+                  ]),
                 ),
-              // MESSAGE SI AUCUNE ACTIVITE
-              if (timelineIsEmpty)
-                Positioned.fill(
-                  child: Container(
-                    color: widget.colors['primaryBackground'],
-                    padding: const EdgeInsets.all(25),
-                    child: Center(
-                      child: Text(
-                        'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets et configurer vos équipes.',
-                        style: TextStyle(
-                          color: widget.colors['primaryText'], fontSize: 15),
-                        )
+                if (widget.mode == 'effort')
+                  Positioned.fill(
+                    left: 1,
+                    top: 35,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      // INDICATEURS
+                      child: TimelineDayIndicators(
+                          day: days[centerItemIndex],
+                          colors: widget.colors,
+                          lang: widget.lang,
+                          elements: widget.elements)
                     ),
                   ),
-                )
-            ],
-      )
+                if (widget.mode == 'chronology')
+                  // SCROLLBAR CUSTOM
+                  // Scrollbar personnalisée (Positionné à droite)
+                  Positioned(
+                    right: 0,
+                    top: 65,
+                    child: SizedBox(
+                      width: 8,
+                      height: timelineHeightContainer,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            right: 0,
+                            top: scrollbarOffset,
+                            child: Container(
+                              width: 4,
+                              height: scrollbarHeight,
+                              decoration: BoxDecoration(
+                                color: widget.colors['secondaryBackground']!.withAlpha(120),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            )
+                          )
+                        ]
+                      ),
+                    ),
+                  ),
+                // MESSAGE SI AUCUNE ACTIVITE
+                if (timelineIsEmpty)
+                  Positioned.fill(
+                    child: Container(
+                      color: widget.colors['primaryBackground'],
+                      padding: const EdgeInsets.all(25),
+                      child: Center(
+                        child: Text(
+                          'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets et configurer vos équipes.',
+                          style: TextStyle(
+                            color: widget.colors['primaryText'], fontSize: 15),
+                          )
+                      ),
+                    ),
+                  )
+              ],
+                ),
+        )
     );
   }
 }
