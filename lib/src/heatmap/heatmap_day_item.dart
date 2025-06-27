@@ -95,7 +95,7 @@ class HeatmapDayItem extends StatelessWidget {
                       color: isDarkBackground
                         ? colors['primaryText']
                         : colors['primaryBackground'],
-                      size: 16))
+                      size: 18))
               else if (day['capeff'] == 0)
                 Center(
                   child: SizedBox(

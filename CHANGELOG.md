@@ -1,4 +1,8 @@
-## 1.0.4 - 02/06/2025
+## 1.0.5 - 27/06/2025
+
+* Heatmap : Centre et agrandit le picto attention
+
+## 1.0.4 - 27/06/2025
 
 * Timeline : Correction de la largeur de la timeline
 * Heatmap : Centre et agrandit le texte des jours
