@@ -1,4 +1,4 @@
-## 1.0.3 - 02/06/2025
+## 1.0.4 - 02/06/2025
 
 * Timeline : Correction de la largeur de la timeline
 * Heatmap : Centre et agrandit le texte des jours
