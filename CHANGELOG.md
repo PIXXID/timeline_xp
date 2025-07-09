@@ -1,3 +1,7 @@
+## 1.0.6 - 09/07/2025
+
+* PubGet : Mise à jour du package intl
+
 ## 1.0.5 - 27/06/2025
 
 * Heatmap : Centre et agrandit le picto attention
