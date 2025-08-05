@@ -183,6 +183,28 @@ class StageItem extends StatelessWidget {
                                     ),
                                   ),
                               ]),
+                            if (usersList.isEmpty)
+                              Stack(
+                                children: [
+                                  // AUCUN UTILISATEUR
+                                  Container(
+                                    width: 22,
+                                    height: 22,
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withAlpha(150),
+                                        shape: BoxShape.circle),
+                                    child: const Center(
+                                      child: Text('?',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: fontWeight,
+                                        fontSize: fontSize - 2,
+                                      ),
+                                    )),
+                                  ),
+                                ]
+                              ),
                             // ICON
                             if (daysNumber > 1) ...{
                               if (icon != null)

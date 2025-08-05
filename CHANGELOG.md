@@ -1,3 +1,7 @@
+## 1.0.7 - 05/08/2025
+
+* Timeline : Affiche les élements sans responsabilité
+
 ## 1.0.6 - 09/07/2025
 
 * PubGet : Mise à jour du package intl
