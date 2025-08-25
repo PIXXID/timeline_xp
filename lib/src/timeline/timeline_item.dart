@@ -206,7 +206,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                   bottom: margin / 3),
                               width: widget.dayWidth - margin - 16,
                               // On affiche 1 pixel pour marquer une journée travaillée
-                              height: (heightBuseff == 0) ? 0.5 : heightBuseff,
+                              height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
                               decoration: BoxDecoration(
                                 borderRadius: borderRadius,
                                 color: busyColor,

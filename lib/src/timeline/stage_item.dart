@@ -121,10 +121,9 @@ class StageItem extends StatelessWidget {
                           children: [
                             // Affiche le badge seulement en multi-projet
                             if (!isUniqueProject)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5.0),
+                              Flexible(
                                 child: Text(
-                                  pname != null ? '$pname |' : '',
+                                  pname != null ? '$pname | ' : '',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: completeColor,

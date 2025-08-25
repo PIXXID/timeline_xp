@@ -1,3 +1,7 @@
+## 1.0.8 - 25/08/2025
+
+* Timeline : corrige le dépassement de texte des séquences
+
 ## 1.0.7 - 05/08/2025
 
 * Timeline : Affiche les élements sans responsabilité

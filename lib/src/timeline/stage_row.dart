@@ -167,12 +167,12 @@ class _StageRow extends State<StageRow> {
       // - au centre de l'écran
       // Dans ce cas on affiche le label
       if (!isStage &&
-        daysWidth < 6 &&
+        daysWidth < 4 &&
         widget.stagesList[index]['startDateIndex'] <= widget.centerItemIndex && widget.stagesList[index]['endDateIndex'] >= widget.centerItemIndex) {
         // Ajoute le label associé
         labels.add(
           Positioned(
-            left: stageItemPosition + 43, // Décalage vers la droite par rapport au StageItem
+            left: stageItemPosition + 30, // Décalage vers la droite par rapport au StageItem
             top: 5, // Positionnement vertical
             child: GestureDetector(
               // Call back lors du clic
@@ -186,17 +186,11 @@ class _StageRow extends State<StageRow> {
                   widget.stagesList[index]['prog'] != null ? widget.stagesList[index]['prog'].toDouble() : 0,
                   widget.stagesList[index]['prj_id']);
               },
-              child: Container(
-                height: widget.height - 10,
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(2.5)),
-                  color: widget.colors['pcolor']
-                ),
+              child: SizedBox(
                 child: Text(
                   label,
-                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
+                    background: Paint()..color = widget.colors['pcolor']!,
                     color: fontColor,
                     fontWeight: FontWeight.w300,
                     fontSize: 13,
